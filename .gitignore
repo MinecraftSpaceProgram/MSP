@@ -13,6 +13,9 @@ out
 *.iml
 .idea
 
+# vscode
+.markdownlint.json
+
 # gradle
 build
 .gradle

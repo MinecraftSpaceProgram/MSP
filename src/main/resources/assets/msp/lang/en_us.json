@@ -1,5 +1,11 @@
 {
-  "item.msp.example_item": "Example Item",
+  "block.msp.example_block": "Example Block",
+  "block.msp.rocket_generic": "Rocket Block",
 
-  "block.msp.example_block": "Example Block"
+  "item.msp.soldering_iron": "Smoldering Iron",
+
+  "itemgroup.MSP": "MSP",
+
+  "event.msp.soldering_iron.success": "Found and assembled rocket",
+  "event.msp.soldering_iron.fail": "That's not a rocket..."
 }
