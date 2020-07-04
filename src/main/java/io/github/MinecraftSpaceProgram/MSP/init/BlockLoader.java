@@ -1,8 +1,7 @@
 package io.github.MinecraftSpaceProgram.MSP.init;
 
 import io.github.MinecraftSpaceProgram.MSP.Main;
-import io.github.MinecraftSpaceProgram.MSP.block.ExampleBlock;
-import io.github.MinecraftSpaceProgram.MSP.block.RocketGeneric;
+import io.github.MinecraftSpaceProgram.MSP.block.*;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -21,10 +20,12 @@ public class BlockLoader {
      */
     public static final Block example_block = new ExampleBlock();
     public static final Block rocket_generic = new RocketGeneric();
+    public static final Block hangar_corner = new HangarCorner();
 
     private static final Block[] blocks_to_register = {
             example_block,
-            rocket_generic
+            rocket_generic,
+            hangar_corner
     };
 
     /**

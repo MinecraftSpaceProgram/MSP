@@ -1,0 +1,6 @@
+{
+  "variants":{
+    "": {"model": "msp:block/hangar_corner"},
+    "1": {"model":  "msp:block/hangar_corner"}
+  }
+}
