@@ -1,5 +1,6 @@
 {
   "item.msp.example_item": "Example Item",
 
-  "block.msp.example_block": "Example Block"
+  "block.msp.example_block": "Example Block",
+  "block.msp.example_tileentity": "Example TileEntity"
 }

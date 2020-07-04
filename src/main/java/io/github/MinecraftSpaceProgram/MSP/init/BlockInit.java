@@ -2,44 +2,19 @@ package io.github.MinecraftSpaceProgram.MSP.init;
 
 import io.github.MinecraftSpaceProgram.MSP.Main;
 import io.github.MinecraftSpaceProgram.MSP.block.ExampleBlock;
+import io.github.MinecraftSpaceProgram.MSP.block.ExampleTileEntityBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
-@ObjectHolder(Main.MODID)
-@Mod.EventBusSubscriber(modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class BlockInit {
+    public static final DeferredRegister<Block> BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS, Main.MOD_ID);
 
-    /**
-     * Creates an instance of the custom block class
-     */
-    public static final Block example_block = new ExampleBlock();
-
-    /**
-     * Registers the Block
-     *
-     * To register a Block replace example_block by the name of your block in
-     * event.getRegistry().register(example_block);
-     */
-    @SubscribeEvent
-    public static void registerBlocks(final RegistryEvent.Register<Block> event) {
-        event.getRegistry().register(example_block);
-    }
-
-    /**
-     * Registers the BlockItem
-     *
-     * To register a BlockItem replace example_block by the name of your block in
-     * event.getRegistry().register(new BlockItem(example_block, new Item.Properties()).setRegistryName(example_block.getRegistryName()));
-     */
-    @SubscribeEvent
-    public static void registerItemBlocks(final RegistryEvent.Register<Item> event) {
-        event.getRegistry().register(new BlockItem(example_block, new Item.Properties()).setRegistryName(example_block.getRegistryName()));
-    }
-
+    public static final RegistryObject<Block> EXAMPLE_BLOCK = BLOCKS.register(
+            "example_block", ExampleBlock::new
+    );
+    public static final RegistryObject<Block> EXAMPLE_TILEENTITYBLOCK = BLOCKS.register(
+            "example_tileentity", ExampleTileEntityBlock::new
+    );
 }
