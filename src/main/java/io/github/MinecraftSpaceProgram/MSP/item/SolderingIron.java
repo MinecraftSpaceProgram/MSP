@@ -1,7 +1,7 @@
 package io.github.MinecraftSpaceProgram.MSP.item;
 
 import io.github.MinecraftSpaceProgram.MSP.Main;
-import io.github.MinecraftSpaceProgram.MSP.init.BlockLoader;
+import io.github.MinecraftSpaceProgram.MSP.init.BlockInit;
 import io.github.MinecraftSpaceProgram.MSP.util.HangarBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
@@ -14,11 +14,9 @@ import net.minecraft.world.World;
 
 public class SolderingIron extends Item {
     public SolderingIron() {
-        super(new Properties().maxStackSize(1).group(Main.mspItemGroup));
-        this.setRegistryName("soldering_iron");
+        super(new Properties().maxStackSize(1).group(Main.MSPItemGroup.instance));
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
         World world = context.getWorld();
@@ -28,7 +26,7 @@ public class SolderingIron extends Item {
 
         if (!world.isRemote()) {
 
-            if (block == BlockLoader.hangar_corner) {
+            if (block == BlockInit.HANGAR_CORNER.get()) {
                 buildHangar(world, blockPos, player);
                 return ActionResultType.SUCCESS;
             }

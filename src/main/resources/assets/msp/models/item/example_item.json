@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "msp:item/soldering_iron"
+    "layer0": "msp:item/example_item"
   }
 }

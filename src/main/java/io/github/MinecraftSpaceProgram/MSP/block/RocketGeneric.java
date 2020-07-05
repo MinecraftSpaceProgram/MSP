@@ -8,6 +8,5 @@ public class RocketGeneric extends Block {
 
     public RocketGeneric() {
         super(Properties.create(Material.IRON));
-        this.setRegistryName("rocket_generic");
     }
 }

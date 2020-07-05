@@ -5,8 +5,9 @@
   "block.msp.hangar_corner": "Hangar Corner",
 
   "item.msp.soldering_iron": "Soldering Iron",
+  "item.msp.example_item": "Example Item",
 
-  "itemgroup.MSP": "MSP",
+  "itemGroup.MSP": "MSP",
 
   "event.msp.soldering_iron.hangar_fail": "Could not find hangar corners...",
   "event.msp.soldering_icon.hangar_found": "Rocket hangar found and assembled !"
