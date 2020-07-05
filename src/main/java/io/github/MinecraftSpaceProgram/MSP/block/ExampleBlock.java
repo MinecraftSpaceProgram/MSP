@@ -6,6 +6,5 @@ import net.minecraft.block.material.Material;
 public class ExampleBlock extends Block {
     public ExampleBlock() {
         super(Properties.create(Material.IRON));
-        this.setRegistryName("example_block");
     }
 }

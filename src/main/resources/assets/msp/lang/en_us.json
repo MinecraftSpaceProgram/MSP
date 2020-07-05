@@ -1,5 +1,6 @@
 {
   "block.msp.example_block": "Example Block",
+  "block.msp.example_tileentity": "Example TileEntity",
   "block.msp.rocket_generic": "Rocket Block",
   "block.msp.hangar_corner": "Hangar Corner",
 
