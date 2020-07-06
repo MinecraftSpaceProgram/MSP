@@ -1,14 +1,15 @@
 package io.github.MinecraftSpaceProgram.MSP;
 
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import io.github.MinecraftSpaceProgram.MSP.init.*;
+import io.github.MinecraftSpaceProgram.MSP.init.BlockLoader;
+import io.github.MinecraftSpaceProgram.MSP.init.ItemLoader;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -21,28 +22,31 @@ import org.apache.logging.log4j.Logger;
 public final class MSP {
 
     public static final String MOD_ID ="msp";
-    public static MSP instance;
 
     public static final Logger LOGGER = LogManager.getLogger();
 
+    public static final ItemGroup ITEM_GROUP = new ItemGroup(MOD_ID) {
+        @Override
+        public ItemStack createIcon() {
+            return new ItemStack(ItemLoader.EXAMPLE_ITEM.get());
+        }
+    };
+
+
     public MSP() {
-        LOGGER.debug("GOT HERE");
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
-        ItemInit.ITEMS.register(modEventBus);
-        BlockInit.BLOCKS.register(modEventBus);
-        ModTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
-
-        instance = this;
-        MinecraftForge.EVENT_BUS.register(this);
+        DistExecutor.runForDist(
+                () -> () -> new SidedLoader.Client(modEventBus),
+                () -> () -> new SidedLoader.Server(modEventBus)
+        );
     }
 
     @SubscribeEvent
     public static void onRegisterItems(final RegistryEvent.Register<Item> event){
         final IForgeRegistry<Item> registry = event.getRegistry();
 
-        BlockInit.BLOCKS.getEntries().stream().map(RegistryObject::get).forEach(block -> {
-            final Item.Properties properties = new Item.Properties().group(MSPItemGroup.instance);
+        BlockLoader.BLOCKS.getEntries().stream().map(RegistryObject::get).forEach(block -> {
+            final Item.Properties properties = new Item.Properties().group(ITEM_GROUP);
             final BlockItem blockItem = new BlockItem(block, properties);
             //noinspection ConstantConditions
             blockItem.setRegistryName(block.getRegistryName());
@@ -51,16 +55,4 @@ public final class MSP {
         LOGGER.debug("Registered Block Items");
     }
 
-    public static class MSPItemGroup extends ItemGroup {
-        public static final ItemGroup instance = new MSPItemGroup("MSP");
-
-        private MSPItemGroup(String label) {
-            super(label);
-        }
-
-        @Override
-        public ItemStack createIcon() {
-            return new ItemStack(ItemInit.EXAMPLE_ITEM.get());
-        }
-    }
 }

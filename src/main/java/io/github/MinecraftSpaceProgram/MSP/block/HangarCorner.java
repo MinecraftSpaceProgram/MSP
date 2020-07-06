@@ -1,8 +1,8 @@
 package io.github.MinecraftSpaceProgram.MSP.block;
 
 import io.github.MinecraftSpaceProgram.MSP.MSP;
-import io.github.MinecraftSpaceProgram.MSP.init.BlockInit;
-import io.github.MinecraftSpaceProgram.MSP.init.ItemInit;
+import io.github.MinecraftSpaceProgram.MSP.init.BlockLoader;
+import io.github.MinecraftSpaceProgram.MSP.init.ItemLoader;
 import io.github.MinecraftSpaceProgram.MSP.init.ModTileEntityTypes;
 import io.github.MinecraftSpaceProgram.MSP.item.IHangarController;
 import io.github.MinecraftSpaceProgram.MSP.tileentity.HangarCornerTileEntity;
@@ -59,7 +59,7 @@ public class HangarCorner extends Block {
     @Override
     public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         ItemStack itemStack = player.getHeldItem(handIn);
-        if (itemStack.getItem() == ItemInit.HANGAR_CONTROLLER.get()) {
+        if (itemStack.getItem() == ItemLoader.HANGAR_CONTROLLER.get()) {
             if (player.isSneaking()) {
                 if (!worldIn.isRemote) {
                     findHangar(worldIn, pos, player, itemStack);
@@ -73,13 +73,13 @@ public class HangarCorner extends Block {
 
     @Override
     public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (newState.getBlock() != BlockInit.HANGAR_CORNER.get()) {
+        if (newState.getBlock() != BlockLoader.HANGAR_CORNER.get()) {
             HangarCornerTileEntity hangarCornerTileEntity = (HangarCornerTileEntity) worldIn.getTileEntity(pos);
             Hangar hangar = hangarCornerTileEntity.getAssociatedCorners();
             if (hangar != null) {
                 MSP.LOGGER.debug("Removing " + hangar.toString());
                 for (BlockPos cornerPos : hangar.getCorners()) {
-                    if (cornerPos != pos)
+                    if (cornerPos.compareTo(pos) != 0)
                         ((HangarCornerTileEntity) worldIn.getTileEntity(cornerPos)).removeAssociatedCorners();
                 }
             }

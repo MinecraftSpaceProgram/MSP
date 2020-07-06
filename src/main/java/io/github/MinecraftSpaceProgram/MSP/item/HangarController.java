@@ -25,7 +25,7 @@ public class HangarController extends Item implements IHangarController {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public HangarController() {
-        super(new Properties().group(MSP.MSPItemGroup.instance));
+        super(new Properties().group(MSP.ITEM_GROUP));
     }
 
     @Override
@@ -37,6 +37,7 @@ public class HangarController extends Item implements IHangarController {
         c.putInt("z", blockPos.getZ());
 
         MSPtag.put("hangar", c);
+        MSPtag.putBoolean("linked", true);
         itemStack.getOrCreateTag().put("MSP", MSPtag);
     }
 
@@ -56,11 +57,20 @@ public class HangarController extends Item implements IHangarController {
         TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
         if (tileEntity instanceof HangarCornerTileEntity) {
             Hangar hangar = ((HangarCornerTileEntity) tileEntity).getAssociatedCorners();
-            if (hangar == null) LOGGER.debug("Could not find hangar");
-            else LOGGER.debug("Found " + hangar.toString());
+            if (hangar == null) {
+                LOGGER.debug("Could not find hangar");
+                MSPtag.putBoolean("linked", false);
+            }
+            else {
+                LOGGER.debug("Found " + hangar.toString());
+                MSPtag.putBoolean("linked", true);
+            }
+            tag.put("MSP", MSPtag);
             return hangar;
         }
 
+        MSPtag.putBoolean("linked", false);
+        tag.put("MSP", MSPtag);
         return null;
     }
 
@@ -75,7 +85,7 @@ public class HangarController extends Item implements IHangarController {
             CompoundNBT MSPtag = tag.getCompound("MSP");
             if (!MSPtag.isEmpty()) {
                 if (MSPtag.contains("hangar")) MSPtag.remove("hangar");
-                tag.remove("MSP");
+                MSPtag.putBoolean("linked", false);
                 tag.put("MSP", MSPtag);
             }
         }
@@ -129,5 +139,15 @@ public class HangarController extends Item implements IHangarController {
     @Override
     public boolean doesSneakBypassUse(ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player) {
         return true;
+    }
+
+    public static int getItemColor(ItemStack itemStack, int tintIndex) {
+        if (tintIndex == 0)
+            return 0xFFFFFF;
+
+        if (itemStack.getOrCreateTag().getCompound("MSP").getBoolean("linked"))
+            return 0x32D314;
+        else
+            return 0xF02525;
     }
 }

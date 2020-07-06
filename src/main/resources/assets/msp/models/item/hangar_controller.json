@@ -1,6 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "msp:item/hangar_controller"
+    "layer0": "msp:item/hangar_controller",
+    "layer1": "msp:item/hangar_controller_status"
   }
 }

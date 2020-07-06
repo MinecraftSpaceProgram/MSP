@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 
 public class ExampleItem extends Item {
     public ExampleItem() {
-        super(new Properties().group(MSP.MSPItemGroup.instance));
+        super(new Properties().group(MSP.ITEM_GROUP));
     }
 
     @Override

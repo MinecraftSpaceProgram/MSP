@@ -16,10 +16,10 @@ public class ModTileEntityTypes {
 
     public static final RegistryObject<TileEntityType<ExampleTileEntity>> EXAMPLE_TILEENTITY = TILE_ENTITY_TYPES.register(
             "example_tileentity", () -> TileEntityType.Builder
-                    .create(ExampleTileEntity::new, BlockInit.EXAMPLE_TILEENTITYBLOCK.get()).build(null)
+                    .create(ExampleTileEntity::new, BlockLoader.EXAMPLE_TILEENTITYBLOCK.get()).build(null)
     );
     public static final RegistryObject<TileEntityType<HangarCornerTileEntity>> HANGAR_CORNER_TILEENTITY = TILE_ENTITY_TYPES.register(
             "hangar_corner", () -> TileEntityType.Builder
-                    .create(HangarCornerTileEntity::new, BlockInit.EXAMPLE_TILEENTITYBLOCK.get()).build(null)
+                    .create(HangarCornerTileEntity::new, BlockLoader.EXAMPLE_TILEENTITYBLOCK.get()).build(null)
     );
 }

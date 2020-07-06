@@ -11,7 +11,7 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class BlockInit {
+public class BlockLoader {
     public static final DeferredRegister<Block> BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS, MSP.MOD_ID);
 
     public static final RegistryObject<Block> EXAMPLE_BLOCK = BLOCKS.register(
