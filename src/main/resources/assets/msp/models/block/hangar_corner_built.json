@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "msp:block/hangar_corner_built"
+  }
+}

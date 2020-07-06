@@ -4,11 +4,14 @@
   "block.msp.rocket_generic": "Rocket Block",
   "block.msp.hangar_corner": "Hangar Corner",
 
-  "item.msp.soldering_iron": "Soldering Iron",
   "item.msp.example_item": "Example Item",
+  "item.msp.hangar_controller": "Hangar Controller",
 
   "itemGroup.MSP": "MSP",
 
-  "event.msp.soldering_iron.hangar_fail": "Could not find hangar corners...",
-  "event.msp.soldering_icon.hangar_found": "Rocket hangar found and assembled !"
+  "event.msp.hangar_controller.cleared": "Unlinked hangar",
+  "event.msp.hangar_controller.not_found": "Could not find hangar...",
+  "event.msp.hangar_controller.not_linked": "No hangar linked",
+  "event.msp.hangar_controller.found": "Found and assembled hangar between %s and %s",
+  "event.msp.hangar_controller.found_again": "Controller link to hangar between %s and %s"
 }

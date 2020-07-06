@@ -9,12 +9,12 @@ import javax.annotation.Nullable;
 public class HangarBuilder {
     protected final World world;
     protected final BlockPos startingBlockPos;
-    private HangarBuilderCorners hangarBuilderCorners;
+    private HangarCorners hangarCorners;
 
     private static final int horizontal_limit = 256;
     private static final int vertical_limit = 256;
 
-    public HangarBuilder(World world, BlockPos startingBlockPos) {
+    public HangarBuilder(final World world, final BlockPos startingBlockPos) {
         this.world = world;
         this.startingBlockPos = startingBlockPos;
 
@@ -25,13 +25,16 @@ public class HangarBuilder {
                 int z = FindAlongZ();
                 if (z != 0) {
                     if (CheckXYZ(x, y, z)) {
-                        hangarBuilderCorners = new HangarBuilderCorners(startingBlockPos, x, y, z);
+                        hangarCorners = new HangarCorners(startingBlockPos, x, y, z);
                     }
                 }
             }
         }
     }
 
+    /**
+     * Find corner along axis X
+     */
     private int FindAlongX() {
         for (int dx = 1; dx < horizontal_limit; dx++) {
             if (world.getBlockState(new BlockPos(startingBlockPos.getX() + dx, startingBlockPos.getY(), startingBlockPos.getZ())).getBlock() == BlockInit.HANGAR_CORNER.get()) {
@@ -46,6 +49,9 @@ public class HangarBuilder {
         return 0;
     }
 
+    /**
+     * Find corner along axis Y, checks for 0 < y + dy < 256
+     */
     private int FindAlongY() {
         int y = startingBlockPos.getY();
         for (int dy = 1; dy < vertical_limit && y + dy < 256; dy++) {
@@ -53,7 +59,7 @@ public class HangarBuilder {
                 return dy;
             }
         }
-        for (int dy = 1; dy > -vertical_limit && y + dy > 0; dy--) {
+        for (int dy = -1; dy > -vertical_limit && y + dy > 0; dy--) {
             if (world.getBlockState(new BlockPos(startingBlockPos.getX(), startingBlockPos.getY() + dy, startingBlockPos.getZ())).getBlock() == BlockInit.HANGAR_CORNER.get()) {
                 return dy;
             }
@@ -61,6 +67,9 @@ public class HangarBuilder {
         return 0;
     }
 
+    /**
+     * Find corner along axis Z
+     */
     private int FindAlongZ() {
         int z = startingBlockPos.getZ();
         for (int dz = 1; dz < vertical_limit; dz++) {
@@ -76,7 +85,10 @@ public class HangarBuilder {
         return 0;
     }
 
-    private boolean CheckXYZ(int x, int y, int z) {
+    /**
+     * Having 5 corners, check the remaining 3
+     */
+    private boolean CheckXYZ(final int x, final int y, final int z) {
         boolean xy = world.getBlockState(new BlockPos(startingBlockPos.getX() + x, startingBlockPos.getY() + y, startingBlockPos.getZ())).getBlock() == BlockInit.HANGAR_CORNER.get();
         boolean zx = world.getBlockState(new BlockPos(startingBlockPos.getX() + x, startingBlockPos.getY(), startingBlockPos.getZ() + z)).getBlock() == BlockInit.HANGAR_CORNER.get();
         boolean zy = world.getBlockState(new BlockPos(startingBlockPos.getX(), startingBlockPos.getY() + y, startingBlockPos.getZ() + z)).getBlock() == BlockInit.HANGAR_CORNER.get();
@@ -86,7 +98,7 @@ public class HangarBuilder {
     }
 
     @Nullable
-    public HangarBuilderCorners getCorners() {
-        return hangarBuilderCorners;
+    public HangarCorners getCorners() {
+        return hangarCorners;
     }
 }

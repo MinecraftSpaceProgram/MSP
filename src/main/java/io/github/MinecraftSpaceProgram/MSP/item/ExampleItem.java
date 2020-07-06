@@ -17,21 +17,22 @@ public class ExampleItem extends Item {
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        World world = context.getWorld();
-        BlockPos blockPos = context.getPos();
-        TileEntity tileEntity = world.getTileEntity(blockPos);
-        PlayerEntity player = context.getPlayer();
+    public ActionResultType onItemUse(final ItemUseContext context) {
+        final World world = context.getWorld();
+        final BlockPos blockPos = context.getPos();
+        final TileEntity tileEntity = world.getTileEntity(blockPos);
+        final PlayerEntity player = context.getPlayer();
 
         if (!world.isRemote() && tileEntity instanceof ExampleTileEntity) {
-            if (player.isSneaking()) {
+            if (player.isCrouching()) {
                 ((ExampleTileEntity) tileEntity).setActivated();
             }
             else {
                 player.sendMessage(new StringTextComponent("Block " + (((ExampleTileEntity) tileEntity).getActivated()? "activated": "disabled")));
             }
+            return ActionResultType.SUCCESS;
         }
 
-        return ActionResultType.FAIL;
+        return super.onItemUse(context);
     }
 }
