@@ -1,6 +1,6 @@
 package io.github.MinecraftSpaceProgram.MSP.item;
 
-import io.github.MinecraftSpaceProgram.MSP.Main;
+import io.github.MinecraftSpaceProgram.MSP.MSP;
 import io.github.MinecraftSpaceProgram.MSP.tileentity.ExampleTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 
 public class ExampleItem extends Item {
     public ExampleItem() {
-        super(new Properties().group(Main.MSPItemGroup.instance));
+        super(new Properties().group(MSP.ITEM_GROUP));
     }
 
     @Override
