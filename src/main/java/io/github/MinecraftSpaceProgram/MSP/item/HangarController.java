@@ -1,6 +1,6 @@
 package io.github.MinecraftSpaceProgram.MSP.item;
 
-import io.github.MinecraftSpaceProgram.MSP.Main;
+import io.github.MinecraftSpaceProgram.MSP.MSP;
 import io.github.MinecraftSpaceProgram.MSP.tileentity.HangarCornerTileEntity;
 import io.github.MinecraftSpaceProgram.MSP.util.HangarCorners;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,19 +25,19 @@ public class HangarController extends Item implements IHangarController {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public HangarController() {
-        super(new Properties().group(Main.MSPItemGroup.instance));
+        super(new Properties().group(MSP.MSPItemGroup.instance));
     }
 
     @Override
     public void linkHangar(final ItemStack itemStack, final BlockPos blockPos) {
-        final CompoundNBT MSP = itemStack.getOrCreateChildTag("MSP");
+        final CompoundNBT MSPtag = itemStack.getOrCreateChildTag("MSP");
         final CompoundNBT c = new CompoundNBT();
         c.putInt("x", blockPos.getX());
         c.putInt("y", blockPos.getY());
         c.putInt("z", blockPos.getZ());
 
-        MSP.put("hangar", c);
-        itemStack.getOrCreateTag().put("MSP", MSP);
+        MSPtag.put("hangar", c);
+        itemStack.getOrCreateTag().put("MSP", MSPtag);
     }
 
     @Override
@@ -45,9 +45,9 @@ public class HangarController extends Item implements IHangarController {
     public HangarCorners getHangar(final ItemStack itemStack, final World world) {
         final CompoundNBT tag = itemStack.getOrCreateTag();
         if (!tag.contains("MSP")) return null;
-        final CompoundNBT MSP = tag.getCompound("MSP");
-        if (!MSP.contains("hangar")) return null;
-        final CompoundNBT c = MSP.getCompound("hangar");
+        final CompoundNBT MSPtag = tag.getCompound("MSP");
+        if (!MSPtag.contains("hangar")) return null;
+        final CompoundNBT c = MSPtag.getCompound("hangar");
         int x = c.getInt("x");
         int y = c.getInt("y");
         int z = c.getInt("z");
@@ -72,11 +72,11 @@ public class HangarController extends Item implements IHangarController {
             player.sendMessage(new TranslationTextComponent("event.msp.hangar_controller.cleared"));
             ItemStack itemStack = player.getHeldItem(hand);
             CompoundNBT tag = itemStack.getOrCreateTag();
-            CompoundNBT MSP = tag.getCompound("MSP");
-            if (!MSP.isEmpty()) {
-                if (MSP.contains("hangar")) MSP.remove("hangar");
+            CompoundNBT MSPtag = tag.getCompound("MSP");
+            if (!MSPtag.isEmpty()) {
+                if (MSPtag.contains("hangar")) MSPtag.remove("hangar");
                 tag.remove("MSP");
-                tag.put("MSP", MSP);
+                tag.put("MSP", MSPtag);
             }
         }
     }
@@ -119,7 +119,7 @@ public class HangarController extends Item implements IHangarController {
                     final BlockPos[] extremeBlocks = hangarCorners.getExtremeCorners();
                     final String pos1 = String.format("(%d,%d,%d)", extremeBlocks[0].getX(), extremeBlocks[0].getY(), extremeBlocks[0].getZ());
                     final String pos2 = String.format("(%d,%d,%d)", extremeBlocks[1].getX(), extremeBlocks[1].getY(), extremeBlocks[1].getZ());
-                    player.sendMessage(new TranslationTextComponent("event.msp.hangar_controller.found", pos1, pos2));
+                    player.sendMessage(new TranslationTextComponent("event.msp.hangar_controller.found_again", pos1, pos2));
                 }
             }
         }

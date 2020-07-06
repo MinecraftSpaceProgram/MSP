@@ -1,5 +1,7 @@
 package io.github.MinecraftSpaceProgram.MSP.block;
 
+import io.github.MinecraftSpaceProgram.MSP.MSP;
+import io.github.MinecraftSpaceProgram.MSP.init.BlockInit;
 import io.github.MinecraftSpaceProgram.MSP.init.ItemInit;
 import io.github.MinecraftSpaceProgram.MSP.init.ModTileEntityTypes;
 import io.github.MinecraftSpaceProgram.MSP.item.IHangarController;
@@ -67,6 +69,22 @@ public class HangarCorner extends Block {
         }
 
         return super.onBlockActivated(state, worldIn, pos, player, handIn, hit);
+    }
+
+    @Override
+    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (newState.getBlock() != BlockInit.HANGAR_CORNER.get()) {
+            HangarCornerTileEntity hangarCornerTileEntity = (HangarCornerTileEntity) worldIn.getTileEntity(pos);
+            HangarCorners hangarCorners = hangarCornerTileEntity.getAssociatedCorners();
+            if (hangarCorners != null) {
+                MSP.LOGGER.debug("Removing " + hangarCorners.toString());
+                for (BlockPos cornerPos : hangarCorners.getCorners()) {
+                    if (cornerPos != pos)
+                        ((HangarCornerTileEntity) worldIn.getTileEntity(cornerPos)).removeAssociatedCorners();
+                }
+            }
+        }
+        super.onReplaced(state, worldIn, pos, newState, isMoving);
     }
 
     private void findHangar(World world, BlockPos pos, PlayerEntity player, ItemStack itemStack) {

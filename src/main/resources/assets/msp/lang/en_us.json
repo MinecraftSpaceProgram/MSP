@@ -13,5 +13,5 @@
   "event.msp.hangar_controller.not_found": "Could not find hangar...",
   "event.msp.hangar_controller.not_linked": "No hangar linked",
   "event.msp.hangar_controller.found": "Found and assembled hangar between %s and %s",
-  "event.msp.hangar_controller.found_again": "Controller link to hangar between %s and %s"
+  "event.msp.hangar_controller.found_again": "Controller linked to hangar between %s and %s"
 }

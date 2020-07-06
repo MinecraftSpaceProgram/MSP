@@ -16,16 +16,16 @@ import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(Main.MOD_ID)
-@Mod.EventBusSubscriber(modid=Main.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public final class Main {
+@Mod(MSP.MOD_ID)
+@Mod.EventBusSubscriber(modid= MSP.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+public final class MSP {
 
     public static final String MOD_ID ="msp";
-    public static Main instance;
+    public static MSP instance;
 
     public static final Logger LOGGER = LogManager.getLogger();
 
-    public Main() {
+    public MSP() {
         LOGGER.debug("GOT HERE");
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 

@@ -1,6 +1,6 @@
 package io.github.MinecraftSpaceProgram.MSP.init;
 
-import io.github.MinecraftSpaceProgram.MSP.Main;
+import io.github.MinecraftSpaceProgram.MSP.MSP;
 
 import io.github.MinecraftSpaceProgram.MSP.block.ExampleBlock;
 import io.github.MinecraftSpaceProgram.MSP.block.ExampleTileEntityBlock;
@@ -12,7 +12,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class BlockInit {
-    public static final DeferredRegister<Block> BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS, Main.MOD_ID);
+    public static final DeferredRegister<Block> BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS, MSP.MOD_ID);
 
     public static final RegistryObject<Block> EXAMPLE_BLOCK = BLOCKS.register(
             "example_block", ExampleBlock::new
