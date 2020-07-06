@@ -4,7 +4,7 @@ import net.minecraft.util.math.BlockPos;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class HangarCorners {
+public class Hangar {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public final BlockPos startingPos;
@@ -30,7 +30,7 @@ public class HangarCorners {
      * Records all corners of a hangar
      * x, y, z are set positive
      */
-    public HangarCorners(final BlockPos startingPos, final int x, final int y , final int z) {
+    public Hangar(final BlockPos startingPos, final int x, final int y , final int z) {
         this.startingPos = new BlockPos(
                 startingPos.getX() + Math.min(x, 0),
                 startingPos.getY() + Math.min(y, 0),

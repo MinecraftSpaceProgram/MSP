@@ -1,6 +1,6 @@
 package io.github.MinecraftSpaceProgram.MSP.item;
 
-import io.github.MinecraftSpaceProgram.MSP.util.HangarCorners;
+import io.github.MinecraftSpaceProgram.MSP.util.Hangar;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
@@ -22,7 +22,7 @@ public interface IHangarController {
      * @param world world
      * @return HangarCorners or null
      */
-    HangarCorners getHangar(ItemStack itemStack, World world);
+    Hangar getHangar(ItemStack itemStack, World world);
 
     /**
      * Unlink hangar, remove from tag metadata

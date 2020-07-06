@@ -2,7 +2,7 @@ package io.github.MinecraftSpaceProgram.MSP.tileentity;
 
 import io.github.MinecraftSpaceProgram.MSP.block.HangarCorner;
 import io.github.MinecraftSpaceProgram.MSP.init.ModTileEntityTypes;
-import io.github.MinecraftSpaceProgram.MSP.util.HangarCorners;
+import io.github.MinecraftSpaceProgram.MSP.util.Hangar;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -11,7 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import javax.annotation.Nullable;
 
 public class HangarCornerTileEntity extends TileEntity {
-    protected HangarCorners associatedCorners;
+    protected Hangar associatedCorners;
 
     public HangarCornerTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
@@ -49,7 +49,7 @@ public class HangarCornerTileEntity extends TileEntity {
         if (!MSP.contains("hangar"))
             return;
         CompoundNBT hangar = MSP.getCompound("hangar");
-        this.associatedCorners = new HangarCorners(
+        this.associatedCorners = new Hangar(
                 new BlockPos(hangar.getInt("x"), hangar.getInt("Y"), hangar.getInt("z")),
                 hangar.getInt("dx"),
                 hangar.getInt("dy"),
@@ -59,13 +59,13 @@ public class HangarCornerTileEntity extends TileEntity {
 
     /**
      * Links hangar blocks and sets BlockState to HANGAR_BUILT = true
-     * @param hangarCorners hangar to link
+     * @param hangar hangar to link
      */
-    public void setAssociatedCorners(HangarCorners hangarCorners) {
-        if (hangarCorners == null)
+    public void setAssociatedCorners(Hangar hangar) {
+        if (hangar == null)
             return;
 
-        this.associatedCorners = hangarCorners;
+        this.associatedCorners = hangar;
         markDirty();
 
         if (this.world != null) {
@@ -80,7 +80,7 @@ public class HangarCornerTileEntity extends TileEntity {
     }
 
     @Nullable
-    public HangarCorners getAssociatedCorners() {
+    public Hangar getAssociatedCorners() {
         return this.associatedCorners;
     }
 

@@ -7,7 +7,7 @@ import io.github.MinecraftSpaceProgram.MSP.init.ModTileEntityTypes;
 import io.github.MinecraftSpaceProgram.MSP.item.IHangarController;
 import io.github.MinecraftSpaceProgram.MSP.tileentity.HangarCornerTileEntity;
 import io.github.MinecraftSpaceProgram.MSP.util.HangarBuilder;
-import io.github.MinecraftSpaceProgram.MSP.util.HangarCorners;
+import io.github.MinecraftSpaceProgram.MSP.util.Hangar;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -75,10 +75,10 @@ public class HangarCorner extends Block {
     public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.getBlock() != BlockInit.HANGAR_CORNER.get()) {
             HangarCornerTileEntity hangarCornerTileEntity = (HangarCornerTileEntity) worldIn.getTileEntity(pos);
-            HangarCorners hangarCorners = hangarCornerTileEntity.getAssociatedCorners();
-            if (hangarCorners != null) {
-                MSP.LOGGER.debug("Removing " + hangarCorners.toString());
-                for (BlockPos cornerPos : hangarCorners.getCorners()) {
+            Hangar hangar = hangarCornerTileEntity.getAssociatedCorners();
+            if (hangar != null) {
+                MSP.LOGGER.debug("Removing " + hangar.toString());
+                for (BlockPos cornerPos : hangar.getCorners()) {
                     if (cornerPos != pos)
                         ((HangarCornerTileEntity) worldIn.getTileEntity(cornerPos)).removeAssociatedCorners();
                 }
@@ -88,14 +88,14 @@ public class HangarCorner extends Block {
     }
 
     private void findHangar(World world, BlockPos pos, PlayerEntity player, ItemStack itemStack) {
-        HangarCorners hangarCorners = new HangarBuilder(world, pos).getCorners();
-        if (hangarCorners == null)
+        Hangar hangar = new HangarBuilder(world, pos).getCorners();
+        if (hangar == null)
             player.sendMessage(new TranslationTextComponent("event.msp.hangar_controller.not_found"));
         else {
-            for (BlockPos cornerPos : hangarCorners.getCorners())
-                ((HangarCornerTileEntity) world.getTileEntity(cornerPos)).setAssociatedCorners(hangarCorners);
+            for (BlockPos cornerPos : hangar.getCorners())
+                ((HangarCornerTileEntity) world.getTileEntity(cornerPos)).setAssociatedCorners(hangar);
 
-            final BlockPos[] extremeBlocks = hangarCorners.getExtremeCorners();
+            final BlockPos[] extremeBlocks = hangar.getExtremeCorners();
             final String pos1 = String.format("(%d,%d,%d)", extremeBlocks[0].getX(), extremeBlocks[0].getY(), extremeBlocks[0].getZ());
             final String pos2 = String.format("(%d,%d,%d)", extremeBlocks[1].getX(), extremeBlocks[1].getY(), extremeBlocks[1].getZ());
             player.sendMessage(new TranslationTextComponent("event.msp.hangar_controller.found", pos1, pos2));
