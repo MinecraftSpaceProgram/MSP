@@ -6,12 +6,14 @@
 
   "item.msp.example_item": "Example Item",
   "item.msp.hangar_controller": "Hangar Controller",
+  "item.msp.rocket_assembler": "Rocket Assembler",
 
-  "itemGroup.MSP": "MSP",
+  "itemGroup.msp": "MSP",
 
   "event.msp.hangar_controller.cleared": "Unlinked hangar",
   "event.msp.hangar_controller.not_found": "Could not find hangar...",
   "event.msp.hangar_controller.not_linked": "No hangar linked",
   "event.msp.hangar_controller.found": "Found and assembled hangar between %s and %s",
-  "event.msp.hangar_controller.found_again": "Controller linked to hangar between %s and %s"
+  "event.msp.hangar_controller.found_again": "Controller linked to hangar between %s and %s",
+  "event.msp.hangar_corner.rocket_found": "Rocket found with %d blocks"
 }

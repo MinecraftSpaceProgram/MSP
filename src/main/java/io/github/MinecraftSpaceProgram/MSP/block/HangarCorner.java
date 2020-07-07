@@ -1,13 +1,13 @@
 package io.github.MinecraftSpaceProgram.MSP.block;
 
-import io.github.MinecraftSpaceProgram.MSP.MSP;
 import io.github.MinecraftSpaceProgram.MSP.init.BlockLoader;
 import io.github.MinecraftSpaceProgram.MSP.init.ItemLoader;
 import io.github.MinecraftSpaceProgram.MSP.init.ModTileEntityTypes;
 import io.github.MinecraftSpaceProgram.MSP.item.IHangarController;
 import io.github.MinecraftSpaceProgram.MSP.tileentity.HangarCornerTileEntity;
-import io.github.MinecraftSpaceProgram.MSP.util.HangarBuilder;
 import io.github.MinecraftSpaceProgram.MSP.util.Hangar;
+import io.github.MinecraftSpaceProgram.MSP.util.HangarBuilder;
+import io.github.MinecraftSpaceProgram.MSP.util.Rocket;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -30,6 +30,10 @@ import javax.annotation.Nullable;
 
 public class HangarCorner extends Block {
     public static final IProperty<Boolean> HANGAR_BUILD = BooleanProperty.create("hangar_built");
+
+    public HangarCorner(Properties properties) {
+        super(properties);
+    }
 
     public HangarCorner() {
         super(Properties.create(Material.IRON));
@@ -59,7 +63,7 @@ public class HangarCorner extends Block {
     @Override
     public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         ItemStack itemStack = player.getHeldItem(handIn);
-        if (itemStack.getItem() == ItemLoader.HANGAR_CONTROLLER.get()) {
+        if (ItemLoader.HANGAR_CONTROLLER.get() == itemStack.getItem()) {
             if (player.isSneaking()) {
                 if (!worldIn.isRemote) {
                     findHangar(worldIn, pos, player, itemStack);
@@ -67,7 +71,13 @@ public class HangarCorner extends Block {
                 return ActionResultType.SUCCESS;
             }
         }
-
+        else if (ItemLoader.ROCKET_ASSEMBLER.get() == itemStack.getItem()) {
+            if (player.isSneaking()) {
+                if (!worldIn.isRemote)
+                    assembleRocket(worldIn, pos, player);
+                return ActionResultType.SUCCESS;
+            }
+        }
         return super.onBlockActivated(state, worldIn, pos, player, handIn, hit);
     }
 
@@ -77,7 +87,6 @@ public class HangarCorner extends Block {
             HangarCornerTileEntity hangarCornerTileEntity = (HangarCornerTileEntity) worldIn.getTileEntity(pos);
             Hangar hangar = hangarCornerTileEntity.getAssociatedCorners();
             if (hangar != null) {
-                MSP.LOGGER.debug("Removing " + hangar.toString());
                 for (BlockPos cornerPos : hangar.getCorners()) {
                     if (cornerPos.compareTo(pos) != 0)
                         ((HangarCornerTileEntity) worldIn.getTileEntity(cornerPos)).removeAssociatedCorners();
@@ -100,6 +109,16 @@ public class HangarCorner extends Block {
             final String pos2 = String.format("(%d,%d,%d)", extremeBlocks[1].getX(), extremeBlocks[1].getY(), extremeBlocks[1].getZ());
             player.sendMessage(new TranslationTextComponent("event.msp.hangar_controller.found", pos1, pos2));
             ((IHangarController) itemStack.getItem()).linkHangar(itemStack, pos);
+        }
+    }
+
+    private void assembleRocket(World world, BlockPos pos, PlayerEntity player) {
+        Hangar hangar = ((HangarCornerTileEntity) world.getTileEntity(pos)).getAssociatedCorners();
+        if (hangar == null)
+            player.sendMessage(new TranslationTextComponent("event.msp.hangar_controller.not_found"));
+        else {
+            Rocket rocket = Rocket.createFromHangar(hangar, world);
+            player.sendMessage(new TranslationTextComponent("event.msp.hangar_corner.rocket_found", rocket.getRocketBlocks().size()));
         }
     }
 }

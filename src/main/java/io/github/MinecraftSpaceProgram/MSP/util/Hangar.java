@@ -1,12 +1,8 @@
 package io.github.MinecraftSpaceProgram.MSP.util;
 
 import net.minecraft.util.math.BlockPos;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class Hangar {
-    private static final Logger LOGGER = LogManager.getLogger();
-
     public final BlockPos startingPos;
     public final int x;
     public final int y;
@@ -39,8 +35,6 @@ public class Hangar {
         this.x = Math.abs(x);
         this.y = Math.abs(y);
         this.z = Math.abs(z);
-
-        LOGGER.debug(this.toString());
     }
 
     /**

@@ -24,8 +24,12 @@ import javax.annotation.Nullable;
 public class HangarController extends Item implements IHangarController {
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public HangarController(Properties properties) {
+        super(properties);
+    }
+
     public HangarController() {
-        super(new Properties().group(MSP.ITEM_GROUP));
+        super(new Properties().group(MSP.ITEM_GROUP).maxStackSize(1));
     }
 
     @Override

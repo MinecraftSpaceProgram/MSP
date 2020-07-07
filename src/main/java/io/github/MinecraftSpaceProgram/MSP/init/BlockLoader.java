@@ -1,7 +1,6 @@
 package io.github.MinecraftSpaceProgram.MSP.init;
 
 import io.github.MinecraftSpaceProgram.MSP.MSP;
-
 import io.github.MinecraftSpaceProgram.MSP.block.ExampleBlock;
 import io.github.MinecraftSpaceProgram.MSP.block.ExampleTileEntityBlock;
 import io.github.MinecraftSpaceProgram.MSP.block.HangarCorner;

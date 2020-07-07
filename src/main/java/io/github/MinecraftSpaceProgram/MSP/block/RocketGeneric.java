@@ -6,6 +6,10 @@ import net.minecraft.block.material.Material;
 public class RocketGeneric extends Block {
     public static final boolean isRocketBlock = true;
 
+    public RocketGeneric(Properties properties) {
+        super(properties);
+    }
+
     public RocketGeneric() {
         super(Properties.create(Material.IRON));
     }

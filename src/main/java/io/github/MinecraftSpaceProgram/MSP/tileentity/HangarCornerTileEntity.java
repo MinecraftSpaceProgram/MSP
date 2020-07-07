@@ -50,7 +50,7 @@ public class HangarCornerTileEntity extends TileEntity {
             return;
         CompoundNBT hangar = MSP.getCompound("hangar");
         this.associatedCorners = new Hangar(
-                new BlockPos(hangar.getInt("x"), hangar.getInt("Y"), hangar.getInt("z")),
+                new BlockPos(hangar.getInt("x"), hangar.getInt("y"), hangar.getInt("z")),
                 hangar.getInt("dx"),
                 hangar.getInt("dy"),
                 hangar.getInt("dz")
