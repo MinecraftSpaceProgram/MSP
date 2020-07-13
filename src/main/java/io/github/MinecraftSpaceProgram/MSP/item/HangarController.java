@@ -16,18 +16,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 
 public class HangarController extends Item implements IHangarController {
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    public HangarController(Properties properties) {
-        super(properties);
-    }
-
     public HangarController() {
         super(new Properties().group(MSP.ITEM_GROUP).maxStackSize(1));
     }
@@ -56,17 +48,17 @@ public class HangarController extends Item implements IHangarController {
         int x = c.getInt("x");
         int y = c.getInt("y");
         int z = c.getInt("z");
-        LOGGER.debug(String.format("Trying to find hangar at (%d,%d,%d)", x, y, z));
+        MSP.LOGGER.debug(String.format("Trying to find hangar at (%d,%d,%d)", x, y, z));
 
         TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
         if (tileEntity instanceof HangarCornerTileEntity) {
             Hangar hangar = ((HangarCornerTileEntity) tileEntity).getAssociatedCorners();
             if (hangar == null) {
-                LOGGER.debug("Could not find hangar");
+                MSP.LOGGER.debug("Could not find hangar");
                 MSPtag.putBoolean("linked", false);
             }
             else {
-                LOGGER.debug("Found " + hangar.toString());
+                MSP.LOGGER.debug("Found " + hangar.toString());
                 MSPtag.putBoolean("linked", true);
             }
             tag.put("MSP", MSPtag);
@@ -81,9 +73,9 @@ public class HangarController extends Item implements IHangarController {
     @Override
     public void unlinkHangar(final Hand hand, final PlayerEntity player) {
         if (this.getHangar(player.getHeldItem(hand), player.world) == null)
-            player.sendMessage(new TranslationTextComponent("event.msp.hangar_controller.not_linked"));
+            player.sendMessage(new TranslationTextComponent("event.msp.hangar_controller.not_linked"), player.getUniqueID());
         else {
-            player.sendMessage(new TranslationTextComponent("event.msp.hangar_controller.cleared"));
+            player.sendMessage(new TranslationTextComponent("event.msp.hangar_controller.cleared"), player.getUniqueID());
             ItemStack itemStack = player.getHeldItem(hand);
             CompoundNBT tag = itemStack.getOrCreateTag();
             CompoundNBT MSPtag = tag.getCompound("MSP");
@@ -104,13 +96,13 @@ public class HangarController extends Item implements IHangarController {
             else {
                 Hangar hangar = this.getHangar(context.getItem(), context.getPlayer().world);
                 if (hangar == null) {
-                    context.getPlayer().sendMessage(new TranslationTextComponent("event.msp.hangar_controller.not_linked"));
+                    context.getPlayer().sendMessage(new TranslationTextComponent("event.msp.hangar_controller.not_linked"), context.getPlayer().getUniqueID());
                 }
                 else {
                     final BlockPos[] extremeBlocks = hangar.getExtremeCorners();
                     final String pos1 = String.format("(%d,%d,%d)", extremeBlocks[0].getX(), extremeBlocks[0].getY(), extremeBlocks[0].getZ());
                     final String pos2 = String.format("(%d,%d,%d)", extremeBlocks[1].getX(), extremeBlocks[1].getY(), extremeBlocks[1].getZ());
-                    context.getPlayer().sendMessage(new TranslationTextComponent("event.msp.hangar_controller.found_again", pos1, pos2));
+                    context.getPlayer().sendMessage(new TranslationTextComponent("event.msp.hangar_controller.found_again", pos1, pos2), context.getPlayer().getUniqueID());
                 }
             }
         }
@@ -127,13 +119,13 @@ public class HangarController extends Item implements IHangarController {
             else {
                 Hangar hangar = this.getHangar(player.getHeldItem(hand), world);
                 if (hangar == null) {
-                    player.sendMessage(new TranslationTextComponent("event.msp.hangar_controller.not_linked"));
+                    player.sendMessage(new TranslationTextComponent("event.msp.hangar_controller.not_linked"), player.getUniqueID());
                 }
                 else {
                     final BlockPos[] extremeBlocks = hangar.getExtremeCorners();
                     final String pos1 = String.format("(%d,%d,%d)", extremeBlocks[0].getX(), extremeBlocks[0].getY(), extremeBlocks[0].getZ());
                     final String pos2 = String.format("(%d,%d,%d)", extremeBlocks[1].getX(), extremeBlocks[1].getY(), extremeBlocks[1].getZ());
-                    player.sendMessage(new TranslationTextComponent("event.msp.hangar_controller.found_again", pos1, pos2));
+                    player.sendMessage(new TranslationTextComponent("event.msp.hangar_controller.found_again", pos1, pos2), player.getUniqueID());
                 }
             }
         }

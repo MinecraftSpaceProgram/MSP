@@ -3,6 +3,7 @@ package io.github.MinecraftSpaceProgram.MSP.tileentity;
 import io.github.MinecraftSpaceProgram.MSP.block.HangarCorner;
 import io.github.MinecraftSpaceProgram.MSP.init.ModTileEntityTypes;
 import io.github.MinecraftSpaceProgram.MSP.util.Hangar;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -40,8 +41,8 @@ public class HangarCornerTileEntity extends TileEntity {
     }
 
     @Override
-    public void read(CompoundNBT compound) {
-        super.read(compound);
+    public void func_230337_a_(BlockState p_230337_1_, CompoundNBT compound) {
+        super.func_230337_a_(p_230337_1_, compound);
 
         if (!compound.contains("MSP"))
             return;

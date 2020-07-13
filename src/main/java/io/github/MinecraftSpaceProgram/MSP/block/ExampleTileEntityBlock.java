@@ -8,10 +8,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockReader;
 
 public class ExampleTileEntityBlock extends Block {
-    public ExampleTileEntityBlock(Properties properties) {
-        super(properties);
-    }
-
     public ExampleTileEntityBlock() {
         super(Properties.create(Material.IRON));
     }

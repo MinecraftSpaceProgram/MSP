@@ -2,17 +2,18 @@ package io.github.MinecraftSpaceProgram.MSP;
 
 import io.github.MinecraftSpaceProgram.MSP.init.BlockLoader;
 import io.github.MinecraftSpaceProgram.MSP.init.ItemLoader;
-import io.github.MinecraftSpaceProgram.MSP.init.BlockLoader;
-import io.github.MinecraftSpaceProgram.MSP.init.ItemLoader;
 import io.github.MinecraftSpaceProgram.MSP.init.ModTileEntityTypes;
+import io.github.MinecraftSpaceProgram.MSP.item.HangarController;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -62,4 +63,9 @@ public final class MSP {
         LOGGER.debug(MARKER, "Registered Block Items");
     }
 
+    @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
+    public static void registerColorHandlers(ColorHandlerEvent.Item event) {
+        event.getItemColors().register(HangarController::getItemColor, ItemLoader.HANGAR_CONTROLLER.get());
+    }
 }
