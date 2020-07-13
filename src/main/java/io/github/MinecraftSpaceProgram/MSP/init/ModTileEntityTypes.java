@@ -9,9 +9,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class ModTileEntityTypes {
 
-    public static final DeferredRegister<TileEntityType<?>> TILE_ENTITY_TYPES = new DeferredRegister<>(
-            ForgeRegistries.TILE_ENTITIES, MSP.MOD_ID
-    );
+    public static final DeferredRegister<TileEntityType<?>> TILE_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MSP.MOD_ID);
 
     public static final RegistryObject<TileEntityType<ExampleTileEntity>> EXAMPLE_TILEENTITY = TILE_ENTITY_TYPES.register(
             "example_tileentity", () -> TileEntityType.Builder

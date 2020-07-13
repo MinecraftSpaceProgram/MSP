@@ -28,7 +28,7 @@ public class ExampleItem extends Item {
                 ((ExampleTileEntity) tileEntity).setActivated();
             }
             else {
-                player.sendMessage(new StringTextComponent("Block " + (((ExampleTileEntity) tileEntity).getActivated()? "activated": "disabled")));
+                player.sendMessage(new StringTextComponent("Block " + (((ExampleTileEntity) tileEntity).getActivated()? "activated": "disabled")), player.getUniqueID());
             }
         }
 

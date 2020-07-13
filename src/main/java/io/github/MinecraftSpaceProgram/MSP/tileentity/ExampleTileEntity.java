@@ -1,53 +1,46 @@
 package io.github.MinecraftSpaceProgram.MSP.tileentity;
 
+import io.github.MinecraftSpaceProgram.MSP.MSP;
 import io.github.MinecraftSpaceProgram.MSP.init.ModTileEntityTypes;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.LockableLootTileEntity;
+import net.minecraft.block.BlockState;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 
-public class ExampleTileEntity extends LockableLootTileEntity {
+public class ExampleTileEntity extends TileEntity {
     private boolean activated;
 
     public ExampleTileEntity(TileEntityType<?> typeIn) {
         super(typeIn);
-        this.activated = false;
+        CompoundNBT tileData = this.getTileData();
+        if (tileData.contains("activated"))
+            this.activated = tileData.getBoolean("activated");
+        else
+            this.activated = false;
+    }
+
+    @Override
+    public CompoundNBT write(CompoundNBT compound) {
+        compound.putBoolean("activated", this.activated);
+        return super.write(compound);
+    }
+
+    @Override
+    public void func_230337_a_(BlockState p_230337_1_, CompoundNBT compoundNBT) {
+        super.func_230337_a_(p_230337_1_, compoundNBT);
+        if (compoundNBT.contains("activated"))
+            this.activated = compoundNBT.getBoolean("activated");
     }
 
     public ExampleTileEntity() {
         this(ModTileEntityTypes.EXAMPLE_TILEENTITY.get());
     }
 
-    @Override
-    protected NonNullList<ItemStack> getItems() {
-        return null;
-    }
-
-    @Override
-    protected void setItems(NonNullList<ItemStack> itemsIn) {
-
-    }
-
-    @Override
-    protected ITextComponent getDefaultName() {
-        return null;
-    }
-
-    @Override
-    protected Container createMenu(int id, PlayerInventory player) {
-        return null;
-    }
-
-    @Override
-    public int getSizeInventory() {
-        return 0;
-    }
-
     public void setActivated() {
         this.activated = !this.activated;
+        this.markDirty();
     }
 
     public boolean getActivated() {
