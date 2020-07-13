@@ -11,9 +11,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class ItemLoader {
 
-    public static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS,
-            MSP.MOD_ID
-    );
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MSP.MOD_ID);
 
     public static final RegistryObject<Item> EXAMPLE_ITEM = ITEMS.register(
             "example_item", ExampleItem::new
