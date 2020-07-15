@@ -19,6 +19,7 @@ import net.minecraft.world.World;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class HangarControllerItem extends Item implements IHangarController {
@@ -92,7 +93,10 @@ public class HangarControllerItem extends Item implements IHangarController {
     }
 
     @Override
+    @Nonnull
     public ActionResultType onItemUse(ItemUseContext context) {
+        if (context.getPlayer() == null) return super.onItemUse(context);
+
         if (!context.getPlayer().world.isRemote) {
             if (context.getPlayer().isSneaking()) {
                 this.unlinkHangar(context.getHand(), context.getPlayer());
@@ -110,12 +114,12 @@ public class HangarControllerItem extends Item implements IHangarController {
                 }
             }
         }
-
         return ActionResultType.SUCCESS;
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
+    @Nonnull
+    public ActionResult<ItemStack> onItemRightClick(World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
         if (!world.isRemote) {
             if (player.isSneaking()) {
                 this.unlinkHangar(hand, player);

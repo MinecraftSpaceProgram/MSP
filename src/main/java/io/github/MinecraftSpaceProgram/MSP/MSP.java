@@ -37,12 +37,9 @@ public final class MSP {
         }
     };
 
-    public static MSP instance;
 
 
     public MSP() {
-        instance = this;
-
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         ItemLoader.ITEMS.register(modEventBus);
         BlockLoader.BLOCKS.register(modEventBus);

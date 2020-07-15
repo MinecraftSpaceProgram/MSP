@@ -63,7 +63,6 @@ public final class HangarBuilder {
      * Find corner along axis Z, up to horizontal_limit (256) blocks away
      */
     private int FindAlongZ() {
-        int z = startingBlockPos.getZ();
         for (int dz = 1; dz < horizontal_limit; dz++) {
             if (world.getBlockState(new BlockPos(startingBlockPos.getX(), startingBlockPos.getY(), startingBlockPos.getZ() + dz)).getBlock() == BlockLoader.HANGAR_CORNER.get())
                 return dz;

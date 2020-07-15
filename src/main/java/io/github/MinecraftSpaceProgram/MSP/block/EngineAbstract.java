@@ -2,7 +2,6 @@ package io.github.MinecraftSpaceProgram.MSP.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
@@ -16,12 +15,6 @@ public abstract class EngineAbstract extends Block {
 
     public EngineAbstract(Properties properties) {
         super(properties);
-        this.setDefaultState(this.getStateContainer().getBaseState().with(FACING, Direction.DOWN));
-    }
-
-    public EngineAbstract() {
-        super(Properties.create(Material.IRON));
-        this.setDefaultState(this.getStateContainer().getBaseState().with(FACING, Direction.DOWN));
     }
 
     @Override

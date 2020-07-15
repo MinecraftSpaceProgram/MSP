@@ -10,10 +10,10 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.server.SSpawnObjectPacket;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class RocketEntity extends Entity {
     private static final DataParameter<Integer> DIMENSION_ID = EntityDataManager.createKey(RocketEntity.class, DataSerializers.VARINT);
-    private int FUEL_CAPACITY;
-    private int MAX_THRUST;
 
     public RocketEntity(net.minecraft.entity.EntityType entityEntityType, World world) {
         super(entityEntityType, world);
@@ -36,8 +36,8 @@ public class RocketEntity extends Entity {
     }
 
     private void getRocketInformation() {
-        this.FUEL_CAPACITY = 0;
-        this.MAX_THRUST = 0;
+        int FUEL_CAPACITY = 0;
+        int MAX_THRUST = 0;
     }
 
 
@@ -54,6 +54,7 @@ public class RocketEntity extends Entity {
         compound.putInt("dimension_id", this.dataManager.get(DIMENSION_ID));
     }
 
+    @Nonnull
     public IPacket<?> createSpawnPacket() {
         return new SSpawnObjectPacket(this);
     }

@@ -6,6 +6,10 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class ExampleTileEntity extends TileEntity {
     private boolean activated;
 
@@ -23,6 +27,7 @@ public class ExampleTileEntity extends TileEntity {
     }
 
     @Override
+    @Nonnull
     public CompoundNBT write(CompoundNBT compound) {
         compound.putBoolean("activated", this.activated);
         return super.write(compound);

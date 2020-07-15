@@ -9,6 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class HangarCornerTileEntity extends TileEntity {
@@ -23,7 +24,8 @@ public class HangarCornerTileEntity extends TileEntity {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
+    @Nonnull
+    public CompoundNBT write(@Nonnull CompoundNBT compound) {
         if (this.associatedCorners != null) {
             CompoundNBT c = new CompoundNBT();
             c.putInt("x", associatedCorners.startingPos.getX());
@@ -41,7 +43,7 @@ public class HangarCornerTileEntity extends TileEntity {
     }
 
     @Override
-    public void func_230337_a_(BlockState p_230337_1_, CompoundNBT compound) {
+    public void func_230337_a_(@Nonnull BlockState p_230337_1_, @Nonnull CompoundNBT compound) {
         super.func_230337_a_(p_230337_1_, compound);
 
         if (!compound.contains("MSP"))

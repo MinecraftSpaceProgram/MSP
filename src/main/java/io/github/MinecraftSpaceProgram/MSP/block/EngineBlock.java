@@ -13,6 +13,11 @@ import net.minecraft.world.IBlockReader;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@SuppressWarnings("deprecation")
+@ParametersAreNonnullByDefault
 public class EngineBlock extends EngineAbstract {
     private static final VoxelShape TAILPIPE = VoxelShapes.or(
             Block.makeCuboidShape(1.0D,0.0D,1.0D,15.0D,3.0D,15.0D),
@@ -45,6 +50,7 @@ public class EngineBlock extends EngineAbstract {
         this.setDefaultState(this.getStateContainer().getBaseState().with(FACING, Direction.DOWN));
     }
 
+    @SuppressWarnings({"SameReturnValue", "unused"})
     public boolean isNormalCube(IBlockReader reader, BlockPos pos) {
         return false;
     }
@@ -59,6 +65,7 @@ public class EngineBlock extends EngineAbstract {
     }
 
     @Override
+    @Nonnull
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         switch (state.get(EngineAbstract.FACING)) {
             case DOWN:

@@ -26,8 +26,12 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@SuppressWarnings("deprecation")
+@ParametersAreNonnullByDefault
 public class HangarCornerBlock extends Block {
     public static final Property<Boolean> HANGAR_BUILD = BooleanProperty.create("hangar_built");
 
@@ -57,6 +61,7 @@ public class HangarCornerBlock extends Block {
     }
 
     @Override
+    @Nonnull
     public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         ItemStack itemStack = player.getHeldItem(handIn);
         if (ItemLoader.HANGAR_CONTROLLER.get() == itemStack.getItem()) {
@@ -81,11 +86,13 @@ public class HangarCornerBlock extends Block {
     public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.getBlock() != BlockLoader.HANGAR_CORNER.get()) {
             HangarCornerTileEntity hangarCornerTileEntity = (HangarCornerTileEntity) worldIn.getTileEntity(pos);
+            if (hangarCornerTileEntity == null) return;
             Hangar hangar = hangarCornerTileEntity.getAssociatedCorners();
             if (hangar != null) {
                 for (BlockPos cornerPos : hangar.getCorners()) {
-                    if (cornerPos.compareTo(pos) != 0)
-                        ((HangarCornerTileEntity) worldIn.getTileEntity(cornerPos)).removeAssociatedCorners();
+                    HangarCornerTileEntity cornerTileEntity = (HangarCornerTileEntity) worldIn.getTileEntity(cornerPos);
+                    if (cornerPos.compareTo(pos) != 0 && cornerTileEntity != null)
+                        cornerTileEntity.removeAssociatedCorners();
                 }
             }
         }
@@ -97,8 +104,11 @@ public class HangarCornerBlock extends Block {
         if (hangar == null)
             player.sendMessage(new TranslationTextComponent("event.msp.hangar_controller.not_found"), player.getUniqueID());
         else {
-            for (BlockPos cornerPos : hangar.getCorners())
-                ((HangarCornerTileEntity) world.getTileEntity(cornerPos)).setAssociatedCorners(hangar);
+            for (BlockPos cornerPos : hangar.getCorners()) {
+                HangarCornerTileEntity hangarCornerTileEntity = (HangarCornerTileEntity) world.getTileEntity(cornerPos);
+                if (hangarCornerTileEntity != null)
+                    hangarCornerTileEntity.setAssociatedCorners(hangar);
+            }
 
             final BlockPos[] extremeBlocks = hangar.getExtremeCorners();
             final String pos1 = String.format("(%d,%d,%d)", extremeBlocks[0].getX(), extremeBlocks[0].getY(), extremeBlocks[0].getZ());
@@ -109,7 +119,10 @@ public class HangarCornerBlock extends Block {
     }
 
     private void assembleRocket(World world, BlockPos pos, PlayerEntity player) {
-        Hangar hangar = ((HangarCornerTileEntity) world.getTileEntity(pos)).getAssociatedCorners();
+        HangarCornerTileEntity hangarCornerTileEntity = (HangarCornerTileEntity) world.getTileEntity(pos);
+        if (hangarCornerTileEntity == null)
+            return;
+        Hangar hangar = hangarCornerTileEntity.getAssociatedCorners();
         if (hangar == null)
             player.sendMessage(new TranslationTextComponent("event.msp.hangar_controller.not_found"), player.getUniqueID());
         else {
