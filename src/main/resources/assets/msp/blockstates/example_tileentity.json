@@ -1,0 +1,5 @@
+{
+  "variants":{
+    "": {"model": "msp:block/example_tileentity"}
+  }
+}

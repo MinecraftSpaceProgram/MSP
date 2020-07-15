@@ -5,4 +5,6 @@
   "block.msp.flight_computer": "Flight Computer",
 
   "container.flight_computer": "FLIIIGHT"
+  "block.msp.example_block": "Example Block",
+  "block.msp.example_tileentity": "Example TileEntity"
 }
