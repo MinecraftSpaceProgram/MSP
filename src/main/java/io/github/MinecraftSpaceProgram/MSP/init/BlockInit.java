@@ -3,7 +3,6 @@ package io.github.MinecraftSpaceProgram.MSP.init;
 import io.github.MinecraftSpaceProgram.MSP.Main;
 import io.github.MinecraftSpaceProgram.MSP.block.ExampleBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
@@ -11,8 +10,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ObjectHolder;
 
-@ObjectHolder(Main.MODID)
-@Mod.EventBusSubscriber(modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@ObjectHolder(Main.MOD_ID)
+@Mod.EventBusSubscriber(modid = Main.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class BlockInit {
 
     /**
@@ -28,7 +27,9 @@ public class BlockInit {
      */
     @SubscribeEvent
     public static void registerBlocks(final RegistryEvent.Register<Block> event) {
-        event.getRegistry().register(example_block);
+        event.getRegistry().registerAll(
+                example_block
+        );
     }
 
     /**
@@ -39,7 +40,9 @@ public class BlockInit {
      */
     @SubscribeEvent
     public static void registerItemBlocks(final RegistryEvent.Register<Item> event) {
-        event.getRegistry().register(new BlockItem(example_block, new Item.Properties()).setRegistryName(example_block.getRegistryName()));
+        event.getRegistry().registerAll(
+                new BlockItem(example_block, new Item.Properties()).setRegistryName(example_block.getRegistryName())
+        );
     }
 
 }
