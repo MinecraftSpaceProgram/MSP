@@ -12,10 +12,9 @@ public final class PhysicsUtil {
 
     public static double E(int power) {
         if (power >= 0) {
-            double a = (double) pow(10, power);
-            return a;
+            return pow(10, power);
         }
-        return 1.0 / (double) pow(10, -power);
+        return 1.0 / pow(10, -power);
     }
 
     /**
@@ -32,7 +31,7 @@ public final class PhysicsUtil {
     /**
      * Approximates a solution to Kepler's equation
      * M = E - e sin(E)
-     * using Newton's method, that is: x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}
+     * using Newton's method, that is: x_{n+1} = x_n - f(x_n)/f'(x_n)
      *
      * @param M mean anomaly
      * @param e eccentricity

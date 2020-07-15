@@ -6,7 +6,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import org.apache.commons.lang3.tuple.Pair;
 
-@Mod.EventBusSubscriber(modid = Main.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = MSP.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MSPConfig {
 
     public static final ClientConfig CLIENT;
@@ -35,13 +35,13 @@ public class MSPConfig {
         public ClientConfig(ForgeConfigSpec.Builder builder) {
             aBoolean = builder
                     .comment("aBoolean usage description")
-                    .translation(Main.MOD_ID + ".config." + "aBoolean")
+                    .translation(MSP.MOD_ID + ".config." + "aBoolean")
                     .define("aBoolean", false);
 
             builder.push("category");
             anInt = builder
                     .comment("anInt usage description")
-                    .translation(Main.MOD_ID + ".config." + "anInt")
+                    .translation(MSP.MOD_ID + ".config." + "anInt")
                     .defineInRange("anInt", 10, 0, 100);
             builder.pop();
         }

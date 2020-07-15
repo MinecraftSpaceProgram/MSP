@@ -1,6 +1,6 @@
 package io.github.MinecraftSpaceProgram.MSP.tileentity;
 
-import io.github.MinecraftSpaceProgram.MSP.Main;
+import io.github.MinecraftSpaceProgram.MSP.MSP;
 import io.github.MinecraftSpaceProgram.MSP.container.GUIBlockContainer;
 import io.github.MinecraftSpaceProgram.MSP.init.ModTileEntityTypes;
 import net.minecraft.entity.player.PlayerEntity;
@@ -12,6 +12,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class GUIBlockTileEntity extends TileEntity implements INamedContainerProvider {
@@ -25,12 +26,13 @@ public class GUIBlockTileEntity extends TileEntity implements INamedContainerPro
 
     @Nullable
     @Override
-    public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity playerEntity) {
-        Main.LOGGER.debug("creating a menu");
+    public Container createMenu(int windowId,@Nonnull PlayerInventory playerInventory,@Nonnull PlayerEntity playerEntity) {
+        MSP.LOGGER.debug("creating a menu");
         return new GUIBlockContainer(windowId, playerInventory, this);
     }
 
     @Override
+    @Nonnull
     public ITextComponent getDisplayName() {
         return new StringTextComponent("gui");
     }

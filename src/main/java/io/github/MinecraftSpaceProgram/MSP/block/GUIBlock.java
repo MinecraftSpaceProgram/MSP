@@ -1,6 +1,6 @@
 package io.github.MinecraftSpaceProgram.MSP.block;
 
-import io.github.MinecraftSpaceProgram.MSP.Main;
+import io.github.MinecraftSpaceProgram.MSP.MSP;
 import io.github.MinecraftSpaceProgram.MSP.init.ModTileEntityTypes;
 import io.github.MinecraftSpaceProgram.MSP.tileentity.GUIBlockTileEntity;
 import net.minecraft.block.Block;
@@ -16,6 +16,8 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
+
+import javax.annotation.Nonnull;
 
 public class GUIBlock extends Block{
     public GUIBlock() {
@@ -34,9 +36,10 @@ public class GUIBlock extends Block{
 
     @SuppressWarnings("deprecation")
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    @Nonnull
+    public ActionResultType onBlockActivated(@Nonnull BlockState state, World worldIn,@Nonnull BlockPos pos,@Nonnull PlayerEntity player,@Nonnull Hand handIn,@Nonnull BlockRayTraceResult hit) {
         if(!worldIn.isRemote) {
-            Main.LOGGER.debug("clicked on gui block");
+            MSP.LOGGER.debug("clicked on gui block");
             TileEntity tile = worldIn.getTileEntity(pos);
             if(tile instanceof GUIBlockTileEntity) {
                 //player.openContainer(new GUIBlockContainer());

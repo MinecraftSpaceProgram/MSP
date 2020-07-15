@@ -1,6 +1,6 @@
 package io.github.MinecraftSpaceProgram.MSP.physics.orbital;
 
-import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.util.math.vector.Quaternion;
 
 import static io.github.MinecraftSpaceProgram.MSP.physics.orbital.PhysicsUtil.E;
 import static java.lang.Math.toRadians;

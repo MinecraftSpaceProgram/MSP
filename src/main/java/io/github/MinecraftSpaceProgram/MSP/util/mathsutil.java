@@ -1,5 +1,7 @@
 package io.github.MinecraftSpaceProgram.MSP.util;
 
+import java.util.Arrays;
+
 public abstract class mathsutil {
 
     /**
@@ -8,7 +10,7 @@ public abstract class mathsutil {
      */
     public static double[][] multiplyMatrix(double[][] A, double[][] B){
         if(A[0].length != B.length){
-            throw new IllegalStateException("Cannot multiply matrices of non compatible sizes. Attempted: " + A + " * " + B);
+            throw new IllegalStateException("Cannot multiply matrices of non compatible sizes. Attempted: " + Arrays.deepToString(A) + " * " + Arrays.deepToString(B));
         }
         double[][] res = new double[A.length][B[0].length];
         for(int i = 0; i < A.length; i ++){

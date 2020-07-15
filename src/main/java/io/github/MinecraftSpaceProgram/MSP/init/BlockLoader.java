@@ -3,6 +3,7 @@ package io.github.MinecraftSpaceProgram.MSP.init;
 import io.github.MinecraftSpaceProgram.MSP.MSP;
 import io.github.MinecraftSpaceProgram.MSP.block.ExampleBlock;
 import io.github.MinecraftSpaceProgram.MSP.block.ExampleTileEntityBlock;
+import io.github.MinecraftSpaceProgram.MSP.block.GUIBlock;
 import net.minecraft.block.Block;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -14,6 +15,11 @@ public class BlockLoader {
     public static final RegistryObject<Block> EXAMPLE_BLOCK = BLOCKS.register(
             "example_block", ExampleBlock::new
     );
+
+    public static final RegistryObject<Block> GUI_BLOCK = BLOCKS.register(
+            "gui_block", GUIBlock::new
+    );
+
     public static final RegistryObject<Block> EXAMPLE_TILEENTITYBLOCK = BLOCKS.register(
             "example_tileentity", ExampleTileEntityBlock::new
     );
