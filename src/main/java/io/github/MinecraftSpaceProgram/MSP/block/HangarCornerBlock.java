@@ -28,10 +28,10 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-public class HangarCorner extends Block {
+public class HangarCornerBlock extends Block {
     public static final Property<Boolean> HANGAR_BUILD = BooleanProperty.create("hangar_built");
 
-    public HangarCorner() {
+    public HangarCornerBlock() {
         super(Properties.create(Material.IRON));
     }
 
@@ -114,7 +114,7 @@ public class HangarCorner extends Block {
             player.sendMessage(new TranslationTextComponent("event.msp.hangar_controller.not_found"), player.getUniqueID());
         else {
             Rocket rocket = Rocket.createFromHangar(hangar, world);
-            player.sendMessage(new TranslationTextComponent("event.msp.hangar_corner.rocket_found", rocket.getRocketBlocks().size()), player.getUniqueID());
+            player.sendMessage(new TranslationTextComponent("event.msp.hangar_corner.rocket_found", rocket.getRocketBlocksPos().size()), player.getUniqueID());
         }
     }
 }

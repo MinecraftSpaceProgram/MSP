@@ -16,11 +16,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 
 import javax.annotation.Nullable;
 
-public class HangarController extends Item implements IHangarController {
-    public HangarController() {
+public class HangarControllerItem extends Item implements IHangarController {
+    private static final Marker MARKER = MarkerManager.getMarker("MSP-HangarBuilding");
+
+    public HangarControllerItem() {
         super(new Properties().group(MSP.ITEM_GROUP).maxStackSize(1));
     }
 
@@ -48,17 +52,17 @@ public class HangarController extends Item implements IHangarController {
         int x = c.getInt("x");
         int y = c.getInt("y");
         int z = c.getInt("z");
-        MSP.LOGGER.debug(String.format("Trying to find hangar at (%d,%d,%d)", x, y, z));
+        MSP.LOGGER.debug(MARKER, String.format("Trying to find hangar at (%d,%d,%d)", x, y, z));
 
         TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
         if (tileEntity instanceof HangarCornerTileEntity) {
             Hangar hangar = ((HangarCornerTileEntity) tileEntity).getAssociatedCorners();
             if (hangar == null) {
-                MSP.LOGGER.debug("Could not find hangar");
+                MSP.LOGGER.debug(MARKER, "Could not find hangar");
                 MSPtag.putBoolean("linked", false);
             }
             else {
-                MSP.LOGGER.debug("Found " + hangar.toString());
+                MSP.LOGGER.debug(MARKER, "Found " + hangar.toString());
                 MSPtag.putBoolean("linked", true);
             }
             tag.put("MSP", MSPtag);

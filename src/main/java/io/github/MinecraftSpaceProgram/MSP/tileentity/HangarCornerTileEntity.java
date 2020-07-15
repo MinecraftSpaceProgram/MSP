@@ -1,6 +1,6 @@
 package io.github.MinecraftSpaceProgram.MSP.tileentity;
 
-import io.github.MinecraftSpaceProgram.MSP.block.HangarCorner;
+import io.github.MinecraftSpaceProgram.MSP.block.HangarCornerBlock;
 import io.github.MinecraftSpaceProgram.MSP.init.ModTileEntityTypes;
 import io.github.MinecraftSpaceProgram.MSP.util.Hangar;
 import net.minecraft.block.BlockState;
@@ -73,7 +73,7 @@ public class HangarCornerTileEntity extends TileEntity {
             this.world.setBlockState(
                     pos,
                     this.getBlockState().getBlock().getDefaultState().with(
-                            HangarCorner.HANGAR_BUILD,
+                            HangarCornerBlock.HANGAR_BUILD,
                             true
                     )
             );
@@ -96,7 +96,7 @@ public class HangarCornerTileEntity extends TileEntity {
             this.world.setBlockState(
                     pos,
                     this.getBlockState().getBlock().getDefaultState().with(
-                            HangarCorner.HANGAR_BUILD,
+                            HangarCornerBlock.HANGAR_BUILD,
                             false
                     )
             );

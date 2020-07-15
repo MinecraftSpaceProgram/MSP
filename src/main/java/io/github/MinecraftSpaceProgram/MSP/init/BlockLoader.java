@@ -1,10 +1,7 @@
 package io.github.MinecraftSpaceProgram.MSP.init;
 
 import io.github.MinecraftSpaceProgram.MSP.MSP;
-import io.github.MinecraftSpaceProgram.MSP.block.ExampleBlock;
-import io.github.MinecraftSpaceProgram.MSP.block.ExampleTileEntityBlock;
-import io.github.MinecraftSpaceProgram.MSP.block.HangarCorner;
-import io.github.MinecraftSpaceProgram.MSP.block.RocketGeneric;
+import io.github.MinecraftSpaceProgram.MSP.block.*;
 import net.minecraft.block.Block;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -20,9 +17,18 @@ public class BlockLoader {
             "example_tileentity", ExampleTileEntityBlock::new
     );
     public static final RegistryObject<Block> HANGAR_CORNER = BLOCKS.register(
-            "hangar_corner", HangarCorner::new
+            "hangar_corner", HangarCornerBlock::new
     );
     public static final RegistryObject<Block> ROCKET_GENERIC = BLOCKS.register(
-            "rocket_generic", RocketGeneric::new
+            "rocket_generic", RocketGenericBlock::new
+    );
+    public static final RegistryObject<Block> FLIGHT_CONTROLLER = BLOCKS.register(
+            "flight_controller", FlightControllerBlock::new
+    );
+    public static final RegistryObject<Block> ROCKET_ENGINE = BLOCKS.register(
+            "engine", EngineBlock::new
+    );
+    public static final RegistryObject<Block> TANK = BLOCKS.register(
+            "tank", ExampleBlock::new
     );
 }

@@ -3,7 +3,7 @@ package io.github.MinecraftSpaceProgram.MSP;
 import io.github.MinecraftSpaceProgram.MSP.init.BlockLoader;
 import io.github.MinecraftSpaceProgram.MSP.init.ItemLoader;
 import io.github.MinecraftSpaceProgram.MSP.init.ModTileEntityTypes;
-import io.github.MinecraftSpaceProgram.MSP.item.HangarController;
+import io.github.MinecraftSpaceProgram.MSP.item.HangarControllerItem;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
 @Mod(MSP.MOD_ID)
-@Mod.EventBusSubscriber(modid= MSP.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = MSP.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class MSP {
     public static final String MOD_ID ="msp";
 
@@ -47,6 +47,7 @@ public final class MSP {
         ItemLoader.ITEMS.register(modEventBus);
         BlockLoader.BLOCKS.register(modEventBus);
         ModTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
+        // EntityTypes.ENTITY_TYPES.register(modEventBus);
     }
 
     @SubscribeEvent
@@ -66,6 +67,6 @@ public final class MSP {
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
     public static void registerColorHandlers(ColorHandlerEvent.Item event) {
-        event.getItemColors().register(HangarController::getItemColor, ItemLoader.HANGAR_CONTROLLER.get());
+        event.getItemColors().register(HangarControllerItem::getItemColor, ItemLoader.HANGAR_CONTROLLER.get());
     }
 }

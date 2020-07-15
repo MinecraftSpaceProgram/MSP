@@ -13,11 +13,13 @@ public class ModTileEntityTypes {
     public static final DeferredRegister<TileEntityType<?>> TILE_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MSP.MOD_ID);
 
     public static final RegistryObject<TileEntityType<ExampleTileEntity>> EXAMPLE_TILEENTITY = TILE_ENTITY_TYPES.register(
-            "example_tileentity", () -> TileEntityType.Builder
+            "example_tileentity",
+            () -> TileEntityType.Builder
                     .create(ExampleTileEntity::new, BlockLoader.EXAMPLE_TILEENTITYBLOCK.get()).build(null)
     );
     public static final RegistryObject<TileEntityType<HangarCornerTileEntity>> HANGAR_CORNER_TILEENTITY = TILE_ENTITY_TYPES.register(
-            "hangar_corner", () -> TileEntityType.Builder
+            "hangar_corner",
+            () -> TileEntityType.Builder
                     .create(HangarCornerTileEntity::new, BlockLoader.EXAMPLE_TILEENTITYBLOCK.get()).build(null)
     );
 }

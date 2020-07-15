@@ -6,7 +6,7 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-public class HangarBuilder {
+public final class HangarBuilder {
     protected final World world;
     protected final BlockPos startingBlockPos;
     private Hangar hangar;
@@ -74,7 +74,7 @@ public class HangarBuilder {
     }
 
     /**
-     * Having 5 corners, check the remaining 3
+     * Having 4 corners, check the remaining 4
      */
     private boolean CheckXYZ(final int x, final int y, final int z) {
         boolean xy = world.getBlockState(new BlockPos(startingBlockPos.getX() + x, startingBlockPos.getY() + y, startingBlockPos.getZ())).getBlock() == BlockLoader.HANGAR_CORNER.get();

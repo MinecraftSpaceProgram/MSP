@@ -2,7 +2,7 @@ package io.github.MinecraftSpaceProgram.MSP.util;
 
 import net.minecraft.util.math.BlockPos;
 
-public class Hangar {
+public final class Hangar {
     public final BlockPos startingPos;
     public final int x;
     public final int y;
@@ -23,8 +23,11 @@ public class Hangar {
     }
 
     /**
-     * Records all corners of a hangar
-     * x, y, z are set positive
+     *
+     * @param startingPos first corner position
+     * @param x x axis offset
+     * @param y y axis offset
+     * @param z z axis offset
      */
     public Hangar(final BlockPos startingPos, final int x, final int y , final int z) {
         this.startingPos = new BlockPos(
@@ -38,7 +41,7 @@ public class Hangar {
     }
 
     /**
-     * Return all 8 corners of a hangar
+     * @return BlockPos[] All 8 corners of the hangar
      */
     public BlockPos[] getCorners() {
         return new BlockPos[]{
@@ -54,7 +57,7 @@ public class Hangar {
     }
 
     /**
-     * Return the two most extreme corners
+     * @return BlockPos[] The two most extreme hangar corners
      */
     public BlockPos[] getExtremeCorners() {
         return new BlockPos[]{

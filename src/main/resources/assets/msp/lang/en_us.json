@@ -3,6 +3,7 @@
   "block.msp.example_tileentity": "Example TileEntity",
   "block.msp.rocket_generic": "Rocket Block",
   "block.msp.hangar_corner": "Hangar Corner",
+  "block.msp.flight_controller": "Flight Controller",
 
   "item.msp.example_item": "Example Item",
   "item.msp.hangar_controller": "Hangar Controller",

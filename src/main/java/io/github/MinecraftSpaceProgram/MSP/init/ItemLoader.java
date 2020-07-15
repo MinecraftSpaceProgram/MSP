@@ -2,8 +2,8 @@ package io.github.MinecraftSpaceProgram.MSP.init;
 
 import io.github.MinecraftSpaceProgram.MSP.MSP;
 import io.github.MinecraftSpaceProgram.MSP.item.ExampleItem;
-import io.github.MinecraftSpaceProgram.MSP.item.HangarController;
-import io.github.MinecraftSpaceProgram.MSP.item.RocketAssembler;
+import io.github.MinecraftSpaceProgram.MSP.item.HangarControllerItem;
+import io.github.MinecraftSpaceProgram.MSP.item.RocketAssemblerItem;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -17,9 +17,9 @@ public class ItemLoader {
             "example_item", ExampleItem::new
     );
     public static final RegistryObject<Item> HANGAR_CONTROLLER = ITEMS.register(
-            "hangar_controller", HangarController::new
+            "hangar_controller", HangarControllerItem::new
     );
     public static final RegistryObject<Item> ROCKET_ASSEMBLER = ITEMS.register(
-            "rocket_assembler", RocketAssembler::new
+            "rocket_assembler", RocketAssemblerItem::new
     );
 }

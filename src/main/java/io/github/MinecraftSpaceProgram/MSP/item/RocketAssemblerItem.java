@@ -7,8 +7,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
 
-public class RocketAssembler extends Item {
-    public RocketAssembler() {
+public class RocketAssemblerItem extends Item {
+    public RocketAssemblerItem() {
         super(new Properties().group(MSP.ITEM_GROUP).maxStackSize(1));
     }
 

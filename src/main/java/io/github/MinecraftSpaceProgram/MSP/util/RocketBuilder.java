@@ -1,12 +1,17 @@
 package io.github.MinecraftSpaceProgram.MSP.util;
 
-import io.github.MinecraftSpaceProgram.MSP.MSP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 
 import java.util.ArrayList;
 
-public class RocketBuilder {
+public final class RocketBuilder {
+    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Marker MARKER = MarkerManager.getMarker("MSP-RocketBuilding");
     protected final Hangar hangar;
     protected final World world;
     
@@ -105,8 +110,8 @@ public class RocketBuilder {
         }
 
         if (outside.isEmpty()) {
-            MSP.LOGGER.debug("No air was found on the borders of the hangar, the rocket must be taking all the space...");
-            MSP.LOGGER.debug("For info, the hangar was " + this.hangar.toString());
+            LOGGER.debug(MARKER, "No air was found on the borders of the hangar, the rocket must be taking all the space...");
+            LOGGER.debug(MARKER, "For info, the hangar was " + this.hangar.toString());
             return new Rocket(hangarInsideBlocks, hangarBorderBlocks, this.world);
         }
 
