@@ -11,6 +11,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import java.util.Arrays;
 import java.util.List;
 
+import static io.github.MinecraftSpaceProgram.MSP.physics.orbital.PhysicsUtil.AU;
 import static io.github.MinecraftSpaceProgram.MSP.physics.orbital.PhysicsUtil.zoomPlanet;
 import static io.github.MinecraftSpaceProgram.MSP.util.RenderUtils.drawCube;
 import static java.lang.Math.*;
@@ -78,6 +79,10 @@ public class Planet extends OrbitingBody{
         this.position = calculatePosition(time);
     }
 
+    /**
+     * Calculates the position of a planet in cartesian space at a given time
+     * @return Vector3d corresponding to the x, y, z position of a planet in AU
+     */
     private Vector3d calculatePosition(int time){
         // calculates the mean anomaly
         this.M = this.n * time;
@@ -96,7 +101,7 @@ public class Planet extends OrbitingBody{
         double yh = r * (sin(N) * cos(v + w) + cos(N) * sin(v + w) * cos(i));
         double zh = r * sin(v + w) * sin(i);
 
-        return new Vector3d(xh, yh, zh);
+        return new Vector3d(xh / AU, yh / AU, zh / AU);
     }
 
     @Override

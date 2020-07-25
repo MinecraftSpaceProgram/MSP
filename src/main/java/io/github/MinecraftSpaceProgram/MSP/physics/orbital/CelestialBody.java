@@ -14,8 +14,10 @@ public abstract class CelestialBody {
 
     public String name;
 
+    // the mas of the celestial body, unit kg
     public double mass;
 
+    // the position of the celestial body in a=cartesian space, unit AU
     public Vector3d position;
 
     public Vector3d speed;

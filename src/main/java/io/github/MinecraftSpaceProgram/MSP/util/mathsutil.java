@@ -1,5 +1,9 @@
 package io.github.MinecraftSpaceProgram.MSP.util;
 
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
+
 import java.util.Arrays;
 
 public abstract class mathsutil {
@@ -56,6 +60,14 @@ public abstract class mathsutil {
             state[i] = multiplyMatrix(new double[][]{state[i - 1]}, tequation)[0];
         }
         return state;
+    }
+
+    public static Vector3d rotateVector3d(Quaternion q, Vector3d v){
+        Vector3f vv = new Vector3f((float) v.x,(float) v.y,(float) v.z);
+        Quaternion qq = q.copy();
+        qq.normalize();
+        vv.transform(qq);
+        return new Vector3d(vv.getX(), vv.getY(), vv.getZ());
     }
 
 }

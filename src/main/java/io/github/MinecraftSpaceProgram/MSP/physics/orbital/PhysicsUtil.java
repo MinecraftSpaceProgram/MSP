@@ -86,7 +86,7 @@ public final class PhysicsUtil {
      */
     public static double zoomPlanet(double size, double zoom) {
         double lambda = sigmoid((90 - zoom) / 5);
-        return lambda * size + 2 * (1 - lambda) * log(size) * E(9);
+        return lambda * size / AU + 2 * (1 - lambda) * log(size) * E(-2);
     }
 
 }

@@ -59,9 +59,9 @@ public final class RenderUtils {
         Matrix4f matrixPos = matrixStack.getLast().getMatrix();
 
         // draws the crosshair
-        drawLine(matrixPos, vertexBuilderLines, Color.RED, origin, origin.add(new Vector3d(0.5, 0, 0)));
-        drawLine(matrixPos, vertexBuilderLines, Color.GREEN, origin, origin.add(new Vector3d(0, 0.5, 0)));
-        drawLine(matrixPos, vertexBuilderLines, Color.BLUE, origin, origin.add(new Vector3d(0, 0, 0.5)));
+        drawLine(matrixPos, vertexBuilderLines, Color.RED, origin, origin.add(new Vector3d(10, 0, 0)));
+        drawLine(matrixPos, vertexBuilderLines, Color.GREEN, origin, origin.add(new Vector3d(0, 10, 0)));
+        drawLine(matrixPos, vertexBuilderLines, Color.BLUE, origin, origin.add(new Vector3d(0, 0, 10)));
     }
 
     /**
@@ -189,13 +189,19 @@ public final class RenderUtils {
                 1000.0D,
                 100000.0D);
 
-        //RenderSystem.multMatrix(
-        //        Matrix4f.perspective(
-        //                85.0D,
-        //                (float)mc.getMainWindow().getFramebufferWidth() / (float)mc.getMainWindow().getFramebufferHeight(),
-        //                0.05F,
-        //                10.0F)
-        //);
+        /*RenderSystem.multMatrix(
+                Matrix4f.perspective(
+                        70.0D,
+                        (float) minecraft.getMainWindow().getFramebufferWidth() / (float) minecraft.getMainWindow().getFramebufferHeight(),
+                        1000.0F,
+                        100000.0F));
+        RenderSystem.multMatrix(
+                Matrix4f.perspective(
+                        85.0D,
+                        (float)mc.getMainWindow().getFramebufferWidth() / (float)mc.getMainWindow().getFramebufferHeight(),
+                        0.05F,
+                        10.0F)
+        );*/
 
         // render system parameters
         RenderSystem.matrixMode(GL_MODELVIEW);
