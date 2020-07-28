@@ -1,4 +1,4 @@
-package io.github.MinecraftSpaceProgram.MSP.util;
+package io.github.MinecraftSpaceProgram.MSP.rocket;
 
 import io.github.MinecraftSpaceProgram.MSP.MSP;
 import io.github.MinecraftSpaceProgram.MSP.block.EngineBlock;
@@ -69,11 +69,11 @@ public final class Rocket {
 
         while (!toVisit.isEmpty()) {
             BlockPos currentPos = toVisit.get(0);
-            for (int x : new int[]{-1,1}) {
+            for (int delta : new int[]{-1,1}) {
                 for (BlockPos nextPos : new BlockPos[]{
-                        new BlockPos(currentPos.getX() + x, currentPos.getY(), currentPos.getZ()),
-                        new BlockPos(currentPos.getX(), currentPos.getY() + x, currentPos.getZ()),
-                        new BlockPos(currentPos.getX(), currentPos.getY(), currentPos.getZ() + x)
+                        currentPos.add(delta,0,0),
+                        currentPos.add(0,delta,0),
+                        currentPos.add(0,0,delta)
                 }) {
                     if (this.rocketBlocksPos.contains(nextPos) && !this.world.isAirBlock(nextPos) && notVisited.contains(nextPos))
                         toVisit.add(nextPos);
@@ -127,17 +127,17 @@ public final class Rocket {
                 if (this.borderBlocksPos.contains(blockPos)) {
                     switch (blockState.get(EngineBlock.FACING)) {
                         case UP:
-                            if (this.rocketBlocksPos.contains(new BlockPos(blockPos.getX(), blockPos.getY() - 1, blockPos.getZ()))) return false;
+                            if (rocketBlocksPos.contains(blockPos.add(0,-1,0))) return false;
                         case DOWN:
-                            if (this.rocketBlocksPos.contains(new BlockPos(blockPos.getX(), blockPos.getY() + 1, blockPos.getZ()))) return false;
+                            if (rocketBlocksPos.contains(blockPos.add(0,1,0))) return false;
                         case NORTH:
-                            if (this.rocketBlocksPos.contains(new BlockPos(blockPos.getX(), blockPos.getY(), blockPos.getZ() + 1))) return false;
+                            if (rocketBlocksPos.contains(blockPos.add(0,0,1))) return false;
                         case SOUTH:
-                            if (this.rocketBlocksPos.contains(new BlockPos(blockPos.getX(), blockPos.getY(), blockPos.getZ() - 1))) return false;
+                            if (rocketBlocksPos.contains(blockPos.add(0,0,-1))) return false;
                         case EAST:
-                            if (this.rocketBlocksPos.contains(new BlockPos(blockPos.getX() - 1, blockPos.getY(), blockPos.getZ()))) return false;
+                            if (rocketBlocksPos.contains(blockPos.add(-1,0,0))) return false;
                         case WEST:
-                            if (this.rocketBlocksPos.contains(new BlockPos(blockPos.getX() + 1, blockPos.getY(), blockPos.getZ()))) return false;
+                            if (rocketBlocksPos.contains(blockPos.add(1,0,0))) return false;
                     }
                 }
                 else {

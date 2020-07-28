@@ -2,7 +2,6 @@ package io.github.MinecraftSpaceProgram.MSP.init;
 
 import io.github.MinecraftSpaceProgram.MSP.MSP;
 import io.github.MinecraftSpaceProgram.MSP.tileentity.ExampleTileEntity;
-import io.github.MinecraftSpaceProgram.MSP.tileentity.HangarCornerTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -17,10 +16,5 @@ public class ModTileEntityTypes {
             "example_tileentity",
             () -> TileEntityType.Builder
                     .create(ExampleTileEntity::new, BlockLoader.EXAMPLE_TILEENTITYBLOCK.get()).build(null)
-    );
-    public static final RegistryObject<TileEntityType<HangarCornerTileEntity>> HANGAR_CORNER_TILEENTITY = TILE_ENTITY_TYPES.register(
-            "hangar_corner",
-            () -> TileEntityType.Builder
-                    .create(HangarCornerTileEntity::new, BlockLoader.EXAMPLE_TILEENTITYBLOCK.get()).build(null)
     );
 }

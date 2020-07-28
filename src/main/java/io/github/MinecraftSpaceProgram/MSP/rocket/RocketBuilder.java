@@ -1,4 +1,4 @@
-package io.github.MinecraftSpaceProgram.MSP.util;
+package io.github.MinecraftSpaceProgram.MSP.rocket;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -21,47 +21,47 @@ public final class RocketBuilder {
     }
     
     private boolean isInHangar(BlockPos blockPos) {
-        int dx = blockPos.getX() - this.hangar.startingPos.getX();
-        int dy = blockPos.getY() - this.hangar.startingPos.getY();
-        int dz = blockPos.getZ() - this.hangar.startingPos.getZ();
-        return dx > 0 && dx < this.hangar.x && dy > 0 && dy < this.hangar.y && dz > 0 && dz < this.hangar.z;
+        int dx = blockPos.getX() - hangar.startingPos.getX();
+        int dy = blockPos.getY() - hangar.startingPos.getY();
+        int dz = blockPos.getZ() - hangar.startingPos.getZ();
+        return dx > 0 && dx < hangar.x && dy > 0 && dy < hangar.y && dz > 0 && dz < hangar.z;
     }
     
     private boolean isAir(BlockPos blockPos) {
-        return this.world.isAirBlock(blockPos);
+        return world.isAirBlock(blockPos);
     }
     
     private ArrayList<BlockPos> getHangarBorderBlocks() {
         final ArrayList<BlockPos> borderBlocks = new ArrayList<>();
 
-        for (int x = 1; x < this.hangar.x; x++) {
-            for (int y = 1; y < this.hangar.y; y++) {
-                borderBlocks.add(new BlockPos(this.hangar.startingPos.getX() + x, this.hangar.startingPos.getY() + y, this.hangar.startingPos.getZ() + 1));
+        for (int x = 1; x < hangar.x; ++x) {
+            for (int y = 1; y < hangar.y; ++y) {
+                borderBlocks.add(hangar.startingPos.add(x,y,1));
             }
         }
-        for (int x = 2; x < this.hangar.x - 1; x++) {
-            for (int z = 2; z < this.hangar.z - 1; z++) {
-                borderBlocks.add(new BlockPos(this.hangar.startingPos.getX() + x, this.hangar.startingPos.getY() + 1, this.hangar.startingPos.getZ() + z));
+        for (int x = 2; x < hangar.x - 1; ++x) {
+            for (int z = 2; z < hangar.z - 1; ++z) {
+                borderBlocks.add(hangar.startingPos.add(x,1,z));
             }
         }
-        for (int z = 2; z < this.hangar.z - 1; z++) {
-            for (int y = 1; y < this.hangar.y; y++) {
-                borderBlocks.add(new BlockPos(this.hangar.startingPos.getX() + 1, this.hangar.startingPos.getY() + y, this.hangar.startingPos.getZ() + z));
+        for (int z = 2; z < hangar.z - 1; ++z) {
+            for (int y = 1; y < hangar.y; ++y) {
+                borderBlocks.add(hangar.startingPos.add(1,y,z));
             }
         }
-        for (int x = 1; x < this.hangar.x; x++) {
-            for (int y = 1; y < this.hangar.y; y++) {
-                borderBlocks.add(new BlockPos(this.hangar.startingPos.getX() + x, this.hangar.startingPos.getY() + y, this.hangar.startingPos.getZ() + this.hangar.z - 1));
+        for (int x = 1; x < hangar.x; ++x) {
+            for (int y = 1; y < hangar.y; ++y) {
+                borderBlocks.add(hangar.startingPos.add(x,y,hangar.z - 1));
             }
         }
-        for (int x = 2; x < this.hangar.x - 1; x++) {
-            for (int z = 2; z < this.hangar.z - 1; z++) {
-                borderBlocks.add(new BlockPos(this.hangar.startingPos.getX() + x, this.hangar.startingPos.getY() + this.hangar.y - 1, this.hangar.startingPos.getZ() + z));
+        for (int x = 2; x < hangar.x - 1; ++x) {
+            for (int z = 2; z < hangar.z - 1; ++z) {
+                borderBlocks.add(hangar.startingPos.add(x,hangar.y - 1,z));
             }
         }
-        for (int z = 2; z < this.hangar.z - 1; z++) {
-            for (int y = 1; y < this.hangar.y; y++) {
-                borderBlocks.add(new BlockPos(this.hangar.startingPos.getX() + this.hangar.x - 1, this.hangar.startingPos.getY() + y, this.hangar.startingPos.getZ() + z));
+        for (int z = 2; z < hangar.z - 1; ++z) {
+            for (int y = 1; y < hangar.y; ++y) {
+                borderBlocks.add(hangar.startingPos.add(hangar.x - 1,y,z));
             }
         }
 
@@ -70,11 +70,11 @@ public final class RocketBuilder {
 
     private ArrayList<BlockPos> getHangarInsideBlocks() {
         ArrayList<BlockPos> insideBlocks = new ArrayList<>();
-        for (int x = 1; x < this.hangar.x; x++) {
-            for (int y = 1; y < this.hangar.y; y++) {
-                for (int z = 1; z < this.hangar.z; z++) {
+        for (int x = 1; x < hangar.x; ++x) {
+            for (int y = 1; y < hangar.y; ++y) {
+                for (int z = 1; z < hangar.z; ++z) {
                     insideBlocks.add(
-                            new BlockPos(this.hangar.startingPos.getX() + x, this.hangar.startingPos.getY() + y, this.hangar.startingPos.getZ() + z)
+                            hangar.startingPos.add(x,y,z)
                     );
                 }
             }
@@ -100,7 +100,7 @@ public final class RocketBuilder {
         }
 
         for (BlockPos borderBlockPos : hangarBorderBlocks) {
-            if (this.world.isAirBlock(borderBlockPos)) {
+            if (world.isAirBlock(borderBlockPos)) {
                 outside.add(borderBlockPos);
                 toVisit.add(borderBlockPos);
                 airNotOutside.remove(borderBlockPos);
@@ -111,8 +111,8 @@ public final class RocketBuilder {
 
         if (outside.isEmpty()) {
             LOGGER.debug(MARKER, "No air was found on the borders of the hangar, the rocket must be taking all the space...");
-            LOGGER.debug(MARKER, "For info, the hangar was " + this.hangar.toString());
-            return new Rocket(hangarInsideBlocks, hangarBorderBlocks, this.world);
+            LOGGER.debug(MARKER, "For info, the hangar was " + hangar.toString());
+            return new Rocket(hangarInsideBlocks, hangarBorderBlocks, world);
         }
 
         while (!toVisit.isEmpty()) {
@@ -139,6 +139,6 @@ public final class RocketBuilder {
         }
 
         rocket.addAll(airNotOutside);
-        return new Rocket(rocket, rocketBorder, this.world);
+        return new Rocket(rocket, rocketBorder, world);
     }
 }

@@ -1,4 +1,4 @@
-package io.github.MinecraftSpaceProgram.MSP.util;
+package io.github.MinecraftSpaceProgram.MSP.rocket;
 
 import net.minecraft.util.math.BlockPos;
 
@@ -45,14 +45,14 @@ public final class Hangar {
      */
     public BlockPos[] getCorners() {
         return new BlockPos[]{
-                this.startingPos,
-                new BlockPos(this.startingPos.getX() + this.x, this.startingPos.getY(), this.startingPos.getZ()),
-                new BlockPos(this.startingPos.getX(), this.startingPos.getY() + this.y, this.startingPos.getZ()),
-                new BlockPos(this.startingPos.getX(), this.startingPos.getY(), this.startingPos.getZ() + this.z),
-                new BlockPos(this.startingPos.getX() + this.x, this.startingPos.getY() + this.y, this.startingPos.getZ()),
-                new BlockPos(this.startingPos.getX() + this.x, this.startingPos.getY(), this.startingPos.getZ() + this.z),
-                new BlockPos(this.startingPos.getX(), this.startingPos.getY() + this.y, this.startingPos.getZ() + this.z),
-                new BlockPos(this.startingPos.getX() + this.x, this.startingPos.getY() + this.y, this.startingPos.getZ() + this.z)
+                startingPos,
+                startingPos.add(x,0,0),
+                startingPos.add(0,y,0),
+                startingPos.add(0,0,z),
+                startingPos.add(x,y,0),
+                startingPos.add(x,0,z),
+                startingPos.add(0,y,z),
+                startingPos.add(x,y,z)
         };
     }
 
@@ -62,7 +62,7 @@ public final class Hangar {
     public BlockPos[] getExtremeCorners() {
         return new BlockPos[]{
                 startingPos,
-                new BlockPos(startingPos.getX() + this.x, startingPos.getY() + this.y, startingPos.getZ() + this.z)
+                startingPos.add(x,y,z)
         };
     }
 }

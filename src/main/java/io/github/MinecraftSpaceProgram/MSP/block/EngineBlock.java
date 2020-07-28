@@ -50,11 +50,6 @@ public class EngineBlock extends EngineAbstract {
         this.setDefaultState(this.getStateContainer().getBaseState().with(FACING, Direction.DOWN));
     }
 
-    @SuppressWarnings({"SameReturnValue", "unused"})
-    public boolean isNormalCube(IBlockReader reader, BlockPos pos) {
-        return false;
-    }
-
     @OnlyIn(Dist.CLIENT)
     public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos) {
         return 1.0F;

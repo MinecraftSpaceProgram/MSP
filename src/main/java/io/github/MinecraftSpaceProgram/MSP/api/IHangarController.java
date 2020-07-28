@@ -1,6 +1,6 @@
-package io.github.MinecraftSpaceProgram.MSP.item;
+package io.github.MinecraftSpaceProgram.MSP.api;
 
-import io.github.MinecraftSpaceProgram.MSP.util.Hangar;
+import io.github.MinecraftSpaceProgram.MSP.rocket.Hangar;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;

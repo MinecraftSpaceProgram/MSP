@@ -9,7 +9,7 @@ import net.minecraft.world.IBlockReader;
 
 public class ExampleTileEntityBlock extends Block {
     public ExampleTileEntityBlock() {
-        super(Properties.create(Material.IRON));
+        super(Properties.create(Material.ROCK));
     }
 
     @Override

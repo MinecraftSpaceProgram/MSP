@@ -1,0 +1,12 @@
+{
+    "parent": "block/cube",
+    "textures": {
+        "up": "msp:block/launchpad_base2bis",
+        "north": "msp:block/launchpad_base",
+        "down": "msp:block/launchpad_base",
+        "south": "msp:block/launchpad_base",
+        "west": "msp:block/launchpad_base1",
+        "east": "msp:block/launchpad_base1",
+        "particle":"msp:block/launchpad_base"
+    }
+}
