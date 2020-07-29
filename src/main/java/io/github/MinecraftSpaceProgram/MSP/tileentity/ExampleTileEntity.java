@@ -1,6 +1,6 @@
 package io.github.MinecraftSpaceProgram.MSP.tileentity;
 
-import io.github.MinecraftSpaceProgram.MSP.init.ModTileEntityTypes;
+import io.github.MinecraftSpaceProgram.MSP.init.MSPTileEntityTypes;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -23,7 +23,7 @@ public class ExampleTileEntity extends TileEntity {
     }
 
     public ExampleTileEntity() {
-        this(ModTileEntityTypes.EXAMPLE_TILEENTITY.get());
+        this(MSPTileEntityTypes.EXAMPLE_TILEENTITY.get());
     }
 
     @Override

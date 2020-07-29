@@ -1,6 +1,6 @@
 package io.github.MinecraftSpaceProgram.MSP.entity;
 
-import io.github.MinecraftSpaceProgram.MSP.init.EntityTypes;
+import io.github.MinecraftSpaceProgram.MSP.init.MSPEntityTypes;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
@@ -25,7 +25,7 @@ public class RocketEntity extends Entity {
      * @param dimensionId Dimension linked to the rocket
      */
     public RocketEntity(World worldIn, double x, double y, double z, int dimensionId) {
-        super(EntityTypes.ROCKET_ENTITY_TYPE.get(), worldIn);
+        super(MSPEntityTypes.ROCKET_ENTITY_TYPE.get(), worldIn);
         this.setPosition(x, y, z);
         this.prevPosX = x;
         this.prevPosY = y;

@@ -1,6 +1,0 @@
-{
-  "variants":{
-    "hangar_built=false": {"model":  "msp:block/hangar_corner"},
-    "hangar_built=true": {"model":  "msp:block/hangar_corner_built"}
-  }
-}

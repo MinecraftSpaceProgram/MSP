@@ -21,29 +21,21 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class EngineBlock extends EngineAbstract {
     private static final VoxelShape TAILPIPE = VoxelShapes.or(
             Block.makeCuboidShape(1.0D,0.0D,1.0D,15.0D,3.0D,15.0D),
-            VoxelShapes.or(
-                    Block.makeCuboidShape(2.0D,3.0D,2.0D,14.0D,6.0D,14.0D),
-                    VoxelShapes.or(
-                            Block.makeCuboidShape(3.0D,6.0D,3.0D,13.0D,9.0D,13.0D),
-                            Block.makeCuboidShape(4.0D,9.0D,4.0D,12.0D,12.0D,12.0D)
-                    )
-            )
+            Block.makeCuboidShape(2.0D,3.0D,2.0D,14.0D,6.0D,14.0D),
+            Block.makeCuboidShape(3.0D,6.0D,3.0D,13.0D,9.0D,13.0D),
+            Block.makeCuboidShape(4.0D,9.0D,4.0D,12.0D,12.0D,12.0D)
     );
     private static final VoxelShape EXHAUST = VoxelShapes.or(
             Block.makeCuboidShape(0.0D,0.0D,5.0D,1.0D,4.0D,7.0D),
-            VoxelShapes.or(
-                    Block.makeCuboidShape(1.0D,3.0D,5.0D,2.0D,7.0D,7.0D),
-                    VoxelShapes.or(
-                            Block.makeCuboidShape(2.0D,6.0D,5.0D,3.0D,10.0D,7.0D),
-                            Block.makeCuboidShape(3.0D,9.0D,5.0D,4.0D,12.0D,7.0D)
-                    )
-            )
+            Block.makeCuboidShape(1.0D,3.0D,5.0D,2.0D,7.0D,7.0D),
+            Block.makeCuboidShape(2.0D,6.0D,5.0D,3.0D,10.0D,7.0D),
+            Block.makeCuboidShape(3.0D,9.0D,5.0D,4.0D,12.0D,7.0D)
     );
     private static final VoxelShape TOP = VoxelShapes.or(
             Block.makeCuboidShape(3.0D,12.0D,3.0D,13.0D,13.0D,13.0D),
             Block.makeCuboidShape(2.0D,13.0D,2.0D,14.0D,16.0D,14.0D)
     );
-    private static final VoxelShape VOXEL_SHAPE = VoxelShapes.or(TOP, VoxelShapes.or(EXHAUST, TAILPIPE));
+    private static final VoxelShape VOXEL_SHAPE = VoxelShapes.or(TOP, EXHAUST, TAILPIPE);
 
     public EngineBlock() {
         super(Properties.create(Material.GLASS).notSolid());

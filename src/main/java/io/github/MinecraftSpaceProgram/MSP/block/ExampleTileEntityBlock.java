@@ -1,6 +1,6 @@
 package io.github.MinecraftSpaceProgram.MSP.block;
 
-import io.github.MinecraftSpaceProgram.MSP.init.ModTileEntityTypes;
+import io.github.MinecraftSpaceProgram.MSP.init.MSPTileEntityTypes;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -19,6 +19,6 @@ public class ExampleTileEntityBlock extends Block {
 
     @Override
     public TileEntity createTileEntity(BlockState blockState, IBlockReader world) {
-        return ModTileEntityTypes.EXAMPLE_TILEENTITY.get().create();
+        return MSPTileEntityTypes.EXAMPLE_TILEENTITY.get().create();
     }
 }

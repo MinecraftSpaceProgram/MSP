@@ -1,8 +1,8 @@
 package io.github.MinecraftSpaceProgram.MSP;
 
-import io.github.MinecraftSpaceProgram.MSP.init.BlockLoader;
-import io.github.MinecraftSpaceProgram.MSP.init.ItemLoader;
-import io.github.MinecraftSpaceProgram.MSP.init.ModTileEntityTypes;
+import io.github.MinecraftSpaceProgram.MSP.init.MSPBlocks;
+import io.github.MinecraftSpaceProgram.MSP.init.MSPItems;
+import io.github.MinecraftSpaceProgram.MSP.init.MSPTileEntityTypes;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -29,7 +29,7 @@ public final class MSP {
 
     public static final ItemGroup ITEM_GROUP = new ItemGroup(MOD_ID) {
         public ItemStack createIcon() {
-            return new ItemStack(ItemLoader.EXAMPLE_ITEM.get());
+            return new ItemStack(MSPItems.EXAMPLE_ITEM.get());
         }
     };
 
@@ -37,9 +37,9 @@ public final class MSP {
 
     public MSP() {
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        ItemLoader.ITEMS.register(modEventBus);
-        BlockLoader.BLOCKS.register(modEventBus);
-        ModTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
+        MSPItems.ITEMS.register(modEventBus);
+        MSPBlocks.BLOCKS.register(modEventBus);
+        MSPTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
         // EntityTypes.ENTITY_TYPES.register(modEventBus);
     }
 
@@ -47,7 +47,7 @@ public final class MSP {
     public static void onRegisterItems(final RegistryEvent.Register<Item> event){
         final IForgeRegistry<Item> registry = event.getRegistry();
 
-        BlockLoader.BLOCKS.getEntries().stream().map(RegistryObject::get).forEach(block -> {
+        MSPBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get).forEach(block -> {
             final Item.Properties properties = new Item.Properties().group(ITEM_GROUP);
             final BlockItem blockItem = new BlockItem(block, properties);
             //noinspection ConstantConditions

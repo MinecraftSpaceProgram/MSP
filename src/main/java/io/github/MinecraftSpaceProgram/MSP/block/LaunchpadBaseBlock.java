@@ -1,6 +1,6 @@
 package io.github.MinecraftSpaceProgram.MSP.block;
 
-import io.github.MinecraftSpaceProgram.MSP.init.BlockLoader;
+import io.github.MinecraftSpaceProgram.MSP.init.MSPBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -36,16 +36,16 @@ public class LaunchpadBaseBlock extends Block {
         final BlockPos pos = context.getPos();
         return getDefaultState().with(
                 NORTH,
-                world.getBlockState(pos.north()).getBlock() == BlockLoader.LAUNCHPAD_BASE.get()
+                world.getBlockState(pos.north()).getBlock() == MSPBlocks.LAUNCHPAD_BASE.get()
         ).with(
                 SOUTH,
-                world.getBlockState(pos.south()).getBlock() == BlockLoader.LAUNCHPAD_BASE.get()
+                world.getBlockState(pos.south()).getBlock() == MSPBlocks.LAUNCHPAD_BASE.get()
         ).with(
                 WEST,
-                world.getBlockState(pos.west()).getBlock() == BlockLoader.LAUNCHPAD_BASE.get()
+                world.getBlockState(pos.west()).getBlock() == MSPBlocks.LAUNCHPAD_BASE.get()
         ).with(
                 EAST,
-                world.getBlockState(pos.east()).getBlock() == BlockLoader.LAUNCHPAD_BASE.get()
+                world.getBlockState(pos.east()).getBlock() == MSPBlocks.LAUNCHPAD_BASE.get()
         );
     }
 
@@ -65,7 +65,7 @@ public class LaunchpadBaseBlock extends Block {
                 facingProperty = EAST;
 
             if (facingProperty != null)
-                return stateIn.with(facingProperty, facingState.getBlock() == BlockLoader.LAUNCHPAD_BASE.get());
+                return stateIn.with(facingProperty, facingState.getBlock() == MSPBlocks.LAUNCHPAD_BASE.get());
         }
         return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
     }

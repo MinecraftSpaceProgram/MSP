@@ -2,7 +2,7 @@ package io.github.MinecraftSpaceProgram.MSP.rocket;
 
 import io.github.MinecraftSpaceProgram.MSP.MSP;
 import io.github.MinecraftSpaceProgram.MSP.block.EngineBlock;
-import io.github.MinecraftSpaceProgram.MSP.init.BlockLoader;
+import io.github.MinecraftSpaceProgram.MSP.init.MSPBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ResourceLocation;
@@ -12,12 +12,14 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public final class Rocket {
     private static final Marker MARKER = MarkerManager.getMarker("MSP-RocketBuilding");
 
-    private final ArrayList<BlockPos> rocketBlocksPos;
-    private final ArrayList<BlockPos> borderBlocksPos;
+    private final List<BlockPos> rocketBlocksPos;
+    private final List<BlockPos> borderBlocksPos;
     private final World world;
 
     private BlockPos baseBlockPos;
@@ -28,9 +30,13 @@ public final class Rocket {
     public final boolean HAS_TANKS;
     public final boolean ENGINES_FACING_OUTWARDS;
 
-    public Rocket(ArrayList<BlockPos> rocketBlocksPos, ArrayList<BlockPos> borderBlocksPos, World world) {
-        this.borderBlocksPos = borderBlocksPos;
-        this.rocketBlocksPos = rocketBlocksPos;
+    public Rocket(BlockPos[] rocketBlocksPos, BlockPos[] borderBlocksPos, World world) {
+        this(Arrays.asList(borderBlocksPos), Arrays.asList(rocketBlocksPos), world);
+    }
+
+    public Rocket(List<BlockPos> rocketBlocksPos, List<BlockPos> borderBlocksPos, World world) {
+        this.borderBlocksPos = rocketBlocksPos;
+        this.rocketBlocksPos = borderBlocksPos;
         this.world = world;
 
         MSP.LOGGER.info(MARKER, "Starting rocket building rules enforcement");
@@ -44,13 +50,13 @@ public final class Rocket {
         MSP.LOGGER.info(MARKER, this.toString());
     }
 
-    public static Rocket createFromHangar(Hangar hangar, World world) {
-        return new RocketBuilder(hangar, world).findRocket();
+    public static Rocket createFromLaunchpad(Launchpad launchpad, World world) {
+        return new RocketBuilder(launchpad, world).findRocket();
     }
 
     private void findBaseBlock() {
         for (BlockPos blockPos : this.rocketBlocksPos) {
-            if (this.world.getBlockState(blockPos).getBlock() == BlockLoader.FLIGHT_CONTROLLER.get()) {
+            if (this.world.getBlockState(blockPos).getBlock() == MSPBlocks.FLIGHT_CONTROLLER.get()) {
                 this.baseBlockPos = blockPos;
                 return;
             }
@@ -59,8 +65,7 @@ public final class Rocket {
 
     private boolean enforceNoFlyingBlocks() {
         ArrayList<BlockPos> toVisit = new ArrayList<>();
-        //noinspection unchecked
-        ArrayList<BlockPos> notVisited = (ArrayList<BlockPos>) this.rocketBlocksPos.clone();
+        ArrayList<BlockPos> notVisited = new ArrayList<>(rocketBlocksPos);
 
         if (this.baseBlockPos == null)
             toVisit.add(this.rocketBlocksPos.get(0));
@@ -158,9 +163,5 @@ public final class Rocket {
                 ", HAS_TANKS=" + HAS_TANKS +
                 ", ENGINES_FACING_OUTWARDS=" + ENGINES_FACING_OUTWARDS +
                 '}';
-    }
-
-    public ArrayList<BlockPos> getRocketBlocksPos() {
-        return this.rocketBlocksPos;
     }
 }

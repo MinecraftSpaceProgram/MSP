@@ -1,6 +1,6 @@
 package io.github.MinecraftSpaceProgram.MSP.tileentity;
 
-import io.github.MinecraftSpaceProgram.MSP.init.ModTileEntityTypes;
+import io.github.MinecraftSpaceProgram.MSP.init.MSPTileEntityTypes;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 
@@ -10,6 +10,6 @@ public class LaunchpadControllerTileEntity extends TileEntity {
     }
 
     public LaunchpadControllerTileEntity() {
-        this(ModTileEntityTypes.LAUNCHPAD_CONTROLLER.get());
+        this(MSPTileEntityTypes.LAUNCHPAD_CONTROLLER.get());
     }
 }
