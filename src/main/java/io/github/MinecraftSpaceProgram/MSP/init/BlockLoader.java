@@ -37,4 +37,7 @@ public class BlockLoader {
     public static final RegistryObject<Block> LAUNCHPAD_CRANE = BLOCKS.register(
             "launchpad_crane", () -> new Block(Properties.create(Material.GLASS).notSolid())
     );
+    public static final RegistryObject<Block> LAUNCHPAD_CONTROLLER = BLOCKS.register(
+            "launchpad_controller", () -> new LaunchpadControllerBlock(Properties.create(Material.IRON))
+    );
 }

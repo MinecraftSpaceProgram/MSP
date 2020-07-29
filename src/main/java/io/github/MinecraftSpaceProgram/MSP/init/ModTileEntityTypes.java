@@ -17,4 +17,9 @@ public class ModTileEntityTypes {
             () -> TileEntityType.Builder
                     .create(ExampleTileEntity::new, BlockLoader.EXAMPLE_TILEENTITYBLOCK.get()).build(null)
     );
+    public static final RegistryObject<TileEntityType<ExampleTileEntity>> LAUNCHPAD_CONTROLLER = TILE_ENTITY_TYPES.register(
+            "launchpad_controller",
+            () -> TileEntityType.Builder
+                    .create(ExampleTileEntity::new, BlockLoader.LAUNCHPAD_CONTROLLER.get()).build(null)
+    );
 }

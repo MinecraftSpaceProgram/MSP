@@ -7,6 +7,7 @@
   "block.msp.launchpad_crane": "Launchpad Crane",
   "block.msp.engine": "Basic Engine",
   "block.msp.tank": "Basic Tank",
+  "block.msp.launchpad_controller": "Launchpad Controller",
 
   "item.msp.example_item": "Example Item",
 
