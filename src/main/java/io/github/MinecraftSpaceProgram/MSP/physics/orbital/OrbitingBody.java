@@ -8,11 +8,6 @@ import static java.lang.Math.PI;
 public abstract class OrbitingBody extends CelestialBody{
 
     /**
-     * The body around which is being orbited ^^
-     */
-    public CelestialBody orbitingAround;
-
-    /**
     * Longitude of the ascending node
     */
     public double N;
@@ -94,6 +89,11 @@ public abstract class OrbitingBody extends CelestialBody{
      */
     public double E;
 
+    /**
+     * the last time the planet's trajectory was calculated
+     */
+    public double lastUpdate = -1;
+
 
     public OrbitingBody(String name, double mass, String texturePath, CelestialBody orbitingAround,
                         double N, double i, double w, double a, double e, double M) {
@@ -101,6 +101,7 @@ public abstract class OrbitingBody extends CelestialBody{
 
         // sets the orbiting around
         this.orbitingAround = orbitingAround;
+        this.orbitingAround.satellites.add(this);
 
         // sets the primary orbital elements
         this.N = N;

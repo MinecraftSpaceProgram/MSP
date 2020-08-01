@@ -1,5 +1,7 @@
 package io.github.MinecraftSpaceProgram.MSP.physics.orbital;
 
+import java.util.Arrays;
+
 import static java.lang.Math.*;
 
 public final class PhysicsUtil {
@@ -87,6 +89,15 @@ public final class PhysicsUtil {
     public static double zoomPlanet(double size, double zoom) {
         double lambda = sigmoid((90 - zoom) / 5);
         return lambda * size / AU + 2 * (1 - lambda) * log(size) * E(-2);
+    }
+
+    /**
+     * concatenates two arrays
+     */
+    public static <T> T[] concat(T[] first, T[] second) {
+        T[] result = Arrays.copyOf(first, first.length + second.length);
+        System.arraycopy(second, 0, result, first.length, second.length);
+        return result;
     }
 
 }

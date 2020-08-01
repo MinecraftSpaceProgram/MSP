@@ -5,7 +5,7 @@ import net.minecraft.util.math.vector.Quaternion;
 import static io.github.MinecraftSpaceProgram.MSP.physics.orbital.PhysicsUtil.E;
 import static java.lang.Math.toRadians;
 
-public class SolarSystem {
+public final class SolarSystem {
 
     public static final Sun SUN = new Sun();
 

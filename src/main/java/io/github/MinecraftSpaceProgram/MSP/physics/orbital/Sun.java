@@ -12,14 +12,14 @@ import static io.github.MinecraftSpaceProgram.MSP.util.RenderUtils.drawCube;
 
 public class Sun extends CelestialBody {
 
-    public double size = 1.392684 * E(9);
-
     public Sun() {
         super(
                 "Sun",
                 1.9884 * E(30),
                 "planets/default");
         this.position = Vector3d.ZERO;
+
+        this.size = 1.392684 * E(9);
     }
 
     @Override
@@ -29,6 +29,11 @@ public class Sun extends CelestialBody {
     @Override
     public Vector3d[] predict(int t1, int t2) {
         return new Vector3d[]{Vector3d.ZERO};
+    }
+
+    @Override
+    public Vector3d calculatePosition(int time) {
+        return Vector3d.ZERO;
     }
 
     @Override

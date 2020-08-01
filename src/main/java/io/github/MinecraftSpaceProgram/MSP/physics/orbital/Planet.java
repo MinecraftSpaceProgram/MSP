@@ -9,7 +9,6 @@ import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static io.github.MinecraftSpaceProgram.MSP.physics.orbital.PhysicsUtil.AU;
 import static io.github.MinecraftSpaceProgram.MSP.physics.orbital.PhysicsUtil.zoomPlanet;
@@ -21,11 +20,6 @@ import static java.lang.Math.*;
  */
 
 public class Planet extends OrbitingBody{
-
-    /**
-     * display size of a planet
-     */
-    public double size;
 
     /**
      * current angle of a planet around itself
@@ -42,11 +36,6 @@ public class Planet extends OrbitingBody{
      */
     public Quaternion tilt;
 
-    /**
-     * list of satellites of this
-     */
-    public List<CelestialBody> satellites;
-
     public Planet(String name, double mass, String texturePath, CelestialBody orbitingAround,
                   double N, double i, double w, double a, double e, double M,
                   double size, double angle, double sideralRotation, Quaternion tilt) {
@@ -60,6 +49,7 @@ public class Planet extends OrbitingBody{
         this.tilt = tilt;
 
         this.trajectory = this.predict(0, (int) this.P - 1);
+        this.lastUpdate = 0;
 
         MSP.LOGGER.debug(this::toString);
     }
@@ -82,26 +72,33 @@ public class Planet extends OrbitingBody{
     /**
      * Calculates the position of a planet in cartesian space at a given time
      * @return Vector3d corresponding to the x, y, z position of a planet in AU
+     * Rotation is fucked up here
      */
-    private Vector3d calculatePosition(int time){
-        // calculates the mean anomaly
-        this.M = this.n * time;
+    @Override
+    public Vector3d calculatePosition(int time){
+        // if the trajectory is known returns the known position
+        if (this.trajectory != null && this.lastUpdate + this.T > time){
+            return trajectory[(int)(time - this.lastUpdate)];
+        } else {
+            // calculates the mean anomaly
+            this.M = this.n * time;
 
-        // approximates E
-        this.E = PhysicsUtil.keplerE(this.M, this.e);
+            // approximates E
+            this.E = PhysicsUtil.keplerE(this.M, this.e);
 
-        // calculates the distance to the sun and the mean anomaly
-        double xv = this.a * (cos(this.E) - this.e);
-        double yv = this.a * (sqrt(1 - this.e * this.e) * sin(this.E));
-        this.v = atan2(yv, xv);
-        double r = sqrt(xv * xv + yv * yv);
+            // calculates the distance to the sun and the mean anomaly
+            double xv = this.a * (cos(this.E) - this.e);
+            double yv = this.a * (sqrt(1 - this.e * this.e) * sin(this.E));
+            this.v = atan2(yv, xv);
+            double r = sqrt(xv * xv + yv * yv);
 
-        // calculates position in space
-        double xh = r * (cos(N) * cos(v + w) - sin(N) * sin(v + w) * cos(i));
-        double yh = r * (sin(N) * cos(v + w) + cos(N) * sin(v + w) * cos(i));
-        double zh = r * sin(v + w) * sin(i);
+            // calculates position in space
+            double xh = r * (cos(N) * cos(v + w) - sin(N) * sin(v + w) * cos(i));
+            double yh = r * (sin(N) * cos(v + w) + cos(N) * sin(v + w) * cos(i));
+            double zh = r * sin(v + w) * sin(i);
 
-        return new Vector3d(xh / AU, yh / AU, zh / AU);
+            return new Vector3d(xh / AU, yh / AU, zh / AU);
+        }
     }
 
     @Override
@@ -111,7 +108,6 @@ public class Planet extends OrbitingBody{
                 ", angle=" + angle +
                 ", Sideral Rotation=" + sideralRotation +
                 ", tilt=" + tilt +
-                ", satellites=" + satellites +
                 ", orbitingAround=" + orbitingAround +
                 ", N=" + N +
                 ", i=" + i +

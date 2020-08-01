@@ -8,6 +8,9 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @SuppressWarnings("deprecation")
 public abstract class CelestialBody {
@@ -28,6 +31,21 @@ public abstract class CelestialBody {
 
     public RenderMaterial material;
 
+    /**
+     * display size of a planet
+     */
+    public double size;
+
+    /**
+     * list of satellites of this
+     */
+    public List<CelestialBody> satellites = new ArrayList<>();
+
+    /**
+     * The body around which is being orbited
+     */
+    public CelestialBody orbitingAround;
+
     public CelestialBody(String name, double mass, String path){
         this.name = name;
         this.mass = mass;
@@ -36,6 +54,8 @@ public abstract class CelestialBody {
     }
 
     public abstract Vector3d[] predict(int t1, int t2);
+
+    public abstract Vector3d calculatePosition(int time);
 
     public abstract void updatePlanet(int time);
 

@@ -96,16 +96,16 @@ public final class RenderUtils {
     /**
      * Draws colored parallelogram between 2 vectors A and B at C
      */
-    private static void square(IVertexBuilder renderer, Matrix4f matrixPos, Vector3d A, Vector3d B, Vector3d C, RenderMaterial material, float opacity) {
+    public static void square(IVertexBuilder renderer, Matrix4f matrixPos, Vector3d A, Vector3d B, Vector3d C, RenderMaterial material, float opacity) {
         Vector3d N = A.crossProduct(B).normalize();
         float u = material.getSprite().getMinU();
         float U = material.getSprite().getMaxU();
         float v = material.getSprite().getMinV();
         float V = material.getSprite().getMaxV();
-        add(renderer, matrixPos, C, N, u, v, opacity);
-        add(renderer, matrixPos, A.add(C), N, U, v, opacity);
-        add(renderer, matrixPos, A.add(B).add(C), N, U, V, opacity);
-        add(renderer, matrixPos, B.add(C), N, u, V, opacity);
+        add(renderer, matrixPos, C, N, u, V, opacity);
+        add(renderer, matrixPos, A.add(C), N, U, V, opacity);
+        add(renderer, matrixPos, A.add(B).add(C), N, U, v, opacity);
+        add(renderer, matrixPos, B.add(C), N, u, v, opacity);
     }
 
     /**
@@ -137,28 +137,29 @@ public final class RenderUtils {
      * Draws an inverted cube (used for Sky Box)
      */
     public static void drawInvertedCube(Vector3d A, Vector3d B, Vector3d C,
-                                        Minecraft mc, Tessellator tessellator, MatrixStack matrixStack, BufferBuilder renderBuffer, ResourceLocation material) {
+                                        Minecraft mc, Tessellator tessellator, MatrixStack matrixStack, ResourceLocation material) {
         // retrieves a position matrix
         Matrix4f matrixPos = matrixStack.getLast().getMatrix();
 
         // draws the 6 sides
-        square2(mc, tessellator, renderBuffer, matrixPos, B, A, Vector3d.ZERO, material);
-        square2(mc, tessellator, renderBuffer, matrixPos, A, B, C, material);
+        square2(mc, tessellator, matrixPos, B, A, Vector3d.ZERO, material);
+        square2(mc, tessellator, matrixPos, A, B, C, material);
 
-        square2(mc, tessellator, renderBuffer, matrixPos, A, C, Vector3d.ZERO, material);
-        square2(mc, tessellator, renderBuffer, matrixPos, C, A, B, material);
+        square2(mc, tessellator, matrixPos, A, C, Vector3d.ZERO, material);
+        square2(mc, tessellator, matrixPos, C, A, B, material);
 
-        square2(mc, tessellator, renderBuffer, matrixPos, C, B, Vector3d.ZERO, material);
-        square2(mc, tessellator, renderBuffer, matrixPos, B, C, A, material);
+        square2(mc, tessellator, matrixPos, C, B, Vector3d.ZERO, material);
+        square2(mc, tessellator, matrixPos, B, C, A, material);
     }
 
-    private static void square2(Minecraft mc, Tessellator tessellator, BufferBuilder bufferbuilder, Matrix4f matrixPos, Vector3d A, Vector3d B, Vector3d C, ResourceLocation material) {
+    public static void square2(Minecraft mc, Tessellator tessellator, Matrix4f matrixPos, Vector3d A, Vector3d B, Vector3d C, ResourceLocation material) {
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
         mc.getTextureManager().bindTexture(material);
         add2(bufferbuilder, matrixPos, C, 0.0F, 0.0F);
-        add2(bufferbuilder, matrixPos, A.add(C), 1.0F, 0.0F);
+        add2(bufferbuilder, matrixPos, A.add(C), 0.0F, 1.0F);
         add2(bufferbuilder, matrixPos, A.add(B).add(C), 1.0F, 1.0F);
-        add2(bufferbuilder, matrixPos, B.add(C), 0.0F, 1.0F);
+        add2(bufferbuilder, matrixPos, B.add(C), 1.0F, 0.0F);
         tessellator.draw();
     }
 
@@ -172,10 +173,12 @@ public final class RenderUtils {
     /**
      * Draws the skybox
      */
-    public static void drawSkyBox(ResourceLocation skyBoxMaterial, Quaternion myRotation, MainWindow window, Minecraft minecraft){
+    public static void drawSkyBox(ResourceLocation skyBoxMaterial, Quaternion myRotation, Minecraft minecraft){
+
+        // retrieves the main window
+        MainWindow window = minecraft.getMainWindow();
 
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
 
         // sets up perspective
         RenderSystem.matrixMode(GL_PROJECTION);
@@ -229,7 +232,6 @@ public final class RenderUtils {
                 minecraft,
                 tessellator,
                 matrixStack,
-                bufferbuilder,
                 skyBoxMaterial
         );
 
@@ -244,5 +246,4 @@ public final class RenderUtils {
         RenderSystem.enableCull();
         RenderSystem.enableDepthTest();
     }
-
 }
