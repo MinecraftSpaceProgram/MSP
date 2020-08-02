@@ -11,12 +11,7 @@
 
   "item.msp.example_item": "Example Item",
 
-  "itemGroup.msp": "MSP",
+  "container.msp.launchpad_controller": "Launchpad Controller",
 
-  "event.msp.hangar_controller.cleared": "Unlinked hangar",
-  "event.msp.hangar_controller.not_found": "Could not find hangar...",
-  "event.msp.hangar_controller.not_linked": "No hangar linked",
-  "event.msp.hangar_controller.found": "Found and assembled hangar between %s and %s",
-  "event.msp.hangar_controller.found_again": "Controller linked to hangar between %s and %s",
-  "event.msp.hangar_corner.rocket_found": "Rocket found with %d blocks"
+  "itemGroup.msp": "MSP"
 }

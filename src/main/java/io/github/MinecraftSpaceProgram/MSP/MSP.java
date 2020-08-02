@@ -3,6 +3,10 @@ package io.github.MinecraftSpaceProgram.MSP;
 import io.github.MinecraftSpaceProgram.MSP.init.MSPBlocks;
 import io.github.MinecraftSpaceProgram.MSP.init.MSPItems;
 import io.github.MinecraftSpaceProgram.MSP.init.MSPTileEntityTypes;
+import io.github.MinecraftSpaceProgram.MSP.init.MSPBlocks;
+import io.github.MinecraftSpaceProgram.MSP.init.MSPContainerTypes;
+import io.github.MinecraftSpaceProgram.MSP.init.MSPItems;
+import io.github.MinecraftSpaceProgram.MSP.init.MSPTileEntityTypes;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -40,6 +44,7 @@ public final class MSP {
         MSPItems.ITEMS.register(modEventBus);
         MSPBlocks.BLOCKS.register(modEventBus);
         MSPTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
+        MSPContainerTypes.CONTAINER_TYPES.register(modEventBus);
         // EntityTypes.ENTITY_TYPES.register(modEventBus);
     }
 

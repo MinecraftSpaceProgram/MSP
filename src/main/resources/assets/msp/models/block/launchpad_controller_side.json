@@ -1,5 +1,4 @@
 {
-	"parent": "block/block",
 	"textures": {
 		"0": "msp:block/launchpad_controller",
 		"1": "msp:block/launchpad_controller_top",
@@ -19,11 +18,5 @@
 				"down": {"uv": [0, 0, 16, 13], "texture": "#0"}
 			}
 		}
-	],
-	"display": {
-		"firstperson_righthand": {
-			"rotation": [0, 135, 0],
-			"scale": [0.4, 0.4, 0.4]
-		}
-	}
+	]
 }

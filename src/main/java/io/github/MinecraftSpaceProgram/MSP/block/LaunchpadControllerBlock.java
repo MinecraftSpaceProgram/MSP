@@ -1,11 +1,14 @@
 package io.github.MinecraftSpaceProgram.MSP.block;
 
 import io.github.MinecraftSpaceProgram.MSP.init.MSPTileEntityTypes;
+import io.github.MinecraftSpaceProgram.MSP.tileentity.LaunchpadControllerTileEntity;
+import io.github.MinecraftSpaceProgram.MSP.init.MSPTileEntityTypes;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.DirectionProperty;
@@ -24,6 +27,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -136,8 +140,26 @@ public class LaunchpadControllerBlock extends Block {
     @Override
     @ParametersAreNonnullByDefault
     @Nonnull
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        return super.onBlockActivated(state, worldIn, pos, player, handIn, hit);
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        if (!world.isRemote) {
+            BlockPos tileEntityPos;
+            Direction facing = state.get(FACING);
+            if (state.get(SIDE) == Side.LEFT)
+                tileEntityPos = pos.offset(facing.rotateY());
+            else if (state.get(SIDE) == Side.RIGHT)
+                tileEntityPos = pos.offset(facing.rotateYCCW());
+            else
+                tileEntityPos = pos;
+
+            TileEntity tileEntity = world.getTileEntity(tileEntityPos);
+            if (tileEntity instanceof LaunchpadControllerTileEntity) {
+                NetworkHooks.openGui((ServerPlayerEntity) player, (LaunchpadControllerTileEntity) tileEntity);
+                return ActionResultType.SUCCESS;
+            }
+            else
+                throw new IllegalStateException("Tile Entity missing " + tileEntity);
+        }
+        return super.onBlockActivated(state, world, pos, player, handIn, hit);
     }
 
     @SuppressWarnings("deprecation")
