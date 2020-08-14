@@ -65,7 +65,7 @@ public class Planet extends OrbitingBody{
     }
 
     @Override
-    public void updatePlanet(int time) {
+    public void update(int time) {
         this.position = calculatePosition(time);
     }
 
@@ -126,9 +126,6 @@ public class Planet extends OrbitingBody{
                 ", E=" + E +
                 ", name='" + name + '\'' +
                 ", mass=" + mass +
-                ", position=" + position +
-                ", speed=" + speed +
-                ", acceleration=" + acceleration +
                 ", trajectory=" + Arrays.toString(trajectory) +
                 '}';
     }
@@ -138,7 +135,7 @@ public class Planet extends OrbitingBody{
 
         double adjustedSize = zoomPlanet(this.size, zoom);
 
-        this.updatePlanet(1);
+        this.update(1);
 
         // IVertex builder to draw solids
         IVertexBuilder vertexBuilder = renderBuffers.getBuffer(RenderType.getSolid());

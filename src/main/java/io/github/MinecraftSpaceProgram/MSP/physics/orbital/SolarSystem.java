@@ -2,6 +2,7 @@ package io.github.MinecraftSpaceProgram.MSP.physics.orbital;
 
 import net.minecraft.util.math.vector.Quaternion;
 
+import static io.github.MinecraftSpaceProgram.MSP.physics.orbital.PhysicsUtil.AU;
 import static io.github.MinecraftSpaceProgram.MSP.physics.orbital.PhysicsUtil.E;
 import static java.lang.Math.toRadians;
 
@@ -111,4 +112,17 @@ public final class SolarSystem {
             EARTH,
             MARS,
             JUPITER};
+
+    public static ArtificialSatellite HEART_OF_GOLD = new ArtificialSatellite(
+            "Heart of Gold",
+            1.0D,
+            new Orbit(
+                    AU,
+                    0.5D,
+                    2,
+                    -1,
+                    1,
+                    0.0D,
+                    SUN)
+    );
 }

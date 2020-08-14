@@ -23,7 +23,7 @@ public class Sun extends CelestialBody {
     }
 
     @Override
-    public void updatePlanet(int time) {
+    public void update(int time) {
     }
 
     @Override

@@ -5,26 +5,28 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.datafixers.util.Pair;
 import io.github.MinecraftSpaceProgram.MSP.MSP;
 import io.github.MinecraftSpaceProgram.MSP.container.GUIBlockContainer;
-import io.github.MinecraftSpaceProgram.MSP.physics.orbital.CelestialBody;
-import io.github.MinecraftSpaceProgram.MSP.physics.orbital.OrbitingBody;
-import io.github.MinecraftSpaceProgram.MSP.physics.orbital.PhysicsUtil;
-import io.github.MinecraftSpaceProgram.MSP.physics.orbital.SolarSystem;
+import io.github.MinecraftSpaceProgram.MSP.physics.orbital.*;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.*;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
+import java.util.Arrays;
 
 import static io.github.MinecraftSpaceProgram.MSP.physics.orbital.PhysicsUtil.E;
 import static io.github.MinecraftSpaceProgram.MSP.physics.orbital.PhysicsUtil.zoomPlanet;
+import static io.github.MinecraftSpaceProgram.MSP.physics.orbital.SolarSystem.HEART_OF_GOLD;
 import static io.github.MinecraftSpaceProgram.MSP.physics.orbital.SolarSystem.SUN;
 import static io.github.MinecraftSpaceProgram.MSP.util.RayCasting.rayTestPoints;
 import static io.github.MinecraftSpaceProgram.MSP.util.RenderUtils.drawSkyBox;
@@ -67,6 +69,8 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
         return this.field_230709_l_;
     }
 
+    private FontRenderer fontRenderer() {return this.field_230712_o_; }
+
     public boolean hasShiftDown() {
         return func_231173_s_();
     }
@@ -75,6 +79,8 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
 
     private MatrixStack MATRIX_STACK = new MatrixStack();
 
+    private double closestPoint = 0.0D;
+
     private double right = 0.0D;
     private final double left = 0.0D;
     private final double top = 0.0D;
@@ -82,9 +88,43 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
     private final double NEAR = 1000.0D;
     private final double FAR = 100000.0D;
 
+    private TextFieldWidget nameField;
+
+
+    private float intensity = 0.20F;
+
     public GUIBlockScreen(GUIBlockContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
         super(screenContainer, inv, titleIn);
         this.skyBoxMaterial = new ResourceLocation(MSP.MOD_ID, "textures/skybox/skybox2.png");
+    }
+
+    /**
+     * Called at init
+     */
+    @Override
+    public void func_231160_c_(){
+        super.func_231160_c_();
+
+        this.nameField = new TextFieldWidget(this.fontRenderer(), 62, 24, 103, 12, new TranslationTextComponent("Test"));
+        this.nameField.setCanLoseFocus(false);
+        // change focus
+        this.nameField.func_231049_c__(true);
+        this.nameField.setMaxStringLength(35);
+        this.nameField.setTextColor(-1);
+        this.nameField.setDisabledTextColour(1000);
+        this.nameField.setResponder(MSP.LOGGER::debug);
+        this.nameField.setEnableBackgroundDrawing(true);
+        this.nameField.setCanLoseFocus(true);
+
+        // children
+        this.field_230705_e_.add(this.nameField);
+        //this.setFocusedDefault(this.nameField);
+
+        this.nameField.setEnabled(true);
+        //this.nameField.setFocused2(true);
+        this.nameField.setText("TEST");
+
+        MSP.LOGGER.debug(Arrays.toString(HEART_OF_GOLD.trajectory));
     }
 
     /**
@@ -143,22 +183,27 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
         // Banner text
         matrixStack.scale(0.75F, 0.75F, 1.0F);
         //font renderer
-        this.field_230712_o_.func_238405_a_(
+        this.fontRenderer().func_238405_a_(
                 matrixStack,
                 this.CameraText,
-                this.width() / 0.75F - this.field_230712_o_.getStringWidth(this.CameraText) - 16,
+                this.width() / 0.75F - this.fontRenderer().getStringWidth(this.CameraText) - 16,
                 this.height() / 0.75F - 16.0F,
                 16777215); // white
         matrixStack.scale(1 / 0.75F, 1/ 0.75F, 1.0F);
 
         matrixStack.scale(0.5F, 0.5F, 1.0F);
         String s = "INERTIAL VELOCITY             ALTITUDE             APOGEE             PERIGEE             INCLINATION  ";
-        this.field_230712_o_.func_238405_a_(
+        this.fontRenderer().func_238405_a_(
                 matrixStack,
                 s,
-                this.width() / 0.5F - this.field_230712_o_.getStringWidth(s),
+                this.width() / 0.5F - this.fontRenderer().getStringWidth(s),
                 3.0F,
                 16777215); // white
+
+        matrixStack.scale(2.0F, 2.0F, 1.0F);
+
+        // called to do the rendering
+        this.nameField.func_230431_b_(matrixStack, mouseX, mouseY, partialTicks);
 
         // idk wtf this is
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.GuiContainerEvent.DrawBackground(this, matrixStack, mouseX, mouseY));
@@ -166,7 +211,6 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
         // returns open gl to it's default state
         RenderSystem.popMatrix();
         glDepthRange(0, 1.0);
-
     }
 
     @Override
@@ -204,13 +248,16 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
         RenderSystem.pushMatrix();
         RenderSystem.loadIdentity();
         RenderSystem.translated(this.width() / 2D, this.height() / 2D, -3050.0D);
-        drawEntityOnScreen(pow(100 - this.zoom, 3));
+        drawEntityOnScreen(pow(100 - this.zoom, 3), mouseX, mouseY);
         RenderSystem.popMatrix();
         RenderSystem.matrixMode(GL_PROJECTION);
         RenderSystem.popMatrix();
+
+        // better light https://community.khronos.org/t/light-sources-do-not-make-textures-brighter-than-texture-source-images/73500/2
+        //GL11.glTexEnvf(GL_TEXTURE_ENV, );
     }
 
-    public void drawEntityOnScreen(double scale) {
+    public void drawEntityOnScreen(double scale, int mouseX, int mouseY) {
         RenderSystem.pushMatrix();
 
         // Matrix Stack Transformations
@@ -241,14 +288,55 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
         matrixStackFocused.rotate(this.myRotation);
 
         for (CelestialBody body : visibleObjects) {
-            if (body.orbitingAround == focusedObject && body instanceof OrbitingBody) {
-                body.draw(matrixStackFocused, irendertypebuffer$impl, this.zoom);
-                drawTrajectory(matrixStackFocused.getLast().getMatrix(), irendertypebuffer$impl.getBuffer(RenderType.getLines()), new Color(1.0F,1.0F,1.0F,0.5F), body);
+            if (body.orbitingAround == focusedObject && body instanceof OrbitingBody || body instanceof ArtificialSatellite) {
+                if(body instanceof ArtificialSatellite){
+                    ((ArtificialSatellite) body).draw2(this.field_230706_i_, matrixStackFocused);
+                    ((ArtificialSatellite) body).orbit.draw(matrixStackFocused, irendertypebuffer$impl, this.field_230706_i_);
+                } else {
+                    drawTrajectory(matrixStackFocused.getLast().getMatrix(), irendertypebuffer$impl.getBuffer(RenderType.getLines()), new Color(1.0F, 1.0F, 1.0F, 0.5F), body);
+                    body.draw(matrixStackFocused, irendertypebuffer$impl, this.zoom);
+                }
             } else {
-                body.draw(MATRIX_STACK, irendertypebuffer$impl, this.zoom);
-
+                body.draw(matrixStackFocused, irendertypebuffer$impl, this.zoom);
             }
         }
+
+        // transforms the screen space to world space
+        Vector4f start = new Vector4f(
+                (float) ((mouseX - this.width() / 2.0D) / this.width() * (right - left)),
+                (float) ((mouseY - this.height() / 2.0D) / this.height() * (bottom - top)),
+                (float) NEAR,
+                1.0F
+        );
+        Vector4f end = new Vector4f(
+                (float) ((mouseX - this.width() / 2.0D) / this.width() * (right - left)),
+                (float) ((mouseY - this.height() / 2.0D) / this.height() * (bottom - top)),
+                (float) FAR,
+                1.0F
+        );
+
+        Matrix4f transformationMatrix = MATRIX_STACK.getLast().getMatrix().copy();
+        transformationMatrix.invert();
+        start.transform(transformationMatrix);
+        end.transform(transformationMatrix);
+
+        start.perspectiveDivide();
+        end.perspectiveDivide();
+
+        HEART_OF_GOLD.orbit.hover(
+                new Vector3d(start.getX(), start.getY(), start.getZ()),
+                new Vector3d(  end.getX(),   end.getY(),   end.getZ()),
+                MATRIX_STACK,
+                this.field_230706_i_);
+
+        //int zSpeed = 0;
+        if (this.nameField.getText().matches("-?\\d+[.]\\d+")){
+            intensity = Float.parseFloat(nameField.getText());
+        }
+
+
+        //Orbit orbit = new Orbit(new Vector3d(0, AU, 0), new Vector3d(30000, 2000, zSpeed), SUN);
+        //orbit.draw(MATRIX_STACK, irendertypebuffer$impl, Color.ORANGE);
 
         // this needs to be last
         RenderSystem.enableBlend();
@@ -290,7 +378,7 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
             origin = new Vector3f(focusedObject.position);
             origin.transform(myRotation);
         }
-        return false;
+        return super.func_231045_a_(mouseX, mouseY, key_pressed, deltaX, deltaY);
     }
 
     /**
@@ -385,6 +473,18 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
                 }
             }
         }
-        return false;
+        return super.func_231044_a_(mouseX, mouseY, key_pressed);
+    }
+
+    @Override
+    public boolean func_231046_a_(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_){
+        if (p_keyPressed_1_ == 256) {
+            assert this.field_230706_i_ != null;
+            assert this.field_230706_i_.player != null;
+            this.field_230706_i_.player.closeScreen();
+        }
+
+        return !this.nameField.func_231046_a_(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_) && !this.nameField.canWrite() ? super.func_231046_a_(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_) : true;
+        //return this.nameField.func_231046_a_(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_) || this.nameField.canWrite() || super.func_231046_a_(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
     }
 }
