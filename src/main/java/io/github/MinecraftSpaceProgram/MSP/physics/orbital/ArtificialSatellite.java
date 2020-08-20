@@ -6,7 +6,6 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.util.math.vector.Vector3d;
 
 import javax.annotation.Nonnull;
-
 import java.util.List;
 
 import static io.github.MinecraftSpaceProgram.MSP.physics.orbital.PhysicsUtil.*;
@@ -36,7 +35,7 @@ public class ArtificialSatellite extends CelestialBody
         for(int t = 0; t < ORBIT_PRECISION; t++){
             double v = this.orbit.v((double)t / ORBIT_PRECISION * T);
             trajectory[t] = this.orbit.rWorld(v);
-            velocity[t] = this.orbit.speed((double)t / ORBIT_PRECISION * T);
+            velocity[t] = this.orbit.speed(v);
         }
 
         this.position = trajectory[200];
@@ -52,7 +51,9 @@ public class ArtificialSatellite extends CelestialBody
     }
 
     @Override
+    @Deprecated
     // TODO if not an orbit
+    // DOSNT WORK
     public Vector3d calculatePosition(int time) {
         if(this.orbit != null) {
             double v = this.orbit.v((double) time / ORBIT_PRECISION * this.orbit.period());

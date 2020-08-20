@@ -59,6 +59,7 @@ public abstract class CelestialBody {
      * The body around which is being orbited
      */
     @Nullable
+    @Deprecated
     public CelestialBody orbitingAround;
 
     public CelestialBody(String name, double mass, String path){
