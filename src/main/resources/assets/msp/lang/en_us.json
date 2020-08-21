@@ -13,10 +13,8 @@
 
   "itemGroup.msp": "MSP",
 
-  "event.msp.hangar_controller.cleared": "Unlinked hangar",
-  "event.msp.hangar_controller.not_found": "Could not find hangar...",
-  "event.msp.hangar_controller.not_linked": "No hangar linked",
-  "event.msp.hangar_controller.found": "Found and assembled hangar between %s and %s",
-  "event.msp.hangar_controller.found_again": "Controller linked to hangar between %s and %s",
-  "event.msp.hangar_corner.rocket_found": "Rocket found with %d blocks"
+  "event.msp.launchpad_not_found": "Launchpad not found",
+  "event.msp.launchpad_found": "Found launchpad between (%d,%d,%d) and (%d,%d,%d)",
+  "event.msp.attempting_rocket_assembly": "Attempting to build rocket",
+  "event.msp.rocket_rules": "Rocket building rules are not respected"
 }

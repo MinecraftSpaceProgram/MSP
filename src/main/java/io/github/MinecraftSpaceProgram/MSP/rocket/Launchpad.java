@@ -3,20 +3,24 @@ package io.github.MinecraftSpaceProgram.MSP.rocket;
 import io.github.MinecraftSpaceProgram.MSP.MSP;
 import io.github.MinecraftSpaceProgram.MSP.init.MSPBlocks;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 
-import static io.github.MinecraftSpaceProgram.MSP.util.BlockPosUtil.getRectangleOutsideBorders;
+import static io.github.MinecraftSpaceProgram.MSP.MSP.LOGGER;
+import static io.github.MinecraftSpaceProgram.MSP.util.BlockPosUtil.*;
 
 public final class Launchpad {
     public final BlockPos startingPos;
     public final int x;
     public final int y;
     public final int z;
+    final World world;
 
     private static final Marker MARKER = MarkerManager.getMarker("MSP-Launchpad");
 
@@ -30,21 +34,22 @@ public final class Launchpad {
      * @param y y axis offset
      * @param z z axis offset
      */
-    public Launchpad(BlockPos startingPos, int x, int y , int z) {
-        this.startingPos = new BlockPos(
-                startingPos.getX() + Math.min(x, 0),
-                startingPos.getY() + Math.min(y, 0),
-                startingPos.getZ() + Math.min(z, 0)
+    public Launchpad(World world, BlockPos startingPos, int x, int y , int z) {
+        this.startingPos = startingPos.add(
+                Math.min(x,0),
+                Math.min(y,0),
+                Math.min(z,0)
         );
         this.x = Math.abs(x);
         this.y = Math.abs(y);
         this.z = Math.abs(z);
+        this.world = world;
     }
 
     /**
      * Find launchpad (rectangular base and crane)
      * @param world world
-     * @param startingPos starting pos from where to begin search
+     * @param startingPos starting pos from where to begin searching
      * @return found Launchpad
      */
     @Nullable
@@ -86,9 +91,9 @@ public final class Launchpad {
                 ++nz;
             }
 
-            BlockPos cornerPos = startingPos.add(-nx,0,-nz);
-            int x = px + nx + 1;
-            int z = pz + nz + 1;
+            BlockPos cornerPos = startingPos.add(-nx,1,-nz);
+            int x = px + nx;
+            int z = pz + nz;
 
             BlockPos startingCranePos = null;
             for (BlockPos borderPos : getRectangleOutsideBorders(cornerPos, x, z)) {
@@ -106,7 +111,7 @@ public final class Launchpad {
                 ++py;
             }
 
-            return py > 1 ? new Launchpad(cornerPos, x, py - 1, z) : null;
+            return py > 1 ? new Launchpad(world, cornerPos, x, py - 1, z) : null;
         }
         else
             MSP.LOGGER.info(MARKER, "Starting block is not launchpad base");
@@ -121,6 +126,79 @@ public final class Launchpad {
                 startingPos,
                 startingPos.add(x,y,z)
         };
+    }
+
+    private boolean isInLaunchpad(BlockPos blockPos) {
+        int dx = blockPos.getX() - startingPos.getX();
+        int dy = blockPos.getY() - startingPos.getY();
+        int dz = blockPos.getZ() - startingPos.getZ();
+        return dx > 0 && dx < x && dy > 0 && dy < y && dz > 0 && dz < z;
+    }
+
+    public Rocket findRocket() {
+        ArrayList<BlockPos> outside = new ArrayList<>();
+        ArrayList<BlockPos> airNotOutside = new ArrayList<>();
+        ArrayList<BlockPos> toVisit = new ArrayList<>();
+        ArrayList<BlockPos> rocket = new ArrayList<>();
+        ArrayList<BlockPos> rocketBorder = new ArrayList<>();
+
+        final BlockPos[] launchpadInsideBlocks = getCube(startingPos, x, y, z);
+        final BlockPos[] launchpadBorderBlocks = getCubeBorder(startingPos, x, y, z);
+
+        for (BlockPos insideBlockPos : launchpadInsideBlocks) {
+            if (!world.isAirBlock(insideBlockPos))
+                rocket.add(insideBlockPos);
+            else
+                airNotOutside.add(insideBlockPos);
+        }
+
+        for (BlockPos borderBlockPos : launchpadBorderBlocks) {
+            if (world.isAirBlock(borderBlockPos)) {
+                outside.add(borderBlockPos);
+                toVisit.add(borderBlockPos);
+                airNotOutside.remove(borderBlockPos);
+            }
+            else
+                rocketBorder.add(borderBlockPos);
+        }
+
+        if (outside.isEmpty()) {
+            LOGGER.info(MARKER, "No air was found on the borders of the hangar, the rocket must be taking all the space...");
+            return new Rocket(launchpadInsideBlocks, launchpadBorderBlocks, world);
+        }
+
+        while (!toVisit.isEmpty()) {
+            BlockPos currentPos = toVisit.get(0);
+            for (int x : new int[]{-1,1}) {
+                for (BlockPos nextPos : new BlockPos[]{
+                        new BlockPos(currentPos.getX() + x, currentPos.getY(), currentPos.getZ()),
+                        new BlockPos(currentPos.getX(), currentPos.getY() + x, currentPos.getZ()),
+                        new BlockPos(currentPos.getX(), currentPos.getY(), currentPos.getZ() + x)
+                }) {
+                    if (this.isInLaunchpad(nextPos) && !outside.contains(nextPos)) {
+                        if (world.isAirBlock(nextPos)) {
+                            outside.add(nextPos);
+                            toVisit.add(nextPos);
+                            airNotOutside.remove(nextPos);
+                        }
+                        else if (!rocketBorder.contains(nextPos)) {
+                            rocketBorder.add(nextPos);
+                        }
+                    }
+                }
+            }
+            toVisit.remove(0);
+        }
+
+        rocket.addAll(airNotOutside);
+        return new Rocket(rocket, rocketBorder, world);
+    }
+
+    public void clear() {
+        MSP.LOGGER.info(MARKER, "Clearing launchpad");
+        for (BlockPos pos : getCube(startingPos, x, y, z)) {
+            world.setBlockState(pos, Blocks.AIR.getDefaultState());
+        }
     }
 
     public String toString() {

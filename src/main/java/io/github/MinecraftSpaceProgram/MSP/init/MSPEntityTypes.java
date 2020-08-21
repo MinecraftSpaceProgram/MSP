@@ -9,7 +9,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 @SuppressWarnings("unused")
-public class MSPEntityTypes {
+public final class MSPEntityTypes {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES, MSP.MOD_ID);
 
     public static final RegistryObject<EntityType<RocketEntity>> ROCKET_ENTITY_TYPE = ENTITY_TYPES.register(

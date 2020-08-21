@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public final class Rocket {
-    private static final Marker MARKER = MarkerManager.getMarker("MSP-RocketBuilding");
+    private static final Marker MARKER = MarkerManager.getMarker("RocketBuilding");
 
     private final List<BlockPos> rocketBlocksPos;
     private final List<BlockPos> borderBlocksPos;
@@ -47,17 +47,21 @@ public final class Rocket {
         this.HAS_TANKS = enforceHasTanks();
         this.ENGINES_FACING_OUTWARDS = enforceEnginesFacingOutwards();
 
-        MSP.LOGGER.info(MARKER, this.toString());
+        MSP.LOGGER.info(MARKER, toString());
     }
 
-    public static Rocket createFromLaunchpad(Launchpad launchpad, World world) {
-        return new RocketBuilder(launchpad, world).findRocket();
+    public static Rocket createFromLaunchpad(Launchpad launchpad) {
+        return launchpad.findRocket();
+    }
+
+    public boolean getRulesRespected() {
+        return (!rocketBlocksPos.isEmpty()) && NO_FLYING_BLOCKS && ROCKET_BORDER_COATED && HAS_ENGINES && HAS_TANKS && ENGINES_FACING_OUTWARDS;
     }
 
     private void findBaseBlock() {
-        for (BlockPos blockPos : this.rocketBlocksPos) {
-            if (this.world.getBlockState(blockPos).getBlock() == MSPBlocks.FLIGHT_CONTROLLER.get()) {
-                this.baseBlockPos = blockPos;
+        for (BlockPos blockPos : rocketBlocksPos) {
+            if (world.getBlockState(blockPos).getBlock() == MSPBlocks.FLIGHT_CONTROLLER.get()) {
+                baseBlockPos = blockPos;
                 return;
             }
         }
@@ -67,10 +71,13 @@ public final class Rocket {
         ArrayList<BlockPos> toVisit = new ArrayList<>();
         ArrayList<BlockPos> notVisited = new ArrayList<>(rocketBlocksPos);
 
-        if (this.baseBlockPos == null)
-            toVisit.add(this.rocketBlocksPos.get(0));
+        if (rocketBlocksPos.isEmpty())
+            return true;
+
+        if (baseBlockPos == null)
+            toVisit.add(rocketBlocksPos.get(0));
         else
-            toVisit.add(this.baseBlockPos);
+            toVisit.add(baseBlockPos);
 
         while (!toVisit.isEmpty()) {
             BlockPos currentPos = toVisit.get(0);
@@ -80,10 +87,12 @@ public final class Rocket {
                         currentPos.add(0,delta,0),
                         currentPos.add(0,0,delta)
                 }) {
-                    if (this.rocketBlocksPos.contains(nextPos) && !this.world.isAirBlock(nextPos) && notVisited.contains(nextPos))
+                    if (rocketBlocksPos.contains(nextPos) && !world.isAirBlock(nextPos) && notVisited.contains(nextPos)) {
                         toVisit.add(nextPos);
+                    }
                 }
             }
+            notVisited.remove(currentPos);
             toVisit.remove(0);
         }
 
@@ -92,9 +101,9 @@ public final class Rocket {
 
     private boolean enforceRocketBorderCoated() {
         ResourceLocation rocketBlocksTag = new ResourceLocation("msp", "rocket_blocks");
-        for (BlockPos blockPos : this.borderBlocksPos) {
+        for (BlockPos blockPos : borderBlocksPos) {
             // let's hope ITag.func_230235_a_ is equivalent to contains
-            if (!BlockTags.getCollection().getOrCreate(rocketBlocksTag).func_230235_a_(this.world.getBlockState(blockPos).getBlock())) {
+            if (!BlockTags.getCollection().getOrCreate(rocketBlocksTag).func_230235_a_(world.getBlockState(blockPos).getBlock())) {
                 return false;
             }
         }
@@ -103,8 +112,8 @@ public final class Rocket {
 
     private boolean enforceHasEngines() {
         ResourceLocation enginesTag = new ResourceLocation("msp", "engine_blocks");
-        for (BlockPos blockPos : this.rocketBlocksPos) {
-            if (BlockTags.getCollection().getOrCreate(enginesTag).func_230235_a_(this.world.getBlockState(blockPos).getBlock())) {
+        for (BlockPos blockPos : rocketBlocksPos) {
+            if (BlockTags.getCollection().getOrCreate(enginesTag).func_230235_a_(world.getBlockState(blockPos).getBlock())) {
                 return true;
             }
         }
@@ -113,8 +122,8 @@ public final class Rocket {
 
     private boolean enforceHasTanks() {
         ResourceLocation enginesTag = new ResourceLocation("msp", "tank_blocks");
-        for (BlockPos blockPos : this.rocketBlocksPos) {
-            if (BlockTags.getCollection().getOrCreate(enginesTag).func_230235_a_(this.world.getBlockState(blockPos).getBlock())) {
+        for (BlockPos blockPos : rocketBlocksPos) {
+            if (BlockTags.getCollection().getOrCreate(enginesTag).func_230235_a_(world.getBlockState(blockPos).getBlock())) {
                 return true;
             }
         }
@@ -122,14 +131,14 @@ public final class Rocket {
     }
 
     private boolean enforceEnginesFacingOutwards() {
-        if (!this.HAS_ENGINES)
+        if (!HAS_ENGINES)
             return true;
 
         ResourceLocation enginesTag = new ResourceLocation("msp", "engine_blocks");
-        for (BlockPos blockPos : this.rocketBlocksPos) {
-            BlockState blockState = this.world.getBlockState(blockPos);
+        for (BlockPos blockPos : rocketBlocksPos) {
+            BlockState blockState = world.getBlockState(blockPos);
             if (BlockTags.getCollection().getOrCreate(enginesTag).func_230235_a_(blockState.getBlock())) {
-                if (this.borderBlocksPos.contains(blockPos)) {
+                if (borderBlocksPos.contains(blockPos)) {
                     switch (blockState.get(EngineBlock.FACING)) {
                         case UP:
                             if (rocketBlocksPos.contains(blockPos.add(0,-1,0))) return false;
@@ -153,7 +162,14 @@ public final class Rocket {
         return true;
     }
 
-    @Override
+    public List<BlockPos> getRocketBlocksPos() {
+        return rocketBlocksPos;
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
     public String toString() {
         return "Rocket{" +
                 "baseBlockPos=" + baseBlockPos +
