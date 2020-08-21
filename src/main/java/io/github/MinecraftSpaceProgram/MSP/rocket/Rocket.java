@@ -50,8 +50,12 @@ public final class Rocket {
         MSP.LOGGER.info(MARKER, this.toString());
     }
 
-    public static Rocket createFromLaunchpad(Launchpad launchpad, World world) {
-        return new RocketBuilder(launchpad, world).findRocket();
+    public static Rocket createFromLaunchpad(Launchpad launchpad) {
+        return launchpad.findRocket();
+    }
+
+    public boolean getRulesRespected() {
+        return NO_FLYING_BLOCKS && ROCKET_BORDER_COATED && HAS_ENGINES && HAS_TANKS && ENGINES_FACING_OUTWARDS;
     }
 
     private void findBaseBlock() {
@@ -153,7 +157,14 @@ public final class Rocket {
         return true;
     }
 
-    @Override
+    public List<BlockPos> getRocketBlocksPos() {
+        return rocketBlocksPos;
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
     public String toString() {
         return "Rocket{" +
                 "baseBlockPos=" + baseBlockPos +

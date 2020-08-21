@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "msp:rocket_generic"
+    "msp:rocket_generic",
+    "msp:engine",
+    "msp:tank"
   ]
 }

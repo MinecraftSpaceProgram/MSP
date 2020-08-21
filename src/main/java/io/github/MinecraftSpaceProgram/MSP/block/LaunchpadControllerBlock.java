@@ -1,6 +1,12 @@
 package io.github.MinecraftSpaceProgram.MSP.block;
 
+import io.github.MinecraftSpaceProgram.MSP.MSP;
+import io.github.MinecraftSpaceProgram.MSP.entity.RocketEntity;
+import io.github.MinecraftSpaceProgram.MSP.init.MSPBlocks;
 import io.github.MinecraftSpaceProgram.MSP.init.MSPTileEntityTypes;
+import io.github.MinecraftSpaceProgram.MSP.rocket.Launchpad;
+import io.github.MinecraftSpaceProgram.MSP.rocket.Rocket;
+import io.github.MinecraftSpaceProgram.MSP.util.BlockStorage;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -22,6 +28,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
@@ -137,7 +144,51 @@ public class LaunchpadControllerBlock extends Block {
     @ParametersAreNonnullByDefault
     @Nonnull
     public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        return super.onBlockActivated(state, worldIn, pos, player, handIn, hit);
+        if (!worldIn.isRemote)
+            return super.onBlockActivated(state, worldIn, pos, player, handIn, hit);
+
+        Direction facing = state.get(FACING);
+        Block launchpad_base = MSPBlocks.LAUNCHPAD_BASE.get();
+        BlockPos inFront = pos.offset(facing);
+        BlockPos inFrontDown = inFront.down();
+        BlockPos launchpadBeginPos = null;
+        if (worldIn.getBlockState(inFront).getBlock() == launchpad_base)
+            launchpadBeginPos = inFront;
+        if (worldIn.getBlockState(inFrontDown).getBlock() == launchpad_base)
+            launchpadBeginPos = inFrontDown;
+
+        if (launchpadBeginPos == null) {
+            player.sendMessage(new TranslationTextComponent("msp.event.launchpad_not_found"), player.getUniqueID());
+            return ActionResultType.FAIL;
+        }
+
+        Launchpad launchpad = Launchpad.find(worldIn, launchpadBeginPos);
+        if (launchpad == null) {
+            player.sendMessage(new TranslationTextComponent("event.msp.launchpad_not_found"), player.getUniqueID());
+            return ActionResultType.FAIL;
+        }
+
+        BlockPos[] extremeCorners = launchpad.getExtremeCorners();
+        player.sendMessage(new TranslationTextComponent("event.msp.launchpad_found", extremeCorners[0].getX(), extremeCorners[0].getY(), extremeCorners[0].getZ(), extremeCorners[1].getX(), extremeCorners[1].getY(), extremeCorners[1].getZ()), player.getUniqueID());
+
+        Rocket rocket = Rocket.createFromLaunchpad(launchpad);
+        MSP.LOGGER.info(rocket.toString());
+
+        if (player.isSneaking()) {
+             //if (rocket.getRulesRespected()) {
+                BlockPos rocketPos = launchpad.startingPos.add(launchpad.x / 2f, launchpad.y / 2f, launchpad.z / 2f);
+                RocketEntity rocketEntity = new RocketEntity(worldIn, new BlockStorage(rocket), rocketPos.getX(), rocketPos.getY(), rocketPos.getZ());
+                player.sendMessage(new TranslationTextComponent("event.msp.attempting_rocket_assembly"), player.getUniqueID());
+                launchpad.clear();
+                worldIn.addEntity(rocketEntity);
+            /* }
+            else {
+                player.sendMessage(new TranslationTextComponent("event.msp.rocket_rules"), player.getUniqueID());
+                return ActionResultType.FAIL;
+            } */
+        }
+
+        return ActionResultType.SUCCESS;
     }
 
     @SuppressWarnings("deprecation")

@@ -1,61 +1,48 @@
 package io.github.MinecraftSpaceProgram.MSP.entity;
 
 import io.github.MinecraftSpaceProgram.MSP.init.MSPEntityTypes;
+import io.github.MinecraftSpaceProgram.MSP.util.BlockStorage;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.server.SSpawnObjectPacket;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
 public class RocketEntity extends Entity {
-    private static final DataParameter<Integer> DIMENSION_ID = EntityDataManager.createKey(RocketEntity.class, DataSerializers.VARINT);
+    final BlockStorage storage;
 
-    public RocketEntity(net.minecraft.entity.EntityType entityEntityType, World world) {
+    public RocketEntity(EntityType entityEntityType, World world) {
         super(entityEntityType, world);
-        getRocketInformation();
+        this.storage = null;
     }
 
-    /**
-     * Create rocket entity linked to a dimension via its id
-     * @param dimensionId Dimension linked to the rocket
-     */
-    public RocketEntity(World worldIn, double x, double y, double z, int dimensionId) {
-        super(MSPEntityTypes.ROCKET_ENTITY_TYPE.get(), worldIn);
+    public RocketEntity(World world, BlockStorage storage, double x, double y, double z) {
+        super(MSPEntityTypes.ROCKET_ENTITY_TYPE.get(), world);
         this.setPosition(x, y, z);
+        this.storage = storage;
         this.prevPosX = x;
         this.prevPosY = y;
         this.prevPosZ = z;
-        this.dataManager.set(DIMENSION_ID, dimensionId);
-
-        getRocketInformation();
     }
 
-    private void getRocketInformation() {
-        int FUEL_CAPACITY = 0;
-        int MAX_THRUST = 0;
-    }
+    @Override
+    protected void registerData() {}
 
+    @Override
+    protected void readAdditional(@Nonnull CompoundNBT compound) {}
 
-    protected void registerData() {
-        this.dataManager.register(DIMENSION_ID, 0);
-    }
-
-    protected void readAdditional(CompoundNBT compound) {
-        if (compound.contains("dimension_id", 3))
-            this.dataManager.set(DIMENSION_ID, compound.getInt("dimension_id"));
-    }
-
-    protected void writeAdditional(CompoundNBT compound) {
-        compound.putInt("dimension_id", this.dataManager.get(DIMENSION_ID));
-    }
+    @Override
+    protected void writeAdditional(@Nonnull CompoundNBT compound) {}
 
     @Nonnull
     public IPacket<?> createSpawnPacket() {
         return new SSpawnObjectPacket(this);
+    }
+
+    public BlockStorage getStorage() {
+        return storage;
     }
 }

@@ -3,6 +3,7 @@ package io.github.MinecraftSpaceProgram.MSP.init;
 import io.github.MinecraftSpaceProgram.MSP.MSP;
 import io.github.MinecraftSpaceProgram.MSP.block.*;
 import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraftforge.fml.RegistryObject;
@@ -10,7 +11,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 @SuppressWarnings("unused")
-public class MSPBlocks {
+public final class MSPBlocks {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MSP.MOD_ID);
 
     public static final RegistryObject<Block> EXAMPLE_BLOCK = BLOCKS.register(
@@ -39,5 +40,8 @@ public class MSPBlocks {
     );
     public static final RegistryObject<Block> LAUNCHPAD_CONTROLLER = BLOCKS.register(
             "launchpad_controller", () -> new LaunchpadControllerBlock(Properties.create(Material.IRON))
+    );
+    public static final RegistryObject<Block> SPACE_EMPTY = BLOCKS.register(
+            "space_empty", () -> new AirBlock(Properties.create(Material.AIR))
     );
 }
