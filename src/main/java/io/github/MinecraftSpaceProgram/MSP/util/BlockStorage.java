@@ -40,11 +40,11 @@ public class BlockStorage {
         this.x = minx;
         this.y = miny;
         this.z = minz;
-        this.sizeX = maxx - minx;
-        this.sizeY = maxy - miny;
-        this.sizeZ = maxz - minz;
+        this.sizeX = maxx - minx + 1;
+        this.sizeY = maxy - miny + 1;
+        this.sizeZ = maxz - minz + 1;
 
-        this.blockStates = new BlockState[sizeX][sizeY][sizeY];
+        this.blockStates = new BlockState[sizeX][sizeY][sizeZ];
         this.fluidStates = new FluidState[sizeX][sizeY][sizeZ];
 
         for (BlockPos pos : blocksPos) {
@@ -63,6 +63,8 @@ public class BlockStorage {
 
     @Nullable
     public BlockState getBlockState(BlockPos pos) {
+        if (pos.getX() < 0 || pos.getX() > sizeX || pos.getY() < 0 || pos.getY() > sizeY || pos.getZ() < 0 || pos.getZ() > sizeZ)
+            return null;
         return blockStates[pos.getX()][pos.getY()][pos.getZ()];
     }
 

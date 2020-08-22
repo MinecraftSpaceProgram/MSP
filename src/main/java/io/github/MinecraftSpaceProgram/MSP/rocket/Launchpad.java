@@ -12,6 +12,7 @@ import org.apache.logging.log4j.MarkerManager;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 
+import static io.github.MinecraftSpaceProgram.MSP.MSP.LOGGER;
 import static io.github.MinecraftSpaceProgram.MSP.util.BlockPosUtil.*;
 
 public final class Launchpad {
@@ -34,10 +35,10 @@ public final class Launchpad {
      * @param z z axis offset
      */
     public Launchpad(World world, BlockPos startingPos, int x, int y , int z) {
-        this.startingPos = new BlockPos(
-                startingPos.getX() + Math.min(x, 0),
-                startingPos.getY() + Math.min(y, 0),
-                startingPos.getZ() + Math.min(z, 0)
+        this.startingPos = startingPos.add(
+                Math.min(x,0),
+                Math.min(y,0),
+                Math.min(z,0)
         );
         this.x = Math.abs(x);
         this.y = Math.abs(y);
@@ -48,7 +49,7 @@ public final class Launchpad {
     /**
      * Find launchpad (rectangular base and crane)
      * @param world world
-     * @param startingPos starting pos from where to begin search
+     * @param startingPos starting pos from where to begin searching
      * @return found Launchpad
      */
     @Nullable
@@ -90,9 +91,9 @@ public final class Launchpad {
                 ++nz;
             }
 
-            BlockPos cornerPos = startingPos.add(-nx,0,-nz);
-            int x = px + nx + 1;
-            int z = pz + nz + 1;
+            BlockPos cornerPos = startingPos.add(-nx,1,-nz);
+            int x = px + nx;
+            int z = pz + nz;
 
             BlockPos startingCranePos = null;
             for (BlockPos borderPos : getRectangleOutsideBorders(cornerPos, x, z)) {
@@ -141,17 +142,17 @@ public final class Launchpad {
         ArrayList<BlockPos> rocket = new ArrayList<>();
         ArrayList<BlockPos> rocketBorder = new ArrayList<>();
 
-        final BlockPos[] hangarInsideBlocks = getCubeInside(startingPos, x, y, z);
-        final BlockPos[] hangarBorderBlocks = getCubeInsideBorders(startingPos, x, y, z);
+        final BlockPos[] launchpadInsideBlocks = getCube(startingPos, x, y, z);
+        final BlockPos[] launchpadBorderBlocks = getCubeBorder(startingPos, x, y, z);
 
-        for (BlockPos insideBlockPos : hangarInsideBlocks) {
+        for (BlockPos insideBlockPos : launchpadInsideBlocks) {
             if (!world.isAirBlock(insideBlockPos))
                 rocket.add(insideBlockPos);
             else
                 airNotOutside.add(insideBlockPos);
         }
 
-        for (BlockPos borderBlockPos : hangarBorderBlocks) {
+        for (BlockPos borderBlockPos : launchpadBorderBlocks) {
             if (world.isAirBlock(borderBlockPos)) {
                 outside.add(borderBlockPos);
                 toVisit.add(borderBlockPos);
@@ -162,9 +163,8 @@ public final class Launchpad {
         }
 
         if (outside.isEmpty()) {
-            MSP.LOGGER.info(MARKER, "No air was found on the borders of the hangar, the rocket must be taking all the space...");
-            MSP.LOGGER.info(MARKER, "For info, the hangar was " + toString());
-            return new Rocket(hangarInsideBlocks, hangarBorderBlocks, world);
+            LOGGER.info(MARKER, "No air was found on the borders of the hangar, the rocket must be taking all the space...");
+            return new Rocket(launchpadInsideBlocks, launchpadBorderBlocks, world);
         }
 
         while (!toVisit.isEmpty()) {
@@ -195,7 +195,8 @@ public final class Launchpad {
     }
 
     public void clear() {
-        for (BlockPos pos : getCubeInside(startingPos, x, y, z)) {
+        MSP.LOGGER.info(MARKER, "Clearing launchpad");
+        for (BlockPos pos : getCube(startingPos, x, y, z)) {
             world.setBlockState(pos, Blocks.AIR.getDefaultState());
         }
     }

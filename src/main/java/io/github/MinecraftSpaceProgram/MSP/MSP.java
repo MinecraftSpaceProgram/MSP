@@ -1,6 +1,7 @@
 package io.github.MinecraftSpaceProgram.MSP;
 
 import io.github.MinecraftSpaceProgram.MSP.init.MSPBlocks;
+import io.github.MinecraftSpaceProgram.MSP.init.MSPEntityTypes;
 import io.github.MinecraftSpaceProgram.MSP.init.MSPItems;
 import io.github.MinecraftSpaceProgram.MSP.init.MSPTileEntityTypes;
 import net.minecraft.item.BlockItem;
@@ -40,7 +41,7 @@ public final class MSP {
         MSPItems.ITEMS.register(modEventBus);
         MSPBlocks.BLOCKS.register(modEventBus);
         MSPTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
-        // EntityTypes.ENTITY_TYPES.register(modEventBus);
+        MSPEntityTypes.ENTITY_TYPES.register(modEventBus);
     }
 
     @SubscribeEvent
