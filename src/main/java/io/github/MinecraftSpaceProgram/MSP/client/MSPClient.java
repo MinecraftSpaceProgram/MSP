@@ -14,6 +14,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class MSPClient {
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
+        MSP.LOGGER.debug("Adding renderer's to the registry");
         RenderingRegistry.registerEntityRenderingHandler(MSPEntityTypes.ROCKET_ENTITY_TYPE.get(), RocketRenderer::new);
     }
 }

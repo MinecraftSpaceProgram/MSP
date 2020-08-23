@@ -197,6 +197,7 @@ public final class Launchpad {
     public void clear() {
         MSP.LOGGER.info(MARKER, "Clearing launchpad");
         for (BlockPos pos : getCube(startingPos, x, y, z)) {
+            //world.func_230547_a_(pos, Blocks.AIR);
             world.setBlockState(pos, Blocks.AIR.getDefaultState());
         }
     }

@@ -1,87 +1,101 @@
 package io.github.MinecraftSpaceProgram.MSP.client.renderer.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import io.github.MinecraftSpaceProgram.MSP.MSP;
 import io.github.MinecraftSpaceProgram.MSP.entity.RocketEntity;
 import io.github.MinecraftSpaceProgram.MSP.util.BlockStorage;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.IEntityRenderer;
-import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.entity.item.FallingBlockEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.world.World;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Random;
 
 @ParametersAreNonnullByDefault
-public class RocketRenderer extends EntityRenderer<RocketEntity> implements IEntityRenderer<RocketEntity, EntityModel<RocketEntity>> {
-    protected EntityModel<RocketEntity> model = new EntityModel<RocketEntity>() {
-        public void setRotationAngles(RocketEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) { }
-        public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) { }
-    };
-    private static final BlockRendererDispatcher BLOCK_RENDERER = Minecraft.getInstance().getBlockRendererDispatcher();
+public class RocketRenderer extends EntityRenderer<RocketEntity> {
 
     public RocketRenderer(EntityRendererManager renderManager) {
         super(renderManager);
+        this.shadowSize = 0.5F;
     }
 
-    @Override
-    @Nonnull
-    public EntityModel<RocketEntity> getEntityModel() {
-        return model;
-    }
-
-    @SuppressWarnings("NullableProblems")
     @Override
     public ResourceLocation getEntityTexture(RocketEntity entity) {
-        return null;
+        return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
     }
 
     @Override
-    public void render(RocketEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+    public void render(RocketEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int packedLightIn) {
         BlockStorage storage = entity.getStorage();
-        if (storage == null)
-            return;
+        MSP.LOGGER.debug("storage : " + storage.numberOfBlocks);
 
-        RenderHelper.disableStandardItemLighting();
-        Minecraft.getInstance().getTextureManager().bindTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
-
-        for (int dx = 0; dx < storage.sizeX; ++dx) {
-            for (int dy = 0; dy < storage.sizeY; ++dy) {
-                for (int dz = 0; dz < storage.sizeZ; ++dz) {
-                    BlockPos pos = new BlockPos(dx,dy,dz);
-                    BlockState blockState = storage.getBlockState(pos);
+        matrixStack.push();
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(entity.getYaw(partialTicks)));
+        //Render Each block
+        World world = entity.getWorldObj();
+        for (int xx = 0; xx < storage.sizeX; xx++) {
+            for (int zz = 0; zz < storage.sizeZ; zz++) {
+                for (int yy = 0; yy < storage.sizeY; yy++) {
+                    BlockState blockState = storage.getBlockState(new BlockPos(xx, yy, zz));
                     if (blockState != null) {
                         try {
-                            BLOCK_RENDERER.renderBlock(blockState, matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY);
-                        }
-                        catch (NullPointerException e) {
-                            MSP.LOGGER.error(blockState.getBlock().getRegistryName() + String.format(" cannot be rendered at (%f,%f,%f)", entity.getPosX(), entity.getPosY(), entity.getPosZ()));
+                            FallingBlockEntity entityIn = new FallingBlockEntity(
+                                    world,
+                                    entity.getPosX(),
+                                    entity.getPosY(),
+                                    entity.getPosZ(),
+                                    blockState
+                            );
+
+                            BlockState blockstate = entityIn.getBlockState();
+                            if (blockstate.getRenderType() == BlockRenderType.MODEL) {
+                                if (blockstate != world.getBlockState(entityIn.func_233580_cy_()) && blockstate.getRenderType() != BlockRenderType.INVISIBLE) {
+                                    matrixStack.push();
+                                    matrixStack.translate(xx, yy, zz);
+                                    BlockPos blockpos = new BlockPos(entityIn.getPosX(), entityIn.getBoundingBox().maxY, entityIn.getPosZ());
+                                    matrixStack.translate(-0.5D, 0.0D, -0.5D);
+                                    BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
+                                    for (net.minecraft.client.renderer.RenderType type : net.minecraft.client.renderer.RenderType.getBlockRenderTypes()) {
+                                        if (RenderTypeLookup.canRenderInLayer(blockstate, type)) {
+                                            net.minecraftforge.client.ForgeHooksClient.setRenderLayer(type);
+                                            blockrendererdispatcher.getBlockModelRenderer().renderModel(
+                                                    world,
+                                                    blockrendererdispatcher.getModelForState(blockstate),
+                                                    blockstate,
+                                                    blockpos,
+                                                    matrixStack,
+                                                    bufferIn.getBuffer(type),
+                                                    false,
+                                                    new Random(),
+                                                    blockstate.getPositionRandom(entityIn.getOrigin()),
+                                                    OverlayTexture.NO_OVERLAY
+                                            );
+                                        }
+                                    }
+                                    net.minecraftforge.client.ForgeHooksClient.setRenderLayer(null);
+                                    matrixStack.pop();
+                                }
+                            }
+                        } catch (NullPointerException e) {
+                            MSP.LOGGER.debug(blockState.getBlock().getRegistryName() + " cannot be rendered on rocket at " + entity.getPositionVec());
                         }
                     }
                 }
             }
         }
-
-        for (TileEntity tile : storage.getTileEntityList()) {
-            TileEntityRenderer<TileEntity> renderer = TileEntityRendererDispatcher.instance.getRenderer(tile);
-            if (renderer != null)
-                TileEntityRendererDispatcher.instance.renderTileEntity(tile, partialTicks, matrixStackIn, bufferIn);
-        }
-
-        matrixStackIn.translate(entity.getPosX() - storage.sizeX / 2f, entity.getPosY() - storage.sizeY / 2f, entity.getPosZ() - storage.sizeZ / 2f);
-        RenderHelper.enableStandardItemLighting();
+        matrixStack.pop();
     }
+
 }
