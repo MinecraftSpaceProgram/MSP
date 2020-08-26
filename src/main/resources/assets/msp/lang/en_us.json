@@ -1,10 +1,18 @@
 {
   "item.msp.example_item": "Example Item",
-
   "block.msp.example_block": "Example Block",
   "block.msp.flight_computer": "Flight Computer",
-
-  "container.flight_computer": "FLIIIGHT"
+  "container.flight_computer": "FLIIIGHT",
   "block.msp.example_block": "Example Block",
-  "block.msp.example_tileentity": "Example TileEntity"
+  "block.msp.example_tileentity": "Example TileEntity",
+  "button.delete_node": "Delete Node",
+  "field.prograde": "Prograde Speed",
+  "field.normal": "Normal Speed",
+  "field.radial": "Radial Speed",
+  "field.unit": "m/s",
+  "map.inclination": "Inclination",
+  "map.perigee": "Perigee",
+  "map.apogee": "Apogee",
+  "map.altitude": "Altitude",
+  "map.velocity": "Velocity"
 }

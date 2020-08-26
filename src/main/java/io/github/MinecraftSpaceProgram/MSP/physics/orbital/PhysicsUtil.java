@@ -1,5 +1,8 @@
 package io.github.MinecraftSpaceProgram.MSP.physics.orbital;
 
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3d;
+
 import java.util.Arrays;
 
 import static java.lang.Math.*;
@@ -10,7 +13,12 @@ public final class PhysicsUtil {
      */
     public static final double G = 6.674 * E(-11);
 
+    /**
+     * The Astronomical Unit
+     */
     public static final double AU = 1.495978707 * E(11);
+
+    public static final int ORBIT_PRECISION = 1000;
 
     public static double E(int power) {
         if (power >= 0) {
@@ -41,8 +49,8 @@ public final class PhysicsUtil {
      */
     public static double keplerE(double M, double e) {
         // modifies the mean anomaly
-        M /= 2* PI;
-        M = 2 * PI *(M - floor(M));
+        M /= 2 * PI;
+        M = 2 * PI * (M - floor(M));
 
         // approximates E in radians
         double E1;
@@ -100,4 +108,35 @@ public final class PhysicsUtil {
         return result;
     }
 
+    /**
+     * Polar coordinates to cartesian
+     */
+    public static Vector3d toCartesian(double r, double theta) {
+        return new Vector3d(r * cos(theta), r * sin(theta), 0);
+    }
+
+    /**
+     * Rotates a given Vector3d by a Quaternion
+     */
+    public static Vector3d rotateVector3d(Vector3d v, Quaternion q) {
+        Quaternion quaternion = new Quaternion(q);
+        quaternion.multiply(new Quaternion((float) v.x, (float) v.y, (float) v.z, 0.0F));
+        Quaternion quaternion1 = new Quaternion(q);
+        quaternion1.conjugate();
+        quaternion.multiply(quaternion1);
+        return new Vector3d(quaternion.getX(), quaternion.getY(), quaternion.getZ());
+    }
+
+    /**
+     * Expresses a vector u described in a basis B1 in a new basis B2
+     *
+     * @param u           a vector expressed in B1
+     * @param rotation    the rotation to go from B1 to B2
+     * @param translation the coordinates of B2's origin in B1
+     */
+    public static Vector3d changeBasis(Vector3d u, Vector3d translation, Quaternion rotation) {
+        Quaternion rotationCopy = new Quaternion(rotation);
+        rotationCopy.conjugate();
+        return rotateVector3d(u.subtract(translation), rotationCopy);
+    }
 }

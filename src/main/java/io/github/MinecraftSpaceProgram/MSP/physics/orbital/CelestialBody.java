@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,41 +16,57 @@ import java.util.List;
 @SuppressWarnings("deprecation")
 public abstract class CelestialBody {
 
+    /**
+     * The display name of the celestial body
+     */
     public String name;
 
-    // the mas of the celestial body, unit kg
+    /**
+     * The mass of the celestial body in kg
+     */
     public double mass;
 
-    // the position of the celestial body in a=cartesian space, unit AU
+    // the position of the celestial body in a cartesian space, unit AU
+    @Deprecated
     public Vector3d position;
 
-    public Vector3d speed;
-
-    public Vector3d acceleration;
-
+    /**
+     * The trajectory of the celestial body
+     */
     public Vector3d[] trajectory;
 
+    /**
+     * The velocity of the celestial body
+     */
+    public Vector3d[] velocity;
+
+    @Deprecated
     public RenderMaterial material;
 
+    public ResourceLocation texture;
+
     /**
-     * display size of a planet
+     * Display size of the body
      */
     public double size;
 
     /**
-     * list of satellites of this
+     * Satellites of this body
      */
     public List<CelestialBody> satellites = new ArrayList<>();
 
     /**
      * The body around which is being orbited
      */
+    @Nullable
+    @Deprecated
     public CelestialBody orbitingAround;
 
     public CelestialBody(String name, double mass, String path){
         this.name = name;
         this.mass = mass;
-        this.material = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(MSP.MOD_ID, path));
+        this.texture = new ResourceLocation(MSP.MOD_ID, path);
+        this.material = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE, this.texture);
 
     }
 
@@ -57,12 +74,10 @@ public abstract class CelestialBody {
 
     public abstract Vector3d calculatePosition(int time);
 
-    public abstract void updatePlanet(int time);
+    public abstract void update(int time);
 
     /**
      * Draws the celestial body on the screen
-     * @param matrixStack the current transformation matrix
-     * @param renderBuffers the vertex builder used to draw the line
      */
     public abstract void draw(MatrixStack matrixStack, IRenderTypeBuffer renderBuffers, double zoom);
 
@@ -71,9 +86,6 @@ public abstract class CelestialBody {
         return "CelestialBody{" +
                 "name='" + name + '\'' +
                 ", mass=" + mass +
-                ", position=" + position +
-                ", speed=" + speed +
-                ", acceleration=" + acceleration +
                 '}';
     }
 }

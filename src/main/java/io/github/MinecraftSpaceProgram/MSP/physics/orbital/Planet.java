@@ -2,7 +2,6 @@ package io.github.MinecraftSpaceProgram.MSP.physics.orbital;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import io.github.MinecraftSpaceProgram.MSP.MSP;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.math.vector.Quaternion;
@@ -50,14 +49,11 @@ public class Planet extends OrbitingBody{
 
         this.trajectory = this.predict(0, (int) this.P - 1);
         this.lastUpdate = 0;
-
-        MSP.LOGGER.debug(this::toString);
     }
 
     @Override
     public Vector3d[] predict(int t1, int t2) {
         Vector3d[] res = new Vector3d[t2 - t1];
-        MSP.LOGGER.debug("Calculating trajectory for " + this.name);
         for(int t = t1; t < t2; t++){
             res[t - t1] = this.calculatePosition(t);
         }
@@ -65,7 +61,7 @@ public class Planet extends OrbitingBody{
     }
 
     @Override
-    public void updatePlanet(int time) {
+    public void update(int time) {
         this.position = calculatePosition(time);
     }
 
@@ -126,9 +122,6 @@ public class Planet extends OrbitingBody{
                 ", E=" + E +
                 ", name='" + name + '\'' +
                 ", mass=" + mass +
-                ", position=" + position +
-                ", speed=" + speed +
-                ", acceleration=" + acceleration +
                 ", trajectory=" + Arrays.toString(trajectory) +
                 '}';
     }
@@ -138,7 +131,7 @@ public class Planet extends OrbitingBody{
 
         double adjustedSize = zoomPlanet(this.size, zoom);
 
-        this.updatePlanet(1);
+        this.update(1);
 
         // IVertex builder to draw solids
         IVertexBuilder vertexBuilder = renderBuffers.getBuffer(RenderType.getSolid());
