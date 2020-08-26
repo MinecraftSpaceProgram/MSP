@@ -7,9 +7,7 @@ import io.github.MinecraftSpaceProgram.MSP.util.BlockStorage;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -21,7 +19,6 @@ import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Random;
 
 @ParametersAreNonnullByDefault
 public class RocketRenderer extends EntityRenderer<RocketEntity> {
@@ -64,27 +61,7 @@ public class RocketRenderer extends EntityRenderer<RocketEntity> {
                                 if (blockstate != world.getBlockState(entityIn.func_233580_cy_()) && blockstate.getRenderType() != BlockRenderType.INVISIBLE) {
                                     matrixStack.push();
                                     matrixStack.translate(xx, yy, zz);
-                                    BlockPos blockpos = new BlockPos(entityIn.getPosX(), entityIn.getBoundingBox().maxY, entityIn.getPosZ());
-                                    matrixStack.translate(-0.5D, 0.0D, -0.5D);
-                                    BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
-                                    for (net.minecraft.client.renderer.RenderType type : net.minecraft.client.renderer.RenderType.getBlockRenderTypes()) {
-                                        if (RenderTypeLookup.canRenderInLayer(blockstate, type)) {
-                                            net.minecraftforge.client.ForgeHooksClient.setRenderLayer(type);
-                                            blockrendererdispatcher.getBlockModelRenderer().renderModel(
-                                                    world,
-                                                    blockrendererdispatcher.getModelForState(blockstate),
-                                                    blockstate,
-                                                    blockpos,
-                                                    matrixStack,
-                                                    bufferIn.getBuffer(type),
-                                                    false,
-                                                    new Random(),
-                                                    blockstate.getPositionRandom(entityIn.getOrigin()),
-                                                    OverlayTexture.NO_OVERLAY
-                                            );
-                                        }
-                                    }
-                                    net.minecraftforge.client.ForgeHooksClient.setRenderLayer(null);
+                                    Minecraft.getInstance().getBlockRendererDispatcher().renderBlock(blockState, matrixStack, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY);
                                     matrixStack.pop();
                                 }
                             }

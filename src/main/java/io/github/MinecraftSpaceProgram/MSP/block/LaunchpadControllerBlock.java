@@ -185,6 +185,8 @@ public class LaunchpadControllerBlock extends Block {
             //if (rocket.getRulesRespected()) {
             if (!rocket.getRocketBlocksPos().isEmpty()) {
                 if (worldIn instanceof ServerWorld) {
+
+                    // TODO have the rocket not tp
                     BlockPos rocketPos = launchpad.startingPos.add(launchpad.x / 2f, launchpad.y / 2f, launchpad.z / 2f);
 
                     player.sendMessage(new TranslationTextComponent("event.msp.attempting_rocket_assembly"), player.getUniqueID());
