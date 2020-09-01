@@ -1,0 +1,10 @@
+{
+  "variants":{
+    "facing=down": {"model": "msp:block/engine", "x": 180},
+    "facing=up": {"model": "msp:block/engine"},
+    "facing=north": {"model": "msp:block/engine", "x": 90},
+    "facing=south": {"model": "msp:block/engine", "x": -90},
+    "facing=east": {"model": "msp:block/engine", "x": 90, "y": 90},
+    "facing=west": {"model": "msp:block/engine", "x": 90, "y": -90}
+  }
+}

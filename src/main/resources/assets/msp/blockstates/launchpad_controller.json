@@ -1,0 +1,16 @@
+{
+  "variants":{
+    "side=center,facing=north": {"model": "msp:block/launchpad_controller_center"},
+    "side=center,facing=south": {"model": "msp:block/launchpad_controller_center", "y": 180},
+    "side=center,facing=west": {"model": "msp:block/launchpad_controller_center", "y": -90},
+    "side=center,facing=east": {"model": "msp:block/launchpad_controller_center", "y": 90},
+    "side=left,facing=north": {"model": "msp:block/launchpad_controller_side"},
+    "side=left,facing=south": {"model": "msp:block/launchpad_controller_side", "y": 180},
+    "side=left,facing=west": {"model": "msp:block/launchpad_controller_side", "y": -90},
+    "side=left,facing=east": {"model": "msp:block/launchpad_controller_side", "y": 90},
+    "side=right,facing=north": {"model": "msp:block/launchpad_controller_side"},
+    "side=right,facing=south": {"model": "msp:block/launchpad_controller_side", "y": 180},
+    "side=right,facing=west": {"model": "msp:block/launchpad_controller_side", "y": -90},
+    "side=right,facing=east": {"model": "msp:block/launchpad_controller_side", "y": 90}
+  }
+}
