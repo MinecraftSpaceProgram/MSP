@@ -1,7 +1,7 @@
 package io.github.MinecraftSpaceProgram.MSP.block;
 
 import io.github.MinecraftSpaceProgram.MSP.MSP;
-import io.github.MinecraftSpaceProgram.MSP.init.ModTileEntityTypes;
+import io.github.MinecraftSpaceProgram.MSP.init.MSPTileEntityTypes;
 import io.github.MinecraftSpaceProgram.MSP.tileentity.GUIBlockTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -31,7 +31,7 @@ public class GUIBlock extends Block{
 
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return ModTileEntityTypes.GUI_BLOCK.get().create();
+        return MSPTileEntityTypes.GUI_BLOCK.get().create();
     }
 
     @SuppressWarnings("deprecation")

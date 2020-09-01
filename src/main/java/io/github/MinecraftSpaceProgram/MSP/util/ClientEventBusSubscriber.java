@@ -11,7 +11,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @Mod.EventBusSubscriber(modid = MSP.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientEventBusSubscriber {
-
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event){
         ScreenManager.registerFactory(ModContainerTypes.GUI_BLOCK.get(), GUIBlockScreen::new);

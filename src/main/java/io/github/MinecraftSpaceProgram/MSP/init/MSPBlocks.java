@@ -44,4 +44,7 @@ public final class MSPBlocks {
     public static final RegistryObject<Block> SPACE_EMPTY = BLOCKS.register(
             "space_empty", () -> new AirBlock(Properties.create(Material.AIR))
     );
+    public static final RegistryObject<Block> GUI_BLOCK = BLOCKS.register(
+            "gui_block", GUIBlock::new
+    );
 }

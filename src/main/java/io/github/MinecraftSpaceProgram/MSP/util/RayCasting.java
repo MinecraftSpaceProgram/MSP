@@ -28,7 +28,7 @@ public final class RayCasting {
     /**
      * @return the mean anomaly of the point of the ellipse closest to (AB)
      */
-    public static Pair<Double, Double> closestAngleEllipse(Vector3d A, Vector3d B, Orbit orbit) {
+    public static Pair closestAngleEllipse(Vector3d A, Vector3d B, Orbit orbit) {
         // the rotation of the elliptical plane
         Quaternion rotationOfEllipticalPlane = new Quaternion(0.0F, 0.0F, (float) orbit.W, false);
         rotationOfEllipticalPlane.multiply(new Quaternion((float) orbit.i, 0.0F, 0.0F, false));

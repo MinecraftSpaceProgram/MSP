@@ -13,7 +13,7 @@ import java.util.Objects;
 
 public class GUIBlockContainer extends Container {
 
-    public GUIBlockContainer(final int windowId, final PlayerInventory playerInventory, final GUIBlockTileEntity tileEntity) {
+    public GUIBlockContainer(final int windowId, final GUIBlockTileEntity tileEntity) {
         super(ModContainerTypes.GUI_BLOCK.get(), windowId);
     }
 
@@ -29,7 +29,7 @@ public class GUIBlockContainer extends Container {
     }
 
     public GUIBlockContainer(final int windowId, final PlayerInventory inventory, final PacketBuffer data){
-        this(windowId, inventory, getTileEntity(inventory, data));
+        this(windowId, getTileEntity(inventory, data));
     }
 
     @Override

@@ -1,13 +1,6 @@
 package io.github.MinecraftSpaceProgram.MSP;
 
-import io.github.MinecraftSpaceProgram.MSP.init.MSPBlocks;
-import io.github.MinecraftSpaceProgram.MSP.init.MSPEntityTypes;
-import io.github.MinecraftSpaceProgram.MSP.init.MSPItems;
-import io.github.MinecraftSpaceProgram.MSP.init.MSPTileEntityTypes;
-import io.github.MinecraftSpaceProgram.MSP.init.BlockLoader;
-import io.github.MinecraftSpaceProgram.MSP.init.ItemLoader;
-import io.github.MinecraftSpaceProgram.MSP.init.ModContainerTypes;
-import io.github.MinecraftSpaceProgram.MSP.init.ModTileEntityTypes;
+import io.github.MinecraftSpaceProgram.MSP.init.*;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -50,9 +43,6 @@ public final class MSP {
         MSPBlocks.BLOCKS.register(modEventBus);
         MSPTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
         MSPEntityTypes.ENTITY_TYPES.register(modEventBus);
-        ItemLoader.ITEMS.register(modEventBus);
-        BlockLoader.BLOCKS.register(modEventBus);
-        ModTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
         ModContainerTypes.CONTAINER_TYPES.register(modEventBus);
     }
 

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import io.github.MinecraftSpaceProgram.MSP.MSP;
 import io.github.MinecraftSpaceProgram.MSP.entity.RocketEntity;
 import io.github.MinecraftSpaceProgram.MSP.util.BlockStorage;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -21,6 +22,7 @@ import net.minecraft.world.World;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class RocketRenderer extends EntityRenderer<RocketEntity> {
 
     public RocketRenderer(EntityRendererManager renderManager) {
@@ -36,7 +38,6 @@ public class RocketRenderer extends EntityRenderer<RocketEntity> {
     @Override
     public void render(RocketEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int packedLightIn) {
         BlockStorage storage = entity.getStorage();
-        MSP.LOGGER.debug("storage : " + storage.numberOfBlocks);
 
         matrixStack.push();
         matrixStack.rotate(Vector3f.YP.rotationDegrees(entity.getYaw(partialTicks)));

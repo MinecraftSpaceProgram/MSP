@@ -2,7 +2,7 @@ package io.github.MinecraftSpaceProgram.MSP.tileentity;
 
 import io.github.MinecraftSpaceProgram.MSP.MSP;
 import io.github.MinecraftSpaceProgram.MSP.container.GUIBlockContainer;
-import io.github.MinecraftSpaceProgram.MSP.init.ModTileEntityTypes;
+import io.github.MinecraftSpaceProgram.MSP.init.MSPTileEntityTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -20,7 +20,7 @@ public class GUIBlockTileEntity extends TileEntity implements INamedContainerPro
     public GUIBlockTileEntity(TileEntityType<?> tileEntityTypeIn) { super(tileEntityTypeIn); }
 
     public GUIBlockTileEntity(){
-        this(ModTileEntityTypes.GUI_BLOCK.get());
+        this(MSPTileEntityTypes.GUI_BLOCK.get());
     }
 
 
@@ -28,7 +28,7 @@ public class GUIBlockTileEntity extends TileEntity implements INamedContainerPro
     @Override
     public Container createMenu(int windowId,@Nonnull PlayerInventory playerInventory,@Nonnull PlayerEntity playerEntity) {
         MSP.LOGGER.debug("creating a menu");
-        return new GUIBlockContainer(windowId, playerInventory, this);
+        return new GUIBlockContainer(windowId, this);
     }
 
     @Override
