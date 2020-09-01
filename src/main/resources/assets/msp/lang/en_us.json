@@ -16,6 +16,17 @@
   "map.altitude": "Altitude",
   "map.velocity": "Velocity"
   "block.msp.example_tileentity": "Example TileEntity",
+  "button.delete_node": "Delete Node",
+  "field.prograde": "Prograde Speed",
+  "field.normal": "Normal Speed",
+  "field.radial": "Radial Speed",
+  "field.unit": "m/s",
+  "map.inclination": "Inclination",
+  "map.perigee": "Perigee",
+  "map.apogee": "Apogee",
+  "map.altitude": "Altitude",
+  "map.velocity": "Velocity"
+  "block.msp.example_tileentity": "Example TileEntity",
   "block.msp.rocket_generic": "Rocket Block",
   "block.msp.flight_controller": "Flight Controller",
   "block.msp.launchpad_base": "Launchpad Base",
