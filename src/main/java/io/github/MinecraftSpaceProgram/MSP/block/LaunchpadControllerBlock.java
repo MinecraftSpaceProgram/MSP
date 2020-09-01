@@ -215,14 +215,14 @@ public class LaunchpadControllerBlock extends Block {
         else
             voxelShape = TOP_VOXEL_SHAPE;
         switch (state.get(FACING)) {
-            default:
-                return voxelShape;
             case SOUTH:
                 return rotateY(voxelShape, 2);
             case WEST:
                 return rotateY(voxelShape, -1);
             case EAST:
                 return rotateY(voxelShape, 1);
+            default:
+                return voxelShape;
         }
     }
 

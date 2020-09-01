@@ -152,6 +152,8 @@ public final class Rocket {
                             if (rocketBlocksPos.contains(blockPos.add(-1,0,0))) return false;
                         case WEST:
                             if (rocketBlocksPos.contains(blockPos.add(1,0,0))) return false;
+                        default:
+                            throw new IllegalArgumentException();
                     }
                 }
                 else {
