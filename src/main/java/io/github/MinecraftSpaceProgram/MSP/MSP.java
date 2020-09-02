@@ -44,6 +44,7 @@ public final class MSP {
         MSPTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
         MSPEntityTypes.ENTITY_TYPES.register(modEventBus);
         ModContainerTypes.CONTAINER_TYPES.register(modEventBus);
+        MSPDataSerializers.DATA_SERIALIZERS.register(modEventBus);
     }
 
     @SubscribeEvent

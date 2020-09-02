@@ -14,6 +14,11 @@ public final class PhysicsUtil {
     public static final double G = 6.674 * E(-11);
 
     /**
+     * the length of a tick in s
+     */
+    public static final double TICK_LENGTH = 0.05D;
+
+    /**
      * The Astronomical Unit
      */
     public static final double AU = 1.495978707 * E(11);
