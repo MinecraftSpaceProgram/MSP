@@ -18,7 +18,7 @@ public class RocketEntityType extends EntityType<RocketEntity> {
                 immuneToFire,
                 true,
                 ImmutableSet.of(),
-                EntitySize.flexible(2.0f, 0.5f),
+                EntitySize.flexible(1.0F, 1.0f),
                 5,
                 3);
         this.texture = texture;

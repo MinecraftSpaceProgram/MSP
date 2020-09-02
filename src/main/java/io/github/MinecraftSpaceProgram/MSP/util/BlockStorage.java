@@ -75,6 +75,18 @@ public class BlockStorage {
         this.numberOfBlocks = numberOfBlocks;
     }
 
+    public BlockStorage(BlockStorage blockStorage) {
+        this(
+                blockStorage.blockStates,
+                blockStorage.x,
+                blockStorage.y,
+                blockStorage.z,
+                blockStorage.sizeX,
+                blockStorage.sizeY,
+                blockStorage.sizeZ,
+                blockStorage.numberOfBlocks);
+    }
+
     @Nullable
     public BlockState getBlockState(BlockPos pos) {
         if (pos.getX() < 0 || pos.getX() > sizeX || pos.getY() < 0 || pos.getY() > sizeY || pos.getZ() < 0 || pos.getZ() > sizeZ)
@@ -85,6 +97,7 @@ public class BlockStorage {
     //public ArrayList<TileEntity> getTileEntityList() {
     //    return tileEntities;
     //}
+
 
     public CompoundNBT toNBT() {
         CompoundNBT compoundnbt = new CompoundNBT();
@@ -101,7 +114,7 @@ public class BlockStorage {
                 for (int z = 0; z < this.sizeZ; z++) {
                     if (this.blockStates[x][y][z] != null) {
                         compoundnbt.put("BlockState[" + x + "][" + y + "][" + z + "]", NBTUtil.writeBlockState(this.blockStates[x][y][z]));
-                        MSP.LOGGER.debug("key: " + (int)compoundnbt.getTagId("BlockState[" + x + "][" + y + "][" + z + "]"));
+                        MSP.LOGGER.debug("key: " + (int) compoundnbt.getTagId("BlockState[" + x + "][" + y + "][" + z + "]"));
                     }
                 }
             }
@@ -125,9 +138,9 @@ public class BlockStorage {
         for (int x = 0; x < this.sizeX; x++) {
             for (int y = 0; y < this.sizeY; y++) {
                 for (int z = 0; z < this.sizeZ; z++) {
-                    if(compoundNBT.contains("BlockState[" + x + "][" + y + "][" + z + "]", 10)){
+                    if (compoundNBT.contains("BlockState[" + x + "][" + y + "][" + z + "]", 10)) {
                         this.blockStates[x][y][z] = NBTUtil.readBlockState(compoundNBT.getCompound("BlockState[" + x + "][" + y + "][" + z + "]"));
-                        numberOfBlocksActual ++;
+                        numberOfBlocksActual++;
                     } else {
                         this.blockStates[x][y][z] = null;
                     }
@@ -135,7 +148,7 @@ public class BlockStorage {
             }
         }
 
-        if (numberOfBlocksActual != this.numberOfBlocks){
+        if (numberOfBlocksActual != this.numberOfBlocks) {
             MSP.LOGGER.error("----- NBT TRANSLATION FAILED -----");
         }
     }
