@@ -1,0 +1,8 @@
+{
+  "variants":{
+    "up=false,down=false": {"model": "msp:block/hydrazine_tank_block"},
+    "up=true,down=false": {"model": "msp:block/hydrazine_tank_block0"},
+    "up=false,down=true": {"model": "msp:block/hydrazine_tank_block1"},
+    "up=true,down=true": {"model": "msp:block/hydrazine_tank_block2"}
+  }
+}
