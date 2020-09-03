@@ -85,8 +85,6 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
     this.setPosition(x, y, z);
     this.AABB = new AxisAlignedBB(0, 0, 0, storage.sizeX, storage.sizeY, storage.sizeZ);
     this.recalculateSize();
-    // TODO only fuel tanks
-    this.dataManager.set(FUEL, (this.storage.numberOfBlocks - 1) * 1.0F);
   }
 
   @Override
@@ -193,6 +191,10 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
     return storage;
   }
 
+  public void setFuel(float fuel){
+    this.dataManager.set(FUEL, fuel);
+  }
+
   @SuppressWarnings("deprecation")
   @Override
   public boolean attackEntityFrom(DamageSource source, float amount) {
@@ -216,7 +218,7 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
    * Returns a boundingBox used to collide the entity with other entities and blocks. This enables
    * the entity to be pushable on contact, like boats.
    */
-  @Nullable
+  /*@Nullable
   @Override
   public AxisAlignedBB getCollisionBox(Entity entityIn) {
     return entityIn.canBePushed() ? entityIn.getBoundingBox() : null;
@@ -226,12 +228,12 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
    * Returns the <b>solid</b> collision bounding box for this entity. Used to make (e.g.) boats
    * solid. Return null if this entity is not solid.
    */
-  @Nullable
+  /*@Nullable
   @Override
   public AxisAlignedBB getCollisionBoundingBox() {
     return this.getBoundingBox();
   }
-
+/*
   /** Returns true if this entity should push and be pushed by other entities when colliding. */
   @Override
   public boolean canBePushed() {
@@ -384,34 +386,26 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
 
   @Override
   public Vector3d func_230268_c_(LivingEntity p_230268_1_) {
-    Vector3d vector3d =
-        func_233559_a_(
-            this.getWidth() * MathHelper.SQRT_2, p_230268_1_.getWidth(), this.rotationYaw);
+    Vector3d vector3d = func_233559_a_(this.getWidth() * MathHelper.SQRT_2, p_230268_1_.getWidth(), this.rotationYaw);
     double d0 = this.getPosX() + vector3d.x;
     double d1 = this.getPosZ() + vector3d.z;
     BlockPos blockpos = new BlockPos(d0, this.getBoundingBox().maxY, d1);
     BlockPos blockpos1 = blockpos.down();
     if (!this.world.hasWater(blockpos1)) {
-      for (Pose pose : p_230268_1_.func_230297_ef_()) {
-        AxisAlignedBB axisalignedbb = p_230268_1_.func_233648_f_(pose);
-        double d2 = this.world.func_234936_m_(blockpos);
-        if (TransportationHelper.func_234630_a_(d2)) {
-          Vector3d vector3d1 = new Vector3d(d0, (double) blockpos.getY() + d2, d1);
-          if (TransportationHelper.func_234631_a_(
-              this.world, p_230268_1_, axisalignedbb.offset(vector3d1))) {
-            p_230268_1_.setPose(pose);
-            return vector3d1;
-          }
+      double d2 = (double)blockpos.getY() + this.world.func_242403_h(blockpos);
+      double d3 = (double)blockpos.getY() + this.world.func_242403_h(blockpos1);
+
+      for(Pose pose : p_230268_1_.func_230297_ef_()) {
+        Vector3d vector3d1 = TransportationHelper.func_242381_a(this.world, d0, d2, d1, p_230268_1_, pose);
+        if (vector3d1 != null) {
+          p_230268_1_.setPose(pose);
+          return vector3d1;
         }
 
-        double d3 = this.world.func_234936_m_(blockpos1);
-        if (TransportationHelper.func_234630_a_(d3)) {
-          Vector3d vector3d2 = new Vector3d(d0, (double) blockpos1.getY() + d3, d1);
-          if (TransportationHelper.func_234631_a_(
-              this.world, p_230268_1_, axisalignedbb.offset(vector3d2))) {
-            p_230268_1_.setPose(pose);
-            return vector3d2;
-          }
+        Vector3d vector3d2 = TransportationHelper.func_242381_a(this.world, d0, d3, d1, p_230268_1_, pose);
+        if (vector3d2 != null) {
+          p_230268_1_.setPose(pose);
+          return vector3d2;
         }
       }
     }

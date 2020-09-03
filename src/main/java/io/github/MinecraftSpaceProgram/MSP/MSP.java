@@ -36,7 +36,6 @@ public final class MSP {
     };
 
 
-
     public MSP() {
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         MSPItems.ITEMS.register(modEventBus);
