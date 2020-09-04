@@ -28,6 +28,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -38,6 +39,7 @@ import org.apache.logging.log4j.MarkerManager;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.stream.Collectors;
 
 import static io.github.MinecraftSpaceProgram.MSP.util.VoxelShapesUtil.rotateY;
 
@@ -160,8 +162,8 @@ public class LaunchpadControllerBlock extends Block {
       PlayerEntity player,
       Hand handIn,
       BlockRayTraceResult hit) {
-    // if (worldIn.isRemote)
-    //    return ActionResultType.SUCCESS; //super.onBlockActivated(state, worldIn, pos, player,
+    if (worldIn.isRemote)
+       return ActionResultType.SUCCESS; //super.onBlockActivated(state, worldIn, pos, player,
     // handIn, hit);
 
     Direction facing = state.get(FACING);
@@ -207,30 +209,33 @@ public class LaunchpadControllerBlock extends Block {
     Rocket rocket = Rocket.createFromLaunchpad(launchpad);
 
     if (player.isSneaking()) {
-      //TODO rules
-      if (true ||rocket.getRulesRespected()) {
+      // TODO rules
+      if (true || rocket.getRulesRespected()) {
         if (!rocket.getRocketBlocksPos().isEmpty()) {
           if (worldIn instanceof ServerWorld) {
-
-            // TODO have the rocket not tp
-            BlockPos rocketPos =
-                launchpad.startingPos.add(launchpad.x / 2f, launchpad.y / 2f, launchpad.z / 2f);
 
             player.sendMessage(
                 new TranslationTextComponent("event.msp.attempting_rocket_assembly"),
                 player.getUniqueID());
 
+            BlockStorage storage = new BlockStorage(rocket);
             RocketEntity rocketEntity =
                 new RocketEntity(
                     worldIn,
-                    new BlockStorage(rocket),
-                    rocketPos.getX(),
-                    rocketPos.getY(),
-                    rocketPos.getZ());
+                    storage,
+                    storage.x,
+                    storage.y,
+                    storage.z);
 
             rocketEntity.setFuel(rocket.fuel);
+            rocketEntity.setDryMass(launchpad.mass);
+            rocketEntity.setConsumption(launchpad.engineConsumption);
+            rocketEntity.setThrust(launchpad.engineThrust);
 
-            MSP.LOGGER.debug(rocket.fuel);
+            rocketEntity.setEngines(
+                launchpad.engines.stream()
+                    .map(blockPos -> blockPos.subtract(new Vector3i(storage.x, storage.y, storage.z)))
+                    .collect(Collectors.toList()));
 
             worldIn.addEntity(rocketEntity);
           }

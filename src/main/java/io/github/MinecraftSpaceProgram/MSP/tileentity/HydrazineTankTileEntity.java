@@ -1,6 +1,7 @@
 package io.github.MinecraftSpaceProgram.MSP.tileentity;
 
 import io.github.MinecraftSpaceProgram.MSP.init.MSPTileEntityTypes;
+import io.github.MinecraftSpaceProgram.MSP.rocket.IRocketTank;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 
@@ -27,7 +28,7 @@ public class HydrazineTankTileEntity extends TileEntity implements IRocketTank {
   }
 
   @Override
-  public String getFuelType() {
-    return "HYDRAZINE";
+  public fuelTypes getFuelType() {
+    return fuelTypes.HYDRAZINE;
   }
 }

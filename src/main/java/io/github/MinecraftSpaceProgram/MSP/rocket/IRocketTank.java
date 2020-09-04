@@ -1,8 +1,8 @@
-package io.github.MinecraftSpaceProgram.MSP.tileentity;
+package io.github.MinecraftSpaceProgram.MSP.rocket;
 
 public interface IRocketTank { // extends IFluidTank {
   /** the accepted fuelTypes */
-  String[] fuelTypes = new String[] {"HYDRAZINE"};
+  enum fuelTypes {HYDRAZINE}
 
   /** @return the fuel capacity of the tank */
   float getCapacity();
@@ -11,5 +11,5 @@ public interface IRocketTank { // extends IFluidTank {
   float getFuelLevel();
 
   /** @return the fuel type of the tank */
-  String getFuelType();
+  fuelTypes getFuelType();
 }

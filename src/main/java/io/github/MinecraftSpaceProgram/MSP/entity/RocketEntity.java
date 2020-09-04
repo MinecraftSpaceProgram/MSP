@@ -35,8 +35,10 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
 import java.util.List;
 
+import static io.github.MinecraftSpaceProgram.MSP.init.MSPDataSerializers.BLOCK_POS_LIST_SERIALIZER;
 import static io.github.MinecraftSpaceProgram.MSP.init.MSPDataSerializers.QUATERNION_SERIALIZER;
 import static io.github.MinecraftSpaceProgram.MSP.physics.orbital.PhysicsUtil.G;
 import static io.github.MinecraftSpaceProgram.MSP.physics.orbital.PhysicsUtil.TICK_LENGTH;
@@ -48,8 +50,16 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
       EntityDataManager.createKey(RocketEntity.class, DataSerializers.BOOLEAN);
   protected static final DataParameter<Float> FUEL =
       EntityDataManager.createKey(RocketEntity.class, DataSerializers.FLOAT);
+  protected static final DataParameter<Float> DRY_MASS =
+      EntityDataManager.createKey(RocketEntity.class, DataSerializers.FLOAT);
+  protected static final DataParameter<Float> THRUST =
+      EntityDataManager.createKey(RocketEntity.class, DataSerializers.FLOAT);
+  protected static final DataParameter<Float> CONSUMPTION =
+      EntityDataManager.createKey(RocketEntity.class, DataSerializers.FLOAT);
   protected static final DataParameter<Quaternion> QUATERNION =
       EntityDataManager.createKey(RocketEntity.class, QUATERNION_SERIALIZER);
+  protected static final DataParameter<List<BlockPos>> ENGINES =
+      EntityDataManager.createKey(RocketEntity.class, BLOCK_POS_LIST_SERIALIZER);
   // private static final DataParameter<BlockStorage> STORAGE =
   // EntityDataManager.createKey(RocketEntity.class, DataSerializers.BLOCK_POS);
 
@@ -95,6 +105,7 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
       setMotion(Vector3d.ZERO);
     }
 
+    // starts the rocket if it isn't started yet
     LivingEntity controllingPassenger = (LivingEntity) getControllingPassenger();
     float moveForward =
         controllingPassenger instanceof PlayerEntity ? controllingPassenger.moveForward : 0;
@@ -103,42 +114,56 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
     }
 
     // TODO make this planet dependant
+    // "Oh Gravity Thou Art a Heartless Bitch" -Sheldon
     double r = this.getPosY() + SolarSystem.EARTH.size / 2.0D;
     Vector3d previousMotion =
         this.getMotion().add(0, -G * SolarSystem.EARTH.mass / (r * r) * TICK_LENGTH, 0);
-    MSP.LOGGER.debug(G * SolarSystem.EARTH.mass / (r * r));
 
     // TODO currently using a monopropellant engine MR-80B 3,100N (700 lbf) Throttling Rocket from
     //  Aerojet Rocketdyne
     if (dataManager.get(STARTED)) {
       float fuel = dataManager.get(FUEL);
       if (fuel > 0) {
-        fuel -= 0.1f * (float) TICK_LENGTH;
+
+        // removes fuel due to consumption
+        fuel -= this.getConsumption() * (float) TICK_LENGTH;
+        fuel = fuel < 0 ? 0 : fuel;
         dataManager.set(FUEL, fuel);
-        previousMotion =
-            previousMotion.add(
-                0,
-                3100
-                    / (dataManager.get(FUEL) + 168 + 100 + 5 * storage.numberOfBlocks)
-                    * TICK_LENGTH,
-                0);
 
+        // acceleration due to thrust
+        previousMotion = previousMotion.add(0, this.getThrust() / getMass() * TICK_LENGTH, 0);
+
+        // Drag very naive model
+        previousMotion = previousMotion.add(0, - Math.signum(this.getMotion().y) * 0.5D * 1.2 * this.getMotion().lengthSquared() * 0.5, 0);
+
+        // adds particles under every engines
         if (world.isRemote) {
-          if (world.getGameTime() % 10 == 0)
-            spawnParticle(
-                "rocketSmoke", world, this.getPosX(), this.getPosY(), this.getPosZ(), 0, 0, 0);
+          for (BlockPos blockPos : this.getEngines()) {
+            if (world.getGameTime() % 10 == 0) {
+              spawnParticle(
+                  "rocketSmoke", world, this.getPosX(), this.getPosY(), this.getPosZ(), 0, 0, 0);
+            }
 
-          // TODO make this actually do flames
-          for (int i = 0; i < 4; i++) {
-            spawnParticle(
-                "rocketFlame",
-                world,
-                this.getPosX(),
-                this.getPosY() - 0.75 - 0.2 * i,
-                this.getPosZ(),
-                (this.rand.nextFloat() - 0.5f) / 8f,
-                -.75,
-                (this.rand.nextFloat() - 0.5f) / 8f);
+            // TODO make this actually do flames
+            for (int i = 0; i < 4; i++) {
+              spawnParticle(
+                  "rocketFlame",
+                  world,
+                  blockPos.getX() + this.getPosX(),
+                  blockPos.getY() + this.getPosY() - 0.75 - 0.2 * i,
+                  blockPos.getZ() + this.getPosZ(),
+                  (this.rand.nextFloat() - 0.5f) / 8f,
+                  -.75,
+                  (this.rand.nextFloat() - 0.5f) / 8f);
+              world.addParticle(
+                  ParticleTypes.LARGE_SMOKE,
+                  blockPos.getX() + this.getPosX(),
+                  blockPos.getY() + this.getPosY() - 2 - 0.2 * i,
+                  blockPos.getZ() + this.getPosZ(),
+                  (this.rand.nextFloat() - 0.5f) / 6f,
+                  -.75,
+                  (this.rand.nextFloat() - 0.5f) / 6f);
+            }
           }
         }
       }
@@ -175,6 +200,10 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
     dataManager.register(STARTED, false);
     dataManager.register(FUEL, 0.0F);
     dataManager.register(QUATERNION, Quaternion.ONE);
+    dataManager.register(ENGINES, new ArrayList<>());
+    dataManager.register(DRY_MASS, 0.0F);
+    dataManager.register(THRUST, 0.0F);
+    dataManager.register(CONSUMPTION, 0.0F);
   }
 
   @Override
@@ -191,8 +220,44 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
     return storage;
   }
 
-  public void setFuel(float fuel){
+  public void setFuel(float fuel) {
     this.dataManager.set(FUEL, fuel);
+  }
+
+  public float getFuel() {
+    return this.dataManager.get(FUEL);
+  }
+
+  public List<BlockPos> getEngines() {
+    return this.dataManager.get(ENGINES);
+  }
+
+  public void setEngines(List<BlockPos> pos) {
+    this.dataManager.set(ENGINES, pos);
+  }
+
+  public float getDryMass() {
+    return this.dataManager.get(DRY_MASS);
+  }
+
+  public void setDryMass(float mass) {
+    this.dataManager.set(DRY_MASS, mass);
+  }
+
+  public void setConsumption(float consumption){
+    this.dataManager.set(CONSUMPTION, consumption);
+  }
+
+  public void setThrust(float thrust){
+    this.dataManager.set(THRUST, thrust);
+  }
+
+  public float getConsumption(){
+    return this.dataManager.get(CONSUMPTION);
+  }
+
+  public float getThrust(){
+    return this.dataManager.get(THRUST);
   }
 
   @SuppressWarnings("deprecation")
@@ -229,15 +294,17 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
    * solid. Return null if this entity is not solid.
    */
   /*@Nullable
-  @Override
-  public AxisAlignedBB getCollisionBoundingBox() {
-    return this.getBoundingBox();
-  }
-/*
+    @Override
+    public AxisAlignedBB getCollisionBoundingBox() {
+      return this.getBoundingBox();
+    }
+  /*
+
+   */
   /** Returns true if this entity should push and be pushed by other entities when colliding. */
   @Override
   public boolean canBePushed() {
-    return true;
+    return false;
   }
 
   /** Returns the Y offset from the entity's position for any entity riding this one. */
@@ -373,7 +440,6 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
     return list.isEmpty() ? null : list.get(0);
   }
 
-  // Forge: Fix MC-119811 by instantly completing lerp on board
   @Override
   protected void addPassenger(Entity passenger) {
     super.addPassenger(passenger);
@@ -384,25 +450,30 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
     }
   }
 
+  /** Copied from boat */
   @Override
   public Vector3d func_230268_c_(LivingEntity p_230268_1_) {
-    Vector3d vector3d = func_233559_a_(this.getWidth() * MathHelper.SQRT_2, p_230268_1_.getWidth(), this.rotationYaw);
+    Vector3d vector3d =
+        func_233559_a_(
+            this.getWidth() * MathHelper.SQRT_2, p_230268_1_.getWidth(), this.rotationYaw);
     double d0 = this.getPosX() + vector3d.x;
     double d1 = this.getPosZ() + vector3d.z;
     BlockPos blockpos = new BlockPos(d0, this.getBoundingBox().maxY, d1);
     BlockPos blockpos1 = blockpos.down();
     if (!this.world.hasWater(blockpos1)) {
-      double d2 = (double)blockpos.getY() + this.world.func_242403_h(blockpos);
-      double d3 = (double)blockpos.getY() + this.world.func_242403_h(blockpos1);
+      double d2 = (double) blockpos.getY() + this.world.func_242403_h(blockpos);
+      double d3 = (double) blockpos.getY() + this.world.func_242403_h(blockpos1);
 
-      for(Pose pose : p_230268_1_.func_230297_ef_()) {
-        Vector3d vector3d1 = TransportationHelper.func_242381_a(this.world, d0, d2, d1, p_230268_1_, pose);
+      for (Pose pose : p_230268_1_.func_230297_ef_()) {
+        Vector3d vector3d1 =
+            TransportationHelper.func_242381_a(this.world, d0, d2, d1, p_230268_1_, pose);
         if (vector3d1 != null) {
           p_230268_1_.setPose(pose);
           return vector3d1;
         }
 
-        Vector3d vector3d2 = TransportationHelper.func_242381_a(this.world, d0, d3, d1, p_230268_1_, pose);
+        Vector3d vector3d2 =
+            TransportationHelper.func_242381_a(this.world, d0, d3, d1, p_230268_1_, pose);
         if (vector3d2 != null) {
           p_230268_1_.setPose(pose);
           return vector3d2;
@@ -420,7 +491,7 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
 
   @Override
   public boolean canBeRiddenInWater(Entity rider) {
-    return true;
+    return false;
   }
 
   @Override
@@ -452,6 +523,20 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
     } else {
       throw new IllegalArgumentException("Data Stream does not contain the CompoundNBT");
     }
+  }
+
+  /** @return the thrust delivered by the engines in a given tick */
+  /*public float engineThrust() {
+    float thrust = 0.0F;
+    for (IRocketEngine engine : engines) {
+      thrust += engine.getThrust();
+    }
+    return thrust * (float) TICK_LENGTH;
+  }/*
+
+  /** @return the total mass of the rocket */
+  public float getMass() {
+    return this.getDryMass() + this.getFuel();
   }
 
   public void spawnParticle(

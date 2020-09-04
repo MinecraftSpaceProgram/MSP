@@ -2,7 +2,6 @@ package io.github.MinecraftSpaceProgram.MSP.rocket;
 
 import io.github.MinecraftSpaceProgram.MSP.MSP;
 import io.github.MinecraftSpaceProgram.MSP.init.MSPBlocks;
-import io.github.MinecraftSpaceProgram.MSP.tileentity.IRocketTank;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -36,6 +35,7 @@ public final class Rocket {
   public Rocket(List<BlockPos> rocketBlocksPos, List<BlockPos> borderBlocksPos, World world) {
     this.borderBlocksPos = rocketBlocksPos;
     this.rocketBlocksPos = borderBlocksPos;
+
     this.world = world;
 
     MSP.LOGGER.info(MARKER, "Starting rocket building rules enforcement");
@@ -102,32 +102,32 @@ public final class Rocket {
 
     return notVisited.isEmpty();
   }
-/*
-  private boolean enforceRocketBorderCoated() {
-    ResourceLocation rocketBlocksTag = new ResourceLocation("msp", "rocket_blocks");
-    for (BlockPos blockPos : borderBlocksPos) {
-      // let's hope ITag.func_230235_a_ is equivalent to contains
-      if (!BlockTags.getCollection()
-          .getOrCreate(rocketBlocksTag)
-          .func_230235_a_(world.getBlockState(blockPos).getBlock())) {
-        return false;
+  /*
+    private boolean enforceRocketBorderCoated() {
+      ResourceLocation rocketBlocksTag = new ResourceLocation("msp", "rocket_blocks");
+      for (BlockPos blockPos : borderBlocksPos) {
+        // let's hope ITag.func_230235_a_ is equivalent to contains
+        if (!BlockTags.getCollection()
+            .getOrCreate(rocketBlocksTag)
+            .func_230235_a_(world.getBlockState(blockPos).getBlock())) {
+          return false;
+        }
       }
+      return true;
     }
-    return true;
-  }
 
-  private boolean enforceHasEngines() {
-    ResourceLocation enginesTag = new ResourceLocation("msp", "engine_blocks");
-    for (BlockPos blockPos : rocketBlocksPos) {
-      if (BlockTags.getCollection()
-          .getOrCreate(enginesTag)
-          .func_230235_a_(world.getBlockState(blockPos).getBlock())) {
-        return true;
+    private boolean enforceHasEngines() {
+      ResourceLocation enginesTag = new ResourceLocation("msp", "engine_blocks");
+      for (BlockPos blockPos : rocketBlocksPos) {
+        if (BlockTags.getCollection()
+            .getOrCreate(enginesTag)
+            .func_230235_a_(world.getBlockState(blockPos).getBlock())) {
+          return true;
+        }
       }
+      return false;
     }
-    return false;
-  }
-*/
+  */
   private float findFuel() {
     float fuelCounter = 0.0F;
     for (BlockPos blockPos : this.rocketBlocksPos) {
@@ -135,6 +135,7 @@ public final class Rocket {
       if (tileEntity != null) {
         if (IRocketTank.class.isAssignableFrom(tileEntity.getClass())) {
           fuelCounter += ((IRocketTank) tileEntity).getFuelLevel();
+          MSP.LOGGER.debug("found fuel");
         }
       }
     }
@@ -142,48 +143,48 @@ public final class Rocket {
   }
 
   /*private boolean enforceHasTanks() {
-    ResourceLocation enginesTag = new ResourceLocation("msp", "tank_blocks");
-    for (BlockPos blockPos : rocketBlocksPos) {
-      if (BlockTags.getCollection()
-          .getOrCreate(enginesTag)
-          .func_230235_a_(world.getBlockState(blockPos).getBlock())) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private boolean enforceEnginesFacingOutwards() {
-    if (!HAS_ENGINES) return true;
-
-    ResourceLocation enginesTag = new ResourceLocation("msp", "engine_blocks");
-    for (BlockPos blockPos : rocketBlocksPos) {
-      BlockState blockState = world.getBlockState(blockPos);
-      if (BlockTags.getCollection().getOrCreate(enginesTag).func_230235_a_(blockState.getBlock())) {
-        if (borderBlocksPos.contains(blockPos)) {
-          switch (blockState.get(EngineBlock.FACING)) {
-            case UP:
-              if (rocketBlocksPos.contains(blockPos.add(0, -1, 0))) return false;
-            case DOWN:
-              if (rocketBlocksPos.contains(blockPos.add(0, 1, 0))) return false;
-            case NORTH:
-              if (rocketBlocksPos.contains(blockPos.add(0, 0, 1))) return false;
-            case SOUTH:
-              if (rocketBlocksPos.contains(blockPos.add(0, 0, -1))) return false;
-            case EAST:
-              if (rocketBlocksPos.contains(blockPos.add(-1, 0, 0))) return false;
-            case WEST:
-              if (rocketBlocksPos.contains(blockPos.add(1, 0, 0))) return false;
-            default:
-          }
-        } else {
-          return false;
+      ResourceLocation enginesTag = new ResourceLocation("msp", "tank_blocks");
+      for (BlockPos blockPos : rocketBlocksPos) {
+        if (BlockTags.getCollection()
+            .getOrCreate(enginesTag)
+            .func_230235_a_(world.getBlockState(blockPos).getBlock())) {
+          return true;
         }
       }
+      return false;
     }
-    return true;
-  }
-*/
+
+    private boolean enforceEnginesFacingOutwards() {
+      if (!HAS_ENGINES) return true;
+
+      ResourceLocation enginesTag = new ResourceLocation("msp", "engine_blocks");
+      for (BlockPos blockPos : rocketBlocksPos) {
+        BlockState blockState = world.getBlockState(blockPos);
+        if (BlockTags.getCollection().getOrCreate(enginesTag).func_230235_a_(blockState.getBlock())) {
+          if (borderBlocksPos.contains(blockPos)) {
+            switch (blockState.get(EngineBlock.FACING)) {
+              case UP:
+                if (rocketBlocksPos.contains(blockPos.add(0, -1, 0))) return false;
+              case DOWN:
+                if (rocketBlocksPos.contains(blockPos.add(0, 1, 0))) return false;
+              case NORTH:
+                if (rocketBlocksPos.contains(blockPos.add(0, 0, 1))) return false;
+              case SOUTH:
+                if (rocketBlocksPos.contains(blockPos.add(0, 0, -1))) return false;
+              case EAST:
+                if (rocketBlocksPos.contains(blockPos.add(-1, 0, 0))) return false;
+              case WEST:
+                if (rocketBlocksPos.contains(blockPos.add(1, 0, 0))) return false;
+              default:
+            }
+          } else {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+  */
   public List<BlockPos> getRocketBlocksPos() {
     return rocketBlocksPos;
   }

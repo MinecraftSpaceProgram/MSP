@@ -2,6 +2,7 @@ package io.github.MinecraftSpaceProgram.MSP.block;
 
 import io.github.MinecraftSpaceProgram.MSP.init.MSPBlocks;
 import io.github.MinecraftSpaceProgram.MSP.init.MSPTileEntityTypes;
+import io.github.MinecraftSpaceProgram.MSP.rocket.IMassive;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
@@ -25,7 +26,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class HydrazineTankBlock extends Block {
+public class HydrazineTankBlock extends Block implements IMassive {
 
   public static final BooleanProperty UP = BlockStateProperties.UP;
   public static final BooleanProperty DOWN = BlockStateProperties.DOWN;
@@ -104,5 +105,10 @@ public class HydrazineTankBlock extends Block {
             facingProperty, facingState.getBlock() == MSPBlocks.HYDRAZINE_TANK_BLOCK.get());
     }
     return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+  }
+
+  @Override
+  public float getMass() {
+    return 0.05F * 1004.5F;
   }
 }

@@ -1,5 +1,8 @@
 package io.github.MinecraftSpaceProgram.MSP.block;
 
+import io.github.MinecraftSpaceProgram.MSP.rocket.IMassive;
+import io.github.MinecraftSpaceProgram.MSP.rocket.IRocketEngine;
+import io.github.MinecraftSpaceProgram.MSP.rocket.IRocketTank;
 import io.github.MinecraftSpaceProgram.MSP.util.VoxelShapesUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -18,7 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @SuppressWarnings("deprecation")
 @ParametersAreNonnullByDefault
-public class EngineBlock extends EngineAbstract {
+public class EngineBlock extends EngineAbstract implements IRocketEngine, IMassive {
     private static final VoxelShape TAILPIPE = VoxelShapes.or(
             Block.makeCuboidShape(1.0D,0.0D,1.0D,15.0D,3.0D,15.0D),
             Block.makeCuboidShape(2.0D,3.0D,2.0D,14.0D,6.0D,14.0D),
@@ -68,5 +71,28 @@ public class EngineBlock extends EngineAbstract {
             default:
                 return VOXEL_SHAPE;
         }
+    }
+
+    @Override
+    public IRocketTank.fuelTypes getFuelType() {
+        return IRocketTank.fuelTypes.HYDRAZINE;
+    }
+
+    @Override
+    //TODO find values
+    // Right now using Merlin 1D
+    public float getThrust() {
+        return 845000.0F;
+    }
+
+    @Override
+    //TODO find values
+    public float getFlowRate() {
+        return 305.0F;
+    }
+
+    @Override
+    public float getMass() {
+        return 470;
     }
 }

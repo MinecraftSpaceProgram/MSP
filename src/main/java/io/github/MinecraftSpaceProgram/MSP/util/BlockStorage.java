@@ -114,7 +114,6 @@ public class BlockStorage {
                 for (int z = 0; z < this.sizeZ; z++) {
                     if (this.blockStates[x][y][z] != null) {
                         compoundnbt.put("BlockState[" + x + "][" + y + "][" + z + "]", NBTUtil.writeBlockState(this.blockStates[x][y][z]));
-                        MSP.LOGGER.debug("key: " + (int) compoundnbt.getTagId("BlockState[" + x + "][" + y + "][" + z + "]"));
                     }
                 }
             }
