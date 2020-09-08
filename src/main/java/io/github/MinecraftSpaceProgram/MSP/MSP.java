@@ -1,6 +1,8 @@
 package io.github.MinecraftSpaceProgram.MSP;
 
+import io.github.MinecraftSpaceProgram.MSP.client.gui.RocketGui;
 import io.github.MinecraftSpaceProgram.MSP.init.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -8,11 +10,13 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.logging.log4j.LogManager;
@@ -44,6 +48,8 @@ public final class MSP {
         MSPEntityTypes.ENTITY_TYPES.register(modEventBus);
         ModContainerTypes.CONTAINER_TYPES.register(modEventBus);
         MSPDataSerializers.DATA_SERIALIZERS.register(modEventBus);
+
+        modEventBus.addListener(this::clientRegistries);
     }
 
     @SubscribeEvent
@@ -73,5 +79,10 @@ public final class MSP {
             registry.register(blockItem);
         });
         LOGGER.debug(MARKER, "Registered Block Items");
+    }
+
+    private void clientRegistries(FMLClientSetupEvent event) {
+        MinecraftForge.EVENT_BUS.register(new RocketGui(Minecraft.getInstance()));
+        LOGGER.debug(MARKER, "Registered GUI");
     }
 }

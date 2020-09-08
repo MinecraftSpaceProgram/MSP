@@ -1,0 +1,25 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "msp:block/seat"
+    },
+    "facing=up": {
+      "model": "msp:block/seat"
+    },
+    "facing=north": {
+      "model": "msp:block/seat"
+    },
+    "facing=south": {
+      "model": "msp:block/seat",
+      "x": 180
+    },
+    "facing=east": {
+      "model": "msp:block/seat",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "msp:block/seat",
+      "y": -90
+    }
+  }
+}

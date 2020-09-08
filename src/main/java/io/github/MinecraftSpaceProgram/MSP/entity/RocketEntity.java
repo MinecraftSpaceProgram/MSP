@@ -63,6 +63,9 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
   // private static final DataParameter<BlockStorage> STORAGE =
   // EntityDataManager.createKey(RocketEntity.class, DataSerializers.BLOCK_POS);
 
+  private final double MAX_SPEED = 200.0D;
+  private final double MAX_ALTITUDE = 1000.0D;
+
   protected final AxisAlignedBB AABB;
   public BlockStorage storage;
   private int lerpSteps;
@@ -71,6 +74,8 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
   private double lerpZ;
   private double lerpYaw;
   private double lerpPitch;
+
+  public double trueAltitude, trueSpeed, trueAcceleration;
 
   public RocketEntity(EntityType<? extends RocketEntity> entityEntityType, World world) {
     super(entityEntityType, world);
@@ -100,10 +105,13 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
   @Override
   public void tick() {
     super.tick();
+
     this.tickLerp();
     if (Double.isNaN(getMotion().length())) {
       setMotion(Vector3d.ZERO);
     }
+
+    this.trueAcceleration = 0.0D;
 
     // starts the rocket if it isn't started yet
     LivingEntity controllingPassenger = (LivingEntity) getControllingPassenger();
@@ -116,8 +124,10 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
     // TODO make this planet dependant
     // "Oh Gravity Thou Art a Heartless Bitch" -Sheldon
     double r = this.getPosY() + SolarSystem.EARTH.size / 2.0D;
-    Vector3d previousMotion =
-        this.getMotion().add(0, -G * SolarSystem.EARTH.mass / (r * r) * TICK_LENGTH, 0);
+    double force = - G * SolarSystem.EARTH.mass * this.getMass() / (r * r);
+
+    // Drag very naive model
+    force -= Math.signum(trueSpeed) * 0.5D * 1.2 * trueSpeed * trueSpeed * 0.5;
 
     // TODO currently using a monopropellant engine MR-80B 3,100N (700 lbf) Throttling Rocket from
     //  Aerojet Rocketdyne
@@ -131,10 +141,7 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
         dataManager.set(FUEL, fuel);
 
         // acceleration due to thrust
-        previousMotion = previousMotion.add(0, this.getThrust() / getMass() * TICK_LENGTH, 0);
-
-        // Drag very naive model
-        previousMotion = previousMotion.add(0, - Math.signum(this.getMotion().y) * 0.5D * 1.2 * this.getMotion().lengthSquared() * 0.5, 0);
+        force += this.getThrust();
 
         // adds particles under every engines
         if (world.isRemote) {
@@ -168,8 +175,25 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
         }
       }
     }
-    this.setMotion(previousMotion);
+
+    // Newton's first law: F=ma
+    this.trueAcceleration = force / this.getMass();
+
+    this.trueSpeed = this.onGround? 0 : this.trueSpeed + trueAcceleration * TICK_LENGTH;
+
+    this.setMotion(
+        0,
+        this.trueAltitude > MAX_ALTITUDE
+            ? 0
+            : Math.signum(trueSpeed) * Math.min(MAX_SPEED, Math.abs(trueSpeed)),
+        0);
     this.move(MoverType.SELF, this.getMotion());
+
+    if(this.getPosY() > MAX_ALTITUDE){
+      this.trueAltitude += this.trueSpeed * TICK_LENGTH;
+    } else {
+      this.trueAltitude = this.getPosY() - 62;
+    }
     this.doBlockCollisions();
   }
 
@@ -244,19 +268,19 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
     this.dataManager.set(DRY_MASS, mass);
   }
 
-  public void setConsumption(float consumption){
+  public void setConsumption(float consumption) {
     this.dataManager.set(CONSUMPTION, consumption);
   }
 
-  public void setThrust(float thrust){
+  public void setThrust(float thrust) {
     this.dataManager.set(THRUST, thrust);
   }
 
-  public float getConsumption(){
+  public float getConsumption() {
     return this.dataManager.get(CONSUMPTION);
   }
 
-  public float getThrust(){
+  public float getThrust() {
     return this.dataManager.get(THRUST);
   }
 

@@ -25,6 +25,8 @@ public final class MSPBlocks {
       BLOCKS.register("flight_controller", FlightControllerBlock::new);
   public static final RegistryObject<Block> ROCKET_ENGINE =
       BLOCKS.register("engine", EngineBlock::new);
+  public static final RegistryObject<Block> EJECTOR_SEAT =
+      BLOCKS.register("seat", EjectorSeatBlock::new);
   public static final RegistryObject<Block> TANK =
       BLOCKS.register("tank", () -> new Block(Properties.create(Material.GLASS).notSolid()));
   public static final RegistryObject<Block> LAUNCHPAD_BASE =
