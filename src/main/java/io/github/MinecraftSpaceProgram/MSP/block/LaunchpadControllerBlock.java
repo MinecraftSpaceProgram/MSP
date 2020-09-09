@@ -223,6 +223,7 @@ public class LaunchpadControllerBlock extends Block {
                 new RocketEntity(worldIn, storage, storage.x, storage.y, storage.z);
 
             rocketEntity.setFuel(rocket.fuel);
+            rocketEntity.setFuelCapacity(rocket.fuel);
             rocketEntity.setDryMass(launchpad.mass);
             rocketEntity.setConsumption(launchpad.engineConsumption);
             rocketEntity.setThrust(launchpad.engineThrust);

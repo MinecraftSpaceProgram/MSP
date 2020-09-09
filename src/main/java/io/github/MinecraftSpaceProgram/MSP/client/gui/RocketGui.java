@@ -3,6 +3,7 @@ package io.github.MinecraftSpaceProgram.MSP.client.gui;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.MinecraftSpaceProgram.MSP.entity.RocketEntity;
+import io.github.MinecraftSpaceProgram.MSP.util.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IngameGui;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -11,6 +12,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+
+import java.awt.*;
 
 public class RocketGui extends IngameGui {
   public RocketGui(Minecraft mcIn) {
@@ -49,35 +52,45 @@ public class RocketGui extends IngameGui {
     func_238476_c_(
         matrixStack,
         this.getFontRenderer(),
-        I18n.format((int)rocket.trueAltitude + "m"),
-        -this.getFontRenderer().getStringWidth((int)rocket.trueAltitude + "m") / 2,
+        I18n.format((int) rocket.trueAltitude + "m"),
+        -this.getFontRenderer().getStringWidth((int) rocket.trueAltitude + "m") / 2,
         0,
         WHITE);
     matrixStack.pop();
 
     // Displays the current speed at which the rocket is traveling
     matrixStack.push();
-    matrixStack.translate(0,20,0);
+    matrixStack.translate(0, 20, 0);
     func_238476_c_(
         matrixStack,
         this.getFontRenderer(),
-        I18n.format((int)rocket.trueSpeed + "m/s"),
-        -this.getFontRenderer().getStringWidth((int)rocket.trueSpeed + "m/s") / 2,
+        I18n.format((int) rocket.trueSpeed + "m/s"),
+        -this.getFontRenderer().getStringWidth((int) rocket.trueSpeed + "m/s") / 2,
         0,
         WHITE);
     matrixStack.pop();
 
+    // draws the remaining fuel
     matrixStack.push();
     matrixStack.translate(width / 4.0F, height * 0.75F, 0);
     func_238476_c_(
         matrixStack,
         this.getFontRenderer(),
-        I18n.format((int)rocket.getFuel() + "m/s"),
-        -this.getFontRenderer().getStringWidth((int)rocket.getFuel() + "m/s") / 2,
+        I18n.format((int) rocket.getFuel() + "kg"),
+        -this.getFontRenderer().getStringWidth((int) rocket.getFuel() + "kg") / 2,
         0,
         WHITE);
-    matrixStack.translate(0,20,0);
+    matrixStack.translate(0, 20, 0);
 
+    RenderUtils.drawProgressBar(
+        mc,
+        matrixStack.getLast().getMatrix(),
+        rocket.getFuel() / rocket.getFuelCapacity(),
+        Color.WHITE,
+        Color.decode("#8b8b8b"),
+        Color.decode("#c6c6c6"),
+        80,
+        15);
     RenderSystem.popMatrix();
   }
 }

@@ -33,21 +33,46 @@ public final class RenderUtils {
   public static void drawProgressBar(
       Minecraft mc,
       Matrix4f matrixPos,
-      IVertexBuilder renderBuffer,
-      Color bGColor,
+      double percentage,
       Color fGColor,
+      Color bG2Color,
+      Color bGColor,
       int length,
       int height) {
+
+    // background square1
     square2(
         mc,
         Tessellator.getInstance(),
         matrixPos,
-        new Vector3d(0,0,1),
-        new Vector3d(length, height, 1),
+        new Vector3d(0, height, 0),
+        new Vector3d(length, 0, 0),
         Vector3d.ZERO,
         new ResourceLocation(MSP.MOD_ID, "textures/gui/white.png"),
-        bGColor
-    );
+        bGColor);
+
+    // background square2
+    square2(
+        mc,
+        Tessellator.getInstance(),
+        matrixPos,
+        new Vector3d(0, 0.9D * height, 0),
+        new Vector3d(length - 0.1D * height, 0, 0),
+        new Vector3d(0.05D * height, 0.05D * height, 0.0D),
+        new ResourceLocation(MSP.MOD_ID, "textures/gui/white.png"),
+        bG2Color);
+
+    // foreground fuel bar
+    square2(
+        mc,
+        Tessellator.getInstance(),
+        matrixPos,
+        new Vector3d(0.0D, 0.9 * height, 0.0D),
+        new Vector3d(percentage * (length - 0.1D * height), 0.0D, 0.0D),
+        new Vector3d(
+            0.05D * height * percentage + length * (1 - percentage), 0.05D * height, 0.0D),
+        new ResourceLocation(MSP.MOD_ID, "textures/gui/white.png"),
+        fGColor);
   }
   /**
    * Draw a coloured line from a starting vertex to an end vertex

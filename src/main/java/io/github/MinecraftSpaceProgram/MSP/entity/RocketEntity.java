@@ -49,6 +49,8 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
       EntityDataManager.createKey(RocketEntity.class, DataSerializers.BOOLEAN);
   protected static final DataParameter<Float> FUEL =
       EntityDataManager.createKey(RocketEntity.class, DataSerializers.FLOAT);
+  protected static final DataParameter<Float> FUEL_CAPACITY =
+      EntityDataManager.createKey(RocketEntity.class, DataSerializers.FLOAT);
   protected static final DataParameter<Float> DRY_MASS =
       EntityDataManager.createKey(RocketEntity.class, DataSerializers.FLOAT);
   protected static final DataParameter<Float> THRUST =
@@ -188,7 +190,7 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
         0,
         this.trueAltitude > MAX_ALTITUDE
             ? 0
-            : Math.signum(trueSpeed) * Math.min(MAX_SPEED, Math.abs(trueSpeed)),
+            : Math.signum(trueSpeed) * Math.min(MAX_SPEED, Math.abs(trueSpeed)) * TICK_LENGTH,
         0);
     this.move(MoverType.SELF, this.getMotion());
 
@@ -233,6 +235,7 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
     dataManager.register(CONSUMPTION, 0.0F);
     dataManager.register(CHAIR, new BlockPos(0, 0, 0));
     dataManager.register(PLAYER_ROTATION, 0.0F);
+    dataManager.register(FUEL_CAPACITY, 0.0F);
   }
 
   @Override
@@ -255,6 +258,14 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
 
   public float getFuel() {
     return this.dataManager.get(FUEL);
+  }
+
+  public void setFuelCapacity(float fuel) {
+    this.dataManager.set(FUEL_CAPACITY, fuel);
+  }
+
+  public float getFuelCapacity() {
+    return this.dataManager.get(FUEL_CAPACITY);
   }
 
   public List<BlockPos> getEngines() {
