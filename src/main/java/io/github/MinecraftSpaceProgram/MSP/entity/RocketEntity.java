@@ -9,7 +9,6 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.BoatEntity;
-import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -54,17 +53,18 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
       EntityDataManager.createKey(RocketEntity.class, DataSerializers.FLOAT);
   protected static final DataParameter<Float> THRUST =
       EntityDataManager.createKey(RocketEntity.class, DataSerializers.FLOAT);
+  protected static final DataParameter<Float> PLAYER_ROTATION =
+      EntityDataManager.createKey(RocketEntity.class, DataSerializers.FLOAT);
   protected static final DataParameter<Float> CONSUMPTION =
       EntityDataManager.createKey(RocketEntity.class, DataSerializers.FLOAT);
   protected static final DataParameter<Quaternion> QUATERNION =
       EntityDataManager.createKey(RocketEntity.class, QUATERNION_SERIALIZER);
   protected static final DataParameter<List<BlockPos>> ENGINES =
       EntityDataManager.createKey(RocketEntity.class, BLOCK_POS_LIST_SERIALIZER);
+  protected static final DataParameter<BlockPos> CHAIR =
+      EntityDataManager.createKey(RocketEntity.class, DataSerializers.BLOCK_POS);
   // private static final DataParameter<BlockStorage> STORAGE =
   // EntityDataManager.createKey(RocketEntity.class, DataSerializers.BLOCK_POS);
-
-  private final double MAX_SPEED = 200.0D;
-  private final double MAX_ALTITUDE = 1000.0D;
 
   protected final AxisAlignedBB AABB;
   public BlockStorage storage;
@@ -124,7 +124,7 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
     // TODO make this planet dependant
     // "Oh Gravity Thou Art a Heartless Bitch" -Sheldon
     double r = this.getPosY() + SolarSystem.EARTH.size / 2.0D;
-    double force = - G * SolarSystem.EARTH.mass * this.getMass() / (r * r);
+    double force = -G * SolarSystem.EARTH.mass * this.getMass() / (r * r);
 
     // Drag very naive model
     force -= Math.signum(trueSpeed) * 0.5D * 1.2 * trueSpeed * trueSpeed * 0.5;
@@ -179,7 +179,10 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
     // Newton's first law: F=ma
     this.trueAcceleration = force / this.getMass();
 
-    this.trueSpeed = this.onGround? 0 : this.trueSpeed + trueAcceleration * TICK_LENGTH;
+    this.trueSpeed = this.onGround ? 0 : this.trueSpeed + trueAcceleration * TICK_LENGTH;
+
+    double MAX_SPEED = 100.0D;
+    double MAX_ALTITUDE = 500.0D;
 
     this.setMotion(
         0,
@@ -189,7 +192,7 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
         0);
     this.move(MoverType.SELF, this.getMotion());
 
-    if(this.getPosY() > MAX_ALTITUDE){
+    if (this.getPosY() > MAX_ALTITUDE) {
       this.trueAltitude += this.trueSpeed * TICK_LENGTH;
     } else {
       this.trueAltitude = this.getPosY() - 62;
@@ -228,6 +231,8 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
     dataManager.register(DRY_MASS, 0.0F);
     dataManager.register(THRUST, 0.0F);
     dataManager.register(CONSUMPTION, 0.0F);
+    dataManager.register(CHAIR, new BlockPos(0, 0, 0));
+    dataManager.register(PLAYER_ROTATION, 0.0F);
   }
 
   @Override
@@ -284,6 +289,18 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
     return this.dataManager.get(THRUST);
   }
 
+  public void setChair(BlockPos pos) {
+    this.dataManager.set(CHAIR, pos);
+  }
+
+  public BlockPos getChair() {
+    return this.dataManager.get(CHAIR);
+  }
+
+  public void setPlayerRotation(float rotation){
+    this.dataManager.set(PLAYER_ROTATION, rotation);
+  }
+
   @SuppressWarnings("deprecation")
   @Override
   public boolean attackEntityFrom(DamageSource source, float amount) {
@@ -331,11 +348,13 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
     return false;
   }
 
-  /** Returns the Y offset from the entity's position for any entity riding this one. */
-  // TODO SEATS
   @Override
-  public double getMountedYOffset() {
-    return -0.1D;
+  public void updatePassenger(Entity passenger) {
+    passenger.setPosition(
+        this.getPosX() + this.getChair().getX(),
+        this.getPosY() + this.getChair().getY() - 0.5D,
+        this.getPosZ() + getChair().getZ());
+    this.applyYawToEntity(passenger);
   }
 
   /** Applies a velocity to the entities, to push them away from eachother. */
@@ -384,46 +403,12 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
     return this.getHorizontalFacing().rotateY();
   }
 
-  @Override
-  public void updatePassenger(Entity passenger) {
-    if (this.isPassenger(passenger)) {
-      float f = 0.0F;
-      float f1 =
-          (float)
-              ((this.removed ? (double) 0.01F : this.getMountedYOffset()) + passenger.getYOffset());
-      if (this.getPassengers().size() > 1) {
-        int i = this.getPassengers().indexOf(passenger);
-        if (i == 0) {
-          f = 0.2F;
-        } else {
-          f = -0.6F;
-        }
-
-        if (passenger instanceof AnimalEntity) {
-          f = (float) ((double) f + 0.2D);
-        }
-      }
-
-      Vector3d vector3d =
-          (new Vector3d(f, 0.0D, 0.0D))
-              .rotateYaw(-this.rotationYaw * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
-      passenger.setPosition(
-          this.getPosX() + vector3d.x, this.getPosY() + (double) f1, this.getPosZ() + vector3d.z);
-      this.applyYawToEntity(passenger);
-      if (passenger instanceof AnimalEntity && this.getPassengers().size() > 1) {
-        int j = passenger.getEntityId() % 2 == 0 ? 90 : 270;
-        passenger.setRenderYawOffset(((AnimalEntity) passenger).renderYawOffset + (float) j);
-        passenger.setRotationYawHead(passenger.getRotationYawHead() + (float) j);
-      }
-    }
-  }
-
   /**
    * Applies this boat's yaw to the given entity. Used to update the orientation of its passenger.
    */
   protected void applyYawToEntity(Entity entityToUpdate) {
-    entityToUpdate.setRenderYawOffset(this.rotationYaw);
-    float f = MathHelper.wrapDegrees(entityToUpdate.rotationYaw - this.rotationYaw);
+    entityToUpdate.setRenderYawOffset(this.rotationYaw + this.dataManager.get(PLAYER_ROTATION));
+    float f = MathHelper.wrapDegrees(entityToUpdate.rotationYaw - this.rotationYaw - this.dataManager.get(PLAYER_ROTATION));
     float f1 = MathHelper.clamp(f, -105.0F, 105.0F);
     entityToUpdate.prevRotationYaw += f1 - f;
     entityToUpdate.rotationYaw += f1 - f;

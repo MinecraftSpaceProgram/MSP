@@ -2,6 +2,7 @@ package io.github.MinecraftSpaceProgram.MSP.client;
 
 import io.github.MinecraftSpaceProgram.MSP.MSP;
 import io.github.MinecraftSpaceProgram.MSP.client.renderer.entity.RocketRenderer;
+import io.github.MinecraftSpaceProgram.MSP.client.renderer.entity.SeatRenderer;
 import io.github.MinecraftSpaceProgram.MSP.init.MSPEntityTypes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -16,5 +17,6 @@ public class MSPClient {
     public static void init(FMLClientSetupEvent event) {
         MSP.LOGGER.debug("Adding renderer's to the registry");
         RenderingRegistry.registerEntityRenderingHandler(MSPEntityTypes.ROCKET_ENTITY_TYPE.get(), RocketRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(MSPEntityTypes.SEAT_TYPE.get(), SeatRenderer::new);
     }
 }

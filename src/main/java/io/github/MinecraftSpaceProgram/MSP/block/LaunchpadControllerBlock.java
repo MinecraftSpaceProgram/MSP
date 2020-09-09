@@ -163,7 +163,7 @@ public class LaunchpadControllerBlock extends Block {
       Hand handIn,
       BlockRayTraceResult hit) {
     if (worldIn.isRemote)
-       return ActionResultType.SUCCESS; //super.onBlockActivated(state, worldIn, pos, player,
+      return ActionResultType.SUCCESS; // super.onBlockActivated(state, worldIn, pos, player,
     // handIn, hit);
 
     Direction facing = state.get(FACING);
@@ -220,21 +220,22 @@ public class LaunchpadControllerBlock extends Block {
 
             BlockStorage storage = new BlockStorage(rocket);
             RocketEntity rocketEntity =
-                new RocketEntity(
-                    worldIn,
-                    storage,
-                    storage.x,
-                    storage.y,
-                    storage.z);
+                new RocketEntity(worldIn, storage, storage.x, storage.y, storage.z);
 
             rocketEntity.setFuel(rocket.fuel);
             rocketEntity.setDryMass(launchpad.mass);
             rocketEntity.setConsumption(launchpad.engineConsumption);
             rocketEntity.setThrust(launchpad.engineThrust);
-
+            rocketEntity.setChair(
+                launchpad.chair != null
+                    ? launchpad.chair.subtract(new Vector3i(storage.x, storage.y, storage.z))
+                    : BlockPos.ZERO);
+            rocketEntity.setPlayerRotation(directionToFloat(launchpad.chairDirection));
             rocketEntity.setEngines(
                 launchpad.engines.stream()
-                    .map(blockPos -> blockPos.subtract(new Vector3i(storage.x, storage.y, storage.z)))
+                    .map(
+                        blockPos ->
+                            blockPos.subtract(new Vector3i(storage.x, storage.y, storage.z)))
                     .collect(Collectors.toList()));
 
             worldIn.addEntity(rocketEntity);
@@ -286,6 +287,19 @@ public class LaunchpadControllerBlock extends Block {
 
     Side(String name) {
       this.name = name;
+    }
+  }
+
+  private float directionToFloat(Direction direction) {
+    switch (direction) {
+      case NORTH:
+        return 180.0F;
+      case SOUTH:
+        return 0.0F;
+      case EAST:
+        return -90.0F;
+      default:
+        return 90.0F;
     }
   }
 }

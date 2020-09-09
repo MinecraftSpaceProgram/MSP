@@ -67,6 +67,17 @@ public class RocketGui extends IngameGui {
         WHITE);
     matrixStack.pop();
 
+    matrixStack.push();
+    matrixStack.translate(width / 4.0F, height * 0.75F, 0);
+    func_238476_c_(
+        matrixStack,
+        this.getFontRenderer(),
+        I18n.format((int)rocket.getFuel() + "m/s"),
+        -this.getFontRenderer().getStringWidth((int)rocket.getFuel() + "m/s") / 2,
+        0,
+        WHITE);
+    matrixStack.translate(0,20,0);
+
     RenderSystem.popMatrix();
   }
 }

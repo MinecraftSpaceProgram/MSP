@@ -17,6 +17,7 @@ public final class Rocket {
 
   private final List<BlockPos> rocketBlocksPos;
   private final List<BlockPos> borderBlocksPos;
+
   private final World world;
   public final float fuel;
 
@@ -33,8 +34,8 @@ public final class Rocket {
   }
 
   public Rocket(List<BlockPos> rocketBlocksPos, List<BlockPos> borderBlocksPos, World world) {
-    this.borderBlocksPos = rocketBlocksPos;
-    this.rocketBlocksPos = borderBlocksPos;
+    this.borderBlocksPos = borderBlocksPos;
+    this.rocketBlocksPos = rocketBlocksPos;
 
     this.world = world;
 

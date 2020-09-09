@@ -1,9 +1,13 @@
 package io.github.MinecraftSpaceProgram.MSP.rocket;
 
 import io.github.MinecraftSpaceProgram.MSP.MSP;
+import io.github.MinecraftSpaceProgram.MSP.block.EjectorSeatBlock;
 import io.github.MinecraftSpaceProgram.MSP.init.MSPBlocks;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.HorizontalBlock;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.Marker;
@@ -32,6 +36,9 @@ public final class Launchpad {
   private static final int VERTICAL_LIMIT = 256;
 
   public List<BlockPos> engines = new ArrayList<>();
+
+  public BlockPos chair;
+  public Direction chairDirection;
 
   /**
    * @param startingPos first corner position
@@ -148,6 +155,11 @@ public final class Launchpad {
           this.engines.add(insideBlockPos);
           this.engineThrust += ((IRocketEngine)block).getThrust();
           this.engineConsumption += ((IRocketEngine)block).getFlowRate();
+        }
+        BlockState blockState;
+        if ((blockState = world.getBlockState(insideBlockPos)).getBlock() instanceof EjectorSeatBlock){
+          this.chair = insideBlockPos;
+          this.chairDirection = blockState.get(HorizontalBlock.HORIZONTAL_FACING);
         }
         if (IMassive.class.isAssignableFrom(
             (block = world.getBlockState(insideBlockPos).getBlock()).getClass())) {
