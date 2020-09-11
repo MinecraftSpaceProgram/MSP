@@ -13,7 +13,7 @@
   "map.perigee": "Perigee",
   "map.apogee": "Apogee",
   "map.altitude": "Altitude",
-  "map.velocity": "Velocity"
+  "map.velocity": "Velocity",
   "block.msp.rocket_generic": "Rocket Block",
   "block.msp.flight_controller": "Flight Controller",
   "block.msp.launchpad_base": "Launchpad Base",

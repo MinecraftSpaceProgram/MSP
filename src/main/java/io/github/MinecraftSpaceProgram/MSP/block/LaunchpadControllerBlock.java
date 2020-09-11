@@ -281,13 +281,14 @@ public class LaunchpadControllerBlock extends Block {
 
     private final String name;
 
-    @Nonnull
-    public String func_176610_l() {
-      return name;
-    }
-
     Side(String name) {
       this.name = name;
+    }
+
+    @Override
+    @Nonnull
+    public String getString() {
+      return name;
     }
   }
 

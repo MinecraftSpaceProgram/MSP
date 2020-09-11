@@ -34,8 +34,8 @@ public class ExampleTileEntity extends TileEntity {
     }
 
     @Override
-    public void func_230337_a_(@Nonnull BlockState p_230337_1_,@Nonnull CompoundNBT compoundNBT) {
-        super.func_230337_a_(p_230337_1_, compoundNBT);
+    public void read(@Nonnull BlockState state,@Nonnull CompoundNBT compoundNBT) {
+        super.read(state, compoundNBT);
         if (compoundNBT.contains("activated"))
             this.activated = compoundNBT.getBoolean("activated");
     }

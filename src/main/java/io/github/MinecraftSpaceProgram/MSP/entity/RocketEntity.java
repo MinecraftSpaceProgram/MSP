@@ -571,7 +571,7 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
     // WTF how is == working?  Should be .equals
     if (particle.equals("rocketFlame")) {
       // RocketFx fx = new RocketFx(world, x, y, z, motionX, motionY, motionZ);
-      world.addParticle(ParticleTypes.SMOKE, x, y, z, motionX, motionY, motionZ);
+      world.addParticle(ParticleTypes.FLAME, x, y, z, motionX, motionY, motionZ);
     } else if (particle.equals(("rocketSmoke"))) {
       // TrailFx fx = new TrailFx(world, x, y, z, motionX, motionY, motionZ);
       world.addParticle(ParticleTypes.SMOKE, x, y, z, motionX, motionY, motionZ);

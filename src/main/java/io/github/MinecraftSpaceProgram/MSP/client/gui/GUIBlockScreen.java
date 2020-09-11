@@ -8,7 +8,6 @@ import io.github.MinecraftSpaceProgram.MSP.container.GUIBlockContainer;
 import io.github.MinecraftSpaceProgram.MSP.physics.orbital.*;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.Widget;
@@ -43,9 +42,6 @@ import static org.lwjgl.opengl.GL11.*;
  *
  * this.field_230706_i_ returns the current Minecraft instance
  *
- * this.field_230708_k_ is the width
- * this.field_230709_l_ is the height
- *
  * func_231045_a_ is moused_dragged
  *
  */
@@ -62,22 +58,6 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
     private Vector3f origin = new Vector3f(0, 0, 0);
 
     private String CameraText = "Camera: Sun";
-
-    public int width() {
-        return this.field_230708_k_;
-    }
-
-    public int height() {
-        return this.field_230709_l_;
-    }
-
-    private FontRenderer fontRenderer() {
-        return this.field_230712_o_;
-    }
-
-    public boolean hasShiftDown() {
-        return func_231173_s_();
-    }
 
     private final ResourceLocation skyBoxMaterial;
 
@@ -109,11 +89,11 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
      * Called at init
      */
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
+    public void init() {
+        super.init();
 
-        this.deleteNode = this.func_230480_a_(new Button(5, this.ySize - 5, 75, 20, new TranslationTextComponent("button.delete_node"), (p_214322_1_) -> {
-            p_214322_1_.func_230994_c_(250);
+        this.deleteNode = this.addButton(new Button(5, this.ySize - 5, 75, 20, new TranslationTextComponent("button.delete_node"), (p) -> {
+            p.queueNarration(250);
             MSP.LOGGER.debug("Clicked button");
             HEART_OF_GOLD.orbit.node = null;
         }));
@@ -157,7 +137,7 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
             }
         });
 
-        /*this.nameField = new TextFieldWidget(this.fontRenderer(), 62, 24, 103, 12, new TranslationTextComponent("Test"));
+        /*this.nameField = new TextFieldWidget(this.font(), 62, 24, 103, 12, new TranslationTextComponent("Test"));
         // change focus
         this.nameField.func_231049_c__(true);
         this.nameField.setMaxStringLength(35);
@@ -185,7 +165,7 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
      * @param partialTicks ?
      */
     @Override
-    public void func_230430_a_(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         RenderSystem.matrixMode(GL_MODELVIEW);
@@ -196,8 +176,7 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
         func_230450_a_(matrixStack, partialTicks, mouseX, mouseY);
 
         glDepthRange(0, 0.01);
-        // field_230706_i_ is minecraft
-        assert this.field_230706_i_ != null;
+        assert this.minecraft != null;
 
         /*
         RenderSystem.enableBlend();
@@ -207,7 +186,7 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
                 Tessellator.getInstance(),
                 matrixStack.getLast().getMatrix(),
                 new Vector3d(0, this.height(), 0),
-                new Vector3d(this.width(), 0 ,0 ),
+                new Vector3d(this.width, 0 ,0 ),
                 Vector3d.ZERO,
                 new ResourceLocation(MSP.MOD_ID, "textures/gui/background.png")
                 );
@@ -215,33 +194,33 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
 
         //blit
         //this.field_230706_i_.getTextureManager().bindTexture(new ResourceLocation(MSP.MOD_ID, "textures/gui/banner.png"));
-        //this.func_238474_b_(matrixStack, this.width() / 2 - 128, this.height() - 16, 0, 0, 256, 16);
+        //this.func_238474_b_(matrixStack, this.width / 2 - 128, this.height() - 16, 0, 0, 256, 16);
 
         // top left
         //this.field_230706_i_.getTextureManager().bindTexture(new ResourceLocation(MSP.MOD_ID, "textures/gui/topleft.png"));
-        //this.func_238474_b_(matrixStack, this.width() - 256, 0, 0, 0, 256, 32);
+        //this.func_238474_b_(matrixStack, this.width - 256, 0, 0, 0, 256, 32);
 
         // draws the orbit button
         //this.field_230706_i_.getTextureManager().bindTexture(new ResourceLocation(MSP.MOD_ID, "textures/gui/orbit.png"));
-        //this.func_238474_b_(matrixStack, this.width() - 16, 0, 0, 0, 16, 16);
+        //this.func_238474_b_(matrixStack, this.width - 16, 0, 0, 0, 16, 16);
 
         // draws the information button
         //this.field_230706_i_.getTextureManager().bindTexture(new ResourceLocation(MSP.MOD_ID, "textures/gui/information.png"));
-        //this.func_238474_b_(matrixStack, this.width() - 16, 17, 0, 0, 16, 16);
+        //this.func_238474_b_(matrixStack, this.width - 16, 17, 0, 0, 16, 16);
 
 
         // Banner text
         matrixStack.scale(0.75F, 0.75F, 1.0F);
         //font renderer
-        this.fontRenderer().func_238405_a_(
+        this.font.drawString(
                 matrixStack,
                 this.CameraText,
-                this.width() / 0.75F - this.fontRenderer().getStringWidth(this.CameraText) - 16,
-                this.height() / 0.75F - 16.0F,
+                this.width / 0.75F - this.font.getStringWidth(this.CameraText) - 16,
+                this.height / 0.75F - 16.0F,
                 16777215); // white
         matrixStack.scale(1 / 0.75F, 1 / 0.75F, 1.0F);
 
-        matrixStack.translate(this.width(), 0, 0);
+        matrixStack.translate(this.width, 0, 0);
         matrixStack.scale(0.5F, 0.5F, 1.0F);
         matrixStack.translate(50, 0,0);
 
@@ -250,24 +229,24 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
         int WHITE = 16777215;
         int orbitColor = orbit.color.getRGB();
 
-        this.func_238476_c_(matrixStack, this.field_230712_o_, I18n.format("map.inclination"), -50, 20, WHITE);
-        this.func_238476_c_(matrixStack, this.field_230712_o_, I18n.format(String.format("%.3E", orbit.i * 180 / PI) + " deg"), -50, 40, orbitColor);
+        drawString(matrixStack, this.font, I18n.format("map.inclination"), -50, 20, WHITE);
+        drawString(matrixStack, this.font, I18n.format(String.format("%.3E", orbit.i * 180 / PI) + " deg"), -50, 40, orbitColor);
 
-        this.func_238476_c_(matrixStack, this.field_230712_o_, I18n.format("map.perigee"), -150, 20, WHITE);
-        this.func_238476_c_(matrixStack, this.field_230712_o_, I18n.format(String.format("%.3E", orbit.p / (1 + orbit.e)) + " m"), -150, 40, orbitColor);
+        drawString(matrixStack, this.font, I18n.format("map.perigee"), -150, 20, WHITE);
+        drawString(matrixStack, this.font, I18n.format(String.format("%.3E", orbit.p / (1 + orbit.e)) + " m"), -150, 40, orbitColor);
 
-        this.func_238476_c_(matrixStack, this.field_230712_o_, I18n.format("map.apogee"), -250, 20, WHITE);
-        this.func_238476_c_(matrixStack, this.field_230712_o_, I18n.format(String.format("%.3E", orbit.p / (1 - orbit.e)) + " m"), -250, 40, orbitColor);
+        drawString(matrixStack, this.font, I18n.format("map.apogee"), -250, 20, WHITE);
+        drawString(matrixStack, this.font, I18n.format(String.format("%.3E", orbit.p / (1 - orbit.e)) + " m"), -250, 40, orbitColor);
 
-        this.func_238476_c_(matrixStack, this.field_230712_o_, I18n.format("map.altitude"), -350, 20, WHITE);
-        this.func_238476_c_(matrixStack, this.field_230712_o_, I18n.format(
+        drawString(matrixStack, this.font, I18n.format("map.altitude"), -350, 20, WHITE);
+        drawString(matrixStack, this.font, I18n.format(
                 String.format("%.3E", orbit.hovering
                         ? orbit.r(orbit.hoverAngle)
                         : 0.0D) + " m"
         ), -350, 40, orbitColor);
 
-        this.func_238476_c_(matrixStack, this.field_230712_o_, I18n.format("map.velocity"), -450, 20, WHITE);
-        this.func_238476_c_(matrixStack, this.field_230712_o_, I18n.format(
+        drawString(matrixStack, this.font, I18n.format("map.velocity"), -450, 20, WHITE);
+        drawString(matrixStack, this.font, I18n.format(
                 String.format("%.3E", orbit.hovering
                         ? orbit.speed(orbit.hoverAngle).length()
                         : 0.0D) + " m/s"
@@ -277,19 +256,19 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
             Orbit orbit1 = orbit.node.theoreticalTrajectory;
             int nodeColor = orbit1.color.getRGB();
 
-            this.func_238476_c_(matrixStack, this.field_230712_o_, I18n.format(String.format("%.3E", orbit1.i * 180 / PI) + " deg"), -50, 60, nodeColor);
+            drawString(matrixStack, this.font, I18n.format(String.format("%.3E", orbit1.i * 180 / PI) + " deg"), -50, 60, nodeColor);
 
-            this.func_238476_c_(matrixStack, this.field_230712_o_, I18n.format(String.format("%.3E", orbit1.p / (1 + orbit1.e)) + " m"), -150, 60, nodeColor);
+            drawString(matrixStack, this.font, I18n.format(String.format("%.3E", orbit1.p / (1 + orbit1.e)) + " m"), -150, 60, nodeColor);
 
-            this.func_238476_c_(matrixStack, this.field_230712_o_, I18n.format(String.format("%.3E", orbit1.p / (1 - orbit1.e)) + " m"), -250, 60, nodeColor);
+            drawString(matrixStack, this.font, I18n.format(String.format("%.3E", orbit1.p / (1 - orbit1.e)) + " m"), -250, 60, nodeColor);
 
-            this.func_238476_c_(matrixStack, this.field_230712_o_, I18n.format(
+            drawString(matrixStack, this.font, I18n.format(
                     String.format("%.3E", orbit1.hovering
                             ? orbit1.r(orbit1.hoverAngle)
                             : orbit.r(orbit.node.angle)) + " m"
             ), -350, 60, nodeColor);
 
-            this.func_238476_c_(matrixStack, this.field_230712_o_, I18n.format(
+            drawString(matrixStack, this.font, I18n.format(
                     String.format("%.3E", orbit1.hovering
                             ? orbit1.speed(orbit1.hoverAngle).length()
                             : orbit.speed(orbit.node.angle).length()) + " m/s"
@@ -300,35 +279,35 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
 
 
         /*String s = "INERTIAL VELOCITY             ALTITUDE             APOGEE             PERIGEE             INCLINATION  ";
-        this.fontRenderer().func_238405_a_(
+        this.font().func_238405_a_(
                 matrixStack,
                 s,
-                this.width() / 0.5F - this.fontRenderer().getStringWidth(s),
+                this.width / 0.5F - this.font().getStringWidth(s),
                 3.0F,
                 16777215); // white
          */
         matrixStack.translate(-50, 0, 0);
         matrixStack.scale(2.0F, 2.0F, 1.0F);
-        matrixStack.translate(-this.width(), 0, 0);
+        matrixStack.translate(-this.width, 0, 0);
 
 
         // called to do the rendering
         int GREY = -6250336;
-        this.func_238476_c_(matrixStack, this.field_230712_o_, I18n.format("field.prograde"), 10, 25, GREY);
-        this.func_238476_c_(matrixStack, this.field_230712_o_, I18n.format("field.unit"), 88, 37, GREY);
-        this.progradeField.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
+        drawString(matrixStack, this.font, I18n.format("field.prograde"), 10, 25, GREY);
+        drawString(matrixStack, this.font, I18n.format("field.unit"), 88, 37, GREY);
+        this.progradeField.render(matrixStack, mouseX, mouseY, partialTicks);
 
-        this.func_238476_c_(matrixStack, this.field_230712_o_, I18n.format("field.radial"), 10, 62, GREY);
-        this.func_238476_c_(matrixStack, this.field_230712_o_, I18n.format("field.unit"), 88, 74, GREY);
-        this.radialField.func_230431_b_(matrixStack, mouseX, mouseY, partialTicks);
+        drawString(matrixStack, this.font, I18n.format("field.radial"), 10, 62, GREY);
+        drawString(matrixStack, this.font, I18n.format("field.unit"), 88, 74, GREY);
+        this.radialField.render(matrixStack, mouseX, mouseY, partialTicks);
 
-        this.func_238476_c_(matrixStack, this.field_230712_o_, I18n.format("field.normal"), 10, 99, GREY);
-        this.func_238476_c_(matrixStack, this.field_230712_o_, I18n.format("field.unit"), 88, 111, GREY);
-        this.normalField.func_230431_b_(matrixStack, mouseX, mouseY, partialTicks);
+        drawString(matrixStack, this.font, I18n.format("field.normal"), 10, 99, GREY);
+        drawString(matrixStack, this.font, I18n.format("field.unit"), 88, 111, GREY);
+        this.normalField.render(matrixStack, mouseX, mouseY, partialTicks);
 
         // draws the buttons
-        for (Widget widget : this.field_230710_m_) {
-            widget.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
+        for (Widget widget : this.buttons) {
+            widget.render(matrixStack, mouseX, mouseY, partialTicks);
         }
 
         // idk wtf this is
@@ -344,8 +323,8 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         // field_230706_i_ is minecraft
-        assert this.field_230706_i_ != null;
-        MainWindow window = this.field_230706_i_.getMainWindow();
+        assert this.minecraft != null;
+        MainWindow window = this.minecraft.getMainWindow();
 
         matrixStack.clear();
 
@@ -373,7 +352,7 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
         RenderSystem.matrixMode(GL_MODELVIEW);
         RenderSystem.pushMatrix();
         RenderSystem.loadIdentity();
-        RenderSystem.translated(this.width() / 2D, this.height() / 2D, -3050.0D);
+        RenderSystem.translated(this.width / 2D, this.height / 2D, -3050.0D);
         drawEntityOnScreen(pow(100 - this.zoom, 3), mouseX, mouseY);
         RenderSystem.popMatrix();
         RenderSystem.matrixMode(GL_PROJECTION);
@@ -397,13 +376,13 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
         IRenderTypeBuffer.Impl irendertypebuffer$impl = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
 
         // field_230706_i_ is minecraft
-        assert this.field_230706_i_ != null;
+        assert this.minecraft != null;
 
         // skyBox
         drawSkyBox(
                 skyBoxMaterial,
                 this.myRotation,
-                this.field_230706_i_
+                this.minecraft
         );
 
         // a matrix stack for bodies orbiting the focused object
@@ -416,8 +395,8 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
         for (CelestialBody body : visibleObjects) {
             if (body.orbitingAround == focusedObject && body instanceof OrbitingBody || body instanceof ArtificialSatellite) {
                 if (body instanceof ArtificialSatellite) {
-                    ((ArtificialSatellite) body).draw2(this.field_230706_i_, matrixStackFocused);
-                    ((ArtificialSatellite) body).orbit.draw(matrixStackFocused, irendertypebuffer$impl, this.field_230706_i_);
+                    ((ArtificialSatellite) body).draw2(this.minecraft, matrixStackFocused);
+                    ((ArtificialSatellite) body).orbit.draw(matrixStackFocused, irendertypebuffer$impl, this.minecraft);
                 } else {
                     drawTrajectory(matrixStackFocused.getLast().getMatrix(), irendertypebuffer$impl.getBuffer(RenderType.getLines()), new Color(1.0F, 1.0F, 1.0F, 0.5F), body);
                     body.draw(matrixStackFocused, irendertypebuffer$impl, this.zoom);
@@ -429,14 +408,14 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
 
         // transforms the screen space to world space
         Vector4f start = new Vector4f(
-                (float) ((mouseX - this.width() / 2.0D) / this.width() * (right - left)),
-                (float) ((mouseY - this.height() / 2.0D) / this.height() * (bottom - top)),
+                (float) ((mouseX - this.width / 2.0D) / this.width * (right - left)),
+                (float) ((mouseY - this.height / 2.0D) / this.height * (bottom - top)),
                 (float) NEAR,
                 1.0F
         );
         Vector4f end = new Vector4f(
-                (float) ((mouseX - this.width() / 2.0D) / this.width() * (right - left)),
-                (float) ((mouseY - this.height() / 2.0D) / this.height() * (bottom - top)),
+                (float) ((mouseX - this.width / 2.0D) / this.width * (right - left)),
+                (float) ((mouseY - this.height / 2.0D) / this.height * (bottom - top)),
                 (float) FAR,
                 1.0F
         );
@@ -453,7 +432,7 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
                 new Vector3d(start.getX(), start.getY(), start.getZ()),
                 new Vector3d(end.getX(), end.getY(), end.getZ()),
                 MATRIX_STACK,
-                this.field_230706_i_);
+                this.minecraft);
 
         // this needs to be last
         RenderSystem.enableBlend();
@@ -472,7 +451,7 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
      * @return always returns false because I'm not quite sure why there even is a return
      */
     @Override
-    public boolean func_231045_a_(double mouseX, double mouseY, int key_pressed, double deltaX, double deltaY) {
+    public boolean mouseDragged(double mouseX, double mouseY, int key_pressed, double deltaX, double deltaY) {
         // key_pressed is equal to 0 if the left mouse button is pressed
         // 2 is scroll
         if (key_pressed == 2) {
@@ -495,14 +474,14 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
             origin = new Vector3f(focusedObject.position);
             origin.transform(myRotation);
         }
-        return super.func_231045_a_(mouseX, mouseY, key_pressed, deltaX, deltaY);
+        return super.mouseDragged(mouseX, mouseY, key_pressed, deltaX, deltaY);
     }
 
     /**
      * Called when the mouse scrolled
      */
     @Override
-    public boolean func_231043_a_(double mouseX, double mouseY, double scroll) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scroll) {
         //scroll is +- 1
         if ((this.zoom > 0 || scroll < 0) && (this.zoom < 100 || scroll > 0)) {
             this.zoom += (int) -scroll;
@@ -514,7 +493,7 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
      * Called when the mouse is clicked
      */
     @Override
-    public boolean func_231044_a_(double mouseX, double mouseY, int key_pressed) {
+    public boolean mouseClicked(double mouseX, double mouseY, int key_pressed) {
         if (key_pressed == 0) {
             // Creates a maneuver node
             if (HEART_OF_GOLD.orbit.hovering && HEART_OF_GOLD.orbit.node == null) {
@@ -568,14 +547,14 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
 
                 // transforms the screen space to world space
                 Vector4f start = new Vector4f(
-                        (float) ((mouseX - this.width() / 2.0D) / this.width() * (right - left)),
-                        (float) ((mouseY - this.height() / 2.0D) / this.height() * (bottom - top)),
+                        (float) ((mouseX - this.width / 2.0D) / this.width * (right - left)),
+                        (float) ((mouseY - this.height / 2.0D) / this.height * (bottom - top)),
                         (float) NEAR,
                         1.0F
                 );
                 Vector4f end = new Vector4f(
-                        (float) ((mouseX - this.width() / 2.0D) / this.width() * (right - left)),
-                        (float) ((mouseY - this.height() / 2.0D) / this.height() * (bottom - top)),
+                        (float) ((mouseX - this.width / 2.0D) / this.width * (right - left)),
+                        (float) ((mouseY - this.height / 2.0D) / this.height * (bottom - top)),
                         (float) FAR,
                         1.0F
                 );
@@ -624,39 +603,38 @@ public class GUIBlockScreen extends ContainerScreen<GUIBlockContainer> {
                 }
             }
         }
-        return super.func_231044_a_(mouseX, mouseY, key_pressed);
+        return super.mouseClicked(mouseX, mouseY, key_pressed);
     }
 
     /**
      * Called when a key is pressed
      */
     @Override
-    public boolean func_231046_a_(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
+    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
         if (p_keyPressed_1_ == 256) {
-            assert this.field_230706_i_ != null;
-            assert this.field_230706_i_.player != null;
-            this.field_230706_i_.player.closeScreen();
+            assert this.minecraft != null;
+            assert this.minecraft.player != null;
+            this.minecraft.player.closeScreen();
         }
 
         //return !this.nameField.func_231046_a_(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_) && !this.nameField.canWrite() ? super.func_231046_a_(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_) : true;
-        return this.progradeField.func_231046_a_(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_) || this.progradeField.canWrite()
-                || this.normalField.func_231046_a_(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_) || this.normalField.canWrite()
-                || this.radialField.func_231046_a_(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_) || this.radialField.canWrite()
-                || super.func_231046_a_(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
+        return this.progradeField.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_) || this.progradeField.canWrite()
+                || this.normalField.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_) || this.normalField.canWrite()
+                || this.radialField.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_) || this.radialField.canWrite()
+                || super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
     }
 
     private TextFieldWidget createTextFieldWidget(int posX, int posY, int sizeX, int sizeY, String title) {
-        TextFieldWidget textFieldWidget = new TextFieldWidget(this.fontRenderer(), posX, posY, sizeX, sizeY, new TranslationTextComponent(title));
+        TextFieldWidget textFieldWidget = new TextFieldWidget(this.font, posX, posY, sizeX, sizeY, new TranslationTextComponent(title));
         // change focus
         textFieldWidget.setFocused2(false);
-        textFieldWidget.func_231049_c__(false);
+        textFieldWidget.setEnabled(true);
         textFieldWidget.setMaxStringLength(10);
         textFieldWidget.setTextColor(-1);
         textFieldWidget.setDisabledTextColour(1000);
         textFieldWidget.setEnableBackgroundDrawing(true);
         textFieldWidget.setCanLoseFocus(true);
-        // children
-        this.field_230705_e_.add(textFieldWidget);
+        this.children.add(textFieldWidget);
         textFieldWidget.setText("0");
         return textFieldWidget;
     }

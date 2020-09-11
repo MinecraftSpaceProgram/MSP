@@ -15,6 +15,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.awt.*;
 
+@SuppressWarnings({"deprecation"})
 public class RocketGui extends IngameGui {
   public RocketGui(Minecraft mcIn) {
     super(mcIn);
@@ -49,7 +50,7 @@ public class RocketGui extends IngameGui {
     // Displays the current altitude of the rocket
     matrixStack.push();
     matrixStack.scale(2.0F, 2.0F, 2.0F);
-    func_238476_c_(
+    drawString(
         matrixStack,
         this.getFontRenderer(),
         I18n.format((int) rocket.trueAltitude + "m"),
@@ -61,7 +62,7 @@ public class RocketGui extends IngameGui {
     // Displays the current speed at which the rocket is traveling
     matrixStack.push();
     matrixStack.translate(0, 20, 0);
-    func_238476_c_(
+    drawString(
         matrixStack,
         this.getFontRenderer(),
         I18n.format((int) rocket.trueSpeed + "m/s"),
@@ -73,7 +74,7 @@ public class RocketGui extends IngameGui {
     // draws the remaining fuel
     matrixStack.push();
     matrixStack.translate(width / 4.0F, height * 0.75F, 0);
-    func_238476_c_(
+    drawString(
         matrixStack,
         this.getFontRenderer(),
         I18n.format((int) rocket.getFuel() + "kg"),
