@@ -2,6 +2,7 @@ package io.github.MinecraftSpaceProgram.MSP.entity;
 
 import io.github.MinecraftSpaceProgram.MSP.MSP;
 import io.github.MinecraftSpaceProgram.MSP.init.MSPBlocks;
+import io.github.MinecraftSpaceProgram.MSP.init.MSPDimensions;
 import io.github.MinecraftSpaceProgram.MSP.init.MSPEntityTypes;
 import io.github.MinecraftSpaceProgram.MSP.physics.orbital.SolarSystem;
 import io.github.MinecraftSpaceProgram.MSP.util.BlockStorage;
@@ -18,6 +19,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -26,6 +28,7 @@ import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -109,11 +112,6 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
     super.tick();
 
     this.tickLerp();
-    if (Double.isNaN(getMotion().length())) {
-      setMotion(Vector3d.ZERO);
-    }
-
-    this.trueAcceleration = 0.0D;
 
     // starts the rocket if it isn't started yet
     LivingEntity controllingPassenger = (LivingEntity) getControllingPassenger();
@@ -199,6 +197,11 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
     } else {
       this.trueAltitude = this.getPosY() - 62;
     }
+
+    if (this.trueAltitude >= 20000) {
+      teleportToSpace();
+    }
+
     this.doBlockCollisions();
   }
 
@@ -308,7 +311,7 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
     return this.dataManager.get(CHAIR);
   }
 
-  public void setPlayerRotation(float rotation){
+  public void setPlayerRotation(float rotation) {
     this.dataManager.set(PLAYER_ROTATION, rotation);
   }
 
@@ -419,7 +422,9 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
    */
   protected void applyYawToEntity(Entity entityToUpdate) {
     entityToUpdate.setRenderYawOffset(this.rotationYaw + this.dataManager.get(PLAYER_ROTATION));
-    float f = MathHelper.wrapDegrees(entityToUpdate.rotationYaw - this.rotationYaw - this.dataManager.get(PLAYER_ROTATION));
+    float f =
+        MathHelper.wrapDegrees(
+            entityToUpdate.rotationYaw - this.rotationYaw - this.dataManager.get(PLAYER_ROTATION));
     float f1 = MathHelper.clamp(f, -105.0F, 105.0F);
     entityToUpdate.prevRotationYaw += f1 - f;
     entityToUpdate.rotationYaw += f1 - f;
@@ -575,6 +580,33 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
     } else if (particle.equals(("rocketSmoke"))) {
       // TrailFx fx = new TrailFx(world, x, y, z, motionX, motionY, motionZ);
       world.addParticle(ParticleTypes.SMOKE, x, y, z, motionX, motionY, motionZ);
+    }
+  }
+
+  private void teleportToSpace() {
+    for (Entity entity : this.getPassengers()) {
+      if (entity.func_242280_ah()) {
+        entity.func_242279_ag();
+      } else {
+        World serverWorld = this.world;
+        if (serverWorld != null) {
+          MinecraftServer minecraftserver = serverWorld.getServer(); // overworld
+          RegistryKey<World> where2go =
+              this.world.func_234923_W_() == MSPDimensions.space_w
+                  ? World.field_234918_g_
+                  : MSPDimensions.space_w;
+          if (minecraftserver != null) {
+            ServerWorld destination = minecraftserver.getWorld(where2go);
+            // if (minecraftserver.getAllowNether() && !entity.isPassenger()) {
+            entity.world.getProfiler().startSection("space_portal"); // WTF is this
+            entity.func_242279_ag();
+            entity.stopRiding();
+            entity.func_241206_a_(destination);
+            this.trueAltitude = 0;
+            entity.world.getProfiler().endSection();
+          }
+        }
+      }
     }
   }
 }

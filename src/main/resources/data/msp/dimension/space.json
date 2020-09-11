@@ -1,0 +1,19 @@
+{
+  "type": "msp:space",
+  "generator": {
+    "type": "minecraft:flat",
+    "seed": 0,
+    "settings": {
+      "layers": [],
+      "biome": "minecraft:plains",
+      "structures": {
+        "stronghold": {
+          "distance": 0,
+          "count": 0,
+          "spread": 0
+        },
+        "structures": {}
+      }
+    }
+  }
+}
