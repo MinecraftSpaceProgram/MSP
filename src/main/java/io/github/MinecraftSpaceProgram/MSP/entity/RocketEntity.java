@@ -11,6 +11,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
@@ -19,10 +20,11 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.*;
+import net.minecraft.util.concurrent.TickDelayedTask;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
@@ -198,7 +200,7 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
       this.trueAltitude = this.getPosY() - 62;
     }
 
-    if (this.trueAltitude >= 20000) {
+    if (this.trueAltitude >= 100000 && !this.world.isRemote) {
       teleportToSpace();
     }
 
@@ -585,27 +587,24 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
 
   private void teleportToSpace() {
     for (Entity entity : this.getPassengers()) {
-      if (entity.func_242280_ah()) {
-        entity.func_242279_ag();
-      } else {
-        World serverWorld = this.world;
-        if (serverWorld != null) {
-          MinecraftServer minecraftserver = serverWorld.getServer(); // overworld
-          RegistryKey<World> where2go =
-              this.world.func_234923_W_() == MSPDimensions.space_w
-                  ? World.field_234918_g_
-                  : MSPDimensions.space_w;
-          if (minecraftserver != null) {
-            ServerWorld destination = minecraftserver.getWorld(where2go);
-            // if (minecraftserver.getAllowNether() && !entity.isPassenger()) {
-            entity.world.getProfiler().startSection("space_portal"); // WTF is this
-            entity.func_242279_ag();
-            entity.stopRiding();
-            entity.func_241206_a_(destination);
-            this.trueAltitude = 0;
-            entity.world.getProfiler().endSection();
-          }
-        }
+      if (entity instanceof ServerPlayerEntity) {
+        ServerPlayerEntity player = (ServerPlayerEntity) entity;
+
+        ServerWorld teleportWorld = player.world.getServer().getWorld(MSPDimensions.space_w);
+        ChunkPos chunkPos = new ChunkPos(new BlockPos(0, 0, 0));
+        teleportWorld.forceChunk(chunkPos.x, chunkPos.z, true);
+
+        teleportWorld
+            .getServer()
+            .enqueue(
+                new TickDelayedTask(
+                    0,
+                    () -> {
+                      //Network.sendTo(new MessageSFX(WAObjects.Sounds.TELEPORT.get().getRegistryName()), player);
+                      player.teleport(teleportWorld, 0, 128, 0, player.rotationYaw, player.rotationPitch);
+
+                      teleportWorld.forceChunk(chunkPos.x, chunkPos.z, false);
+                    }));
       }
     }
   }
