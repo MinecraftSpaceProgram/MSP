@@ -2,6 +2,7 @@ package io.github.MinecraftSpaceProgram.MSP;
 
 import io.github.MinecraftSpaceProgram.MSP.client.gui.RocketGui;
 import io.github.MinecraftSpaceProgram.MSP.init.*;
+import io.github.MinecraftSpaceProgram.MSP.world.space.MSPBiomes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.item.BlockItem;
@@ -9,6 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -84,5 +86,12 @@ public final class MSP {
     private void clientRegistries(FMLClientSetupEvent event) {
         MinecraftForge.EVENT_BUS.register(new RocketGui(Minecraft.getInstance()));
         LOGGER.debug(MARKER, "Registered GUI");
+    }
+
+    @SubscribeEvent
+    public static void registerBiomes(RegistryEvent.Register<Biome> evt)
+    {
+        MSP.LOGGER.debug("Registered Biomes");
+        MSPBiomes.registerBiomes(evt);
     }
 }

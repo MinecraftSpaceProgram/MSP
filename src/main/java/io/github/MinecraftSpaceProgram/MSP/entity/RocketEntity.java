@@ -28,6 +28,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -601,10 +602,37 @@ public class RocketEntity extends Entity implements IEntityAdditionalSpawnData {
                     0,
                     () -> {
                       //Network.sendTo(new MessageSFX(WAObjects.Sounds.TELEPORT.get().getRegistryName()), player);
+
+                      // builds the rocket
+                      this.build(teleportWorld);
+
+                      // places the player in the rocket
                       player.teleport(teleportWorld, 0, 128, 0, player.rotationYaw, player.rotationPitch);
+                      // sits the player on the chair
+                      SeatEntity.create(teleportWorld, new BlockPos(0,128,0), 0, player);
 
                       teleportWorld.forceChunk(chunkPos.x, chunkPos.z, false);
+
+                      //removes the rocket entity
+                      this.remove();
                     }));
+      }
+    }
+  }
+
+  private void build(World world){
+    // places the chair beneath the player
+    BlockPos offset = BlockPos.ZERO.subtract(getChair()).add(new Vector3i(0,128,0));
+
+    // builds the rocket
+    for(int x = 0; x < this.storage.sizeX; x ++){
+      for(int y = 0; y < this.storage.sizeY; y ++){
+        for(int z = 0; z < this.storage.sizeZ; z ++){
+          if (this.storage.getBlockState(new BlockPos(x, y, z)) != null) {
+            world.setBlockState(
+                offset.add(x, y, z), this.storage.getBlockState(new BlockPos(x, y, z)));
+          }
+        }
       }
     }
   }

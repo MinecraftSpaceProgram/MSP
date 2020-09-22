@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "io.github.MinecraftSpaceProgram.MSP.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MinecraftServerMixin",
+    "WorldRendererMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8"
+}
