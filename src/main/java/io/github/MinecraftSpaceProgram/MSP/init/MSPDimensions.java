@@ -91,12 +91,13 @@ public class MSPDimensions {
     WorldGenRegistries.func_243664_a(
         WorldGenRegistries.field_243658_j,
         SPACE_NOISE_SETTINGS.func_240901_a_(),
-        Objects.requireNonNull(createNoiseSettings(
-            new DimensionStructuresSettings(false),
-            false,
-            Blocks.STONE.getDefaultState(),
-            Blocks.WATER.getDefaultState(),
-            SPACE_NOISE_SETTINGS.func_240901_a_())));
+        Objects.requireNonNull(
+            createNoiseSettings(
+                new DimensionStructuresSettings(false),
+                false,
+                Blocks.STONE.getDefaultState(),
+                Blocks.WATER.getDefaultState(),
+                SPACE_NOISE_SETTINGS.func_240901_a_())));
   }
 
   public static DimensionSettings createNoiseSettings(
@@ -148,16 +149,18 @@ public class MSPDimensions {
 
   private static ChunkGenerator createSpaceChunkGenerator(
       Registry<Biome> biomeRegistry, Registry<DimensionSettings> dimSettingsRegistry, long seed) {
-    Optional<Supplier<Biome>> optionalSupplierBiome = Optional.of(() -> biomeRegistry.func_243576_d(MSPBiomes.SPACE_BIOME));
-    DimensionStructuresSettings dimensionstructuressettings = new DimensionStructuresSettings(Optional.empty(), Maps.newHashMap());
-    FlatGenerationSettings flatGenerationSettings = new FlatGenerationSettings(
-        biomeRegistry,
-        dimensionstructuressettings,
-        new ArrayList<>(),
-        false,
-        false,
-        optionalSupplierBiome
-    );
+    Optional<Supplier<Biome>> optionalSupplierBiome =
+        Optional.of(() -> biomeRegistry.func_243576_d(MSPBiomes.SPACE_BIOME));
+    DimensionStructuresSettings dimensionstructuressettings =
+        new DimensionStructuresSettings(Optional.empty(), Maps.newHashMap());
+    FlatGenerationSettings flatGenerationSettings =
+        new FlatGenerationSettings(
+            biomeRegistry,
+            dimensionstructuressettings,
+            new ArrayList<>(),
+            false,
+            false,
+            optionalSupplierBiome);
     return new FlatChunkGenerator(flatGenerationSettings);
   }
 
