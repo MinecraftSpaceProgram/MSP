@@ -26,5 +26,8 @@
   "event.msp.launchpad_not_found": "Launchpad not found",
   "event.msp.launchpad_found": "Found launchpad between (%d,%d,%d) and (%d,%d,%d)",
   "event.msp.attempting_rocket_assembly": "Attempting to build rocket",
-  "event.msp.rocket_rules": "Rocket building rules are not respected"
+  "event.msp.rocket_rules": "Rocket building rules are not respected",
+  "key.RotateXPlus":"Rotate X accelerate",
+  "key.RotateXMinus":"Rotate X decelerate",
+  "key.categories.MSP":"Minecraft Space Program"
 }

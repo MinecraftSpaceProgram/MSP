@@ -1,7 +1,10 @@
 package io.github.MinecraftSpaceProgram.MSP;
 
+import io.github.MinecraftSpaceProgram.MSP.client.ClientProxy;
 import io.github.MinecraftSpaceProgram.MSP.client.gui.RocketGui;
 import io.github.MinecraftSpaceProgram.MSP.init.*;
+import io.github.MinecraftSpaceProgram.MSP.network.NetworkHandler;
+import io.github.MinecraftSpaceProgram.MSP.world.UniversalClock;
 import io.github.MinecraftSpaceProgram.MSP.world.space.MSPBiomes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -16,9 +19,12 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DeferredWorkQueue;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.logging.log4j.LogManager;
@@ -30,8 +36,8 @@ import org.apache.logging.log4j.MarkerManager;
 @Mod(MSP.MOD_ID)
 @Mod.EventBusSubscriber(modid = MSP.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class MSP {
+    public static CommonProxy proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
     public static final String MOD_ID ="msp";
-
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
     private static final Marker MARKER = MarkerManager.getMarker("MSP-ModInitialization");
 
@@ -43,6 +49,10 @@ public final class MSP {
 
 
     public MSP() {
+        // initializes the network manager
+        DeferredWorkQueue.runLater(NetworkHandler::init);
+
+        // registers other stuff
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         MSPItems.ITEMS.register(modEventBus);
         MSPBlocks.BLOCKS.register(modEventBus);
@@ -50,7 +60,6 @@ public final class MSP {
         MSPEntityTypes.ENTITY_TYPES.register(modEventBus);
         ModContainerTypes.CONTAINER_TYPES.register(modEventBus);
         MSPDataSerializers.DATA_SERIALIZERS.register(modEventBus);
-
         modEventBus.addListener(this::clientRegistries);
     }
 
@@ -93,5 +102,11 @@ public final class MSP {
     {
         MSP.LOGGER.debug("Registered Biomes");
         MSPBiomes.registerBiomes(evt);
+    }
+
+    @SubscribeEvent
+    public static void commonSetup(FMLCommonSetupEvent e){
+        MinecraftForge.EVENT_BUS.register(new UniversalClock());
+        LOGGER.debug("Registered a Universal Clock");
     }
 }

@@ -3,14 +3,16 @@ package io.github.MinecraftSpaceProgram.MSP.client;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import io.github.MinecraftSpaceProgram.MSP.core.PlayerPositionManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexBuffer;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
 
 import java.util.Random;
@@ -29,15 +31,14 @@ public class SpaceSkyRenderer {
 
   public void render(
       float partialTicks, MatrixStack matrixStackIn, ClientWorld world, Minecraft mc) {
-    RenderSystem.disableTexture();
-    FogRenderer.applyFog();
-    RenderSystem.depthMask(false);
-    RenderSystem.enableFog();
+    // Retrieves the player Rotation
+    PlayerEntity player = mc.player;
+    Quaternion playerRotation = PlayerPositionManager.getPlayerRotation(player);
 
-    skyVertexFormat.setupBufferState(0L);
-    VertexBuffer.unbindBuffer();
-    skyVertexFormat.clearBufferState();
-    RenderSystem.disableFog();
+    RenderSystem.disableTexture();
+    //FogRenderer.applyFog();
+    RenderSystem.depthMask(false);
+
     RenderSystem.disableAlphaTest();
     RenderSystem.enableBlend();
     RenderSystem.defaultBlendFunc();
@@ -47,27 +48,28 @@ public class SpaceSkyRenderer {
         GlStateManager.DestFactor.ONE,
         GlStateManager.SourceFactor.ONE,
         GlStateManager.DestFactor.ZERO);
+
     matrixStackIn.push();
-    float f11 = 1.0F - world.getRainStrength(partialTicks);
-    RenderSystem.color4f(1.0F, 1.0F, 1.0F, f11);
+    RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
     matrixStackIn.rotate(Vector3f.YP.rotationDegrees(-90.0F));
     matrixStackIn.rotate(Vector3f.XP.rotationDegrees(1.0F * 360.0F));
-    RenderSystem.disableTexture();
 
-    RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+    // rotates the sky for the player
+    matrixStackIn.push();
+    matrixStackIn.rotate(playerRotation);
+
     starVBO.bindBuffer();
     skyVertexFormat.setupBufferState(0L);
     starVBO.draw(matrixStackIn.getLast().getMatrix(), 7);
     VertexBuffer.unbindBuffer();
     skyVertexFormat.clearBufferState();
+    matrixStackIn.pop();
+    matrixStackIn.pop();
 
     RenderSystem.disableBlend();
     RenderSystem.enableAlphaTest();
-    RenderSystem.enableFog();
-    matrixStackIn.pop();
-    RenderSystem.disableTexture();
 
-    RenderSystem.enableTexture();
+    RenderSystem.enableFog();
     RenderSystem.depthMask(true);
     RenderSystem.disableFog();
   }

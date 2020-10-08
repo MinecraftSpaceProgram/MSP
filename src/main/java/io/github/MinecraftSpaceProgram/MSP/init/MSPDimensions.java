@@ -76,13 +76,11 @@ public class MSPDimensions {
     Function<DimensionSettings, ChunkGenerator> spaceGenerator =
         (s) -> createSpaceChunkGenerator(biomeRegistry, dimSettingsRegistry, seed);
     Supplier<DimensionType> spaceDimensionType =
-        () -> createDimSettings(OptionalLong.empty(), false, false);
+        () -> createDimSettings(OptionalLong.of(18000), false, false);
 
     Dimension space2 =
         new Dimension(
             spaceDimensionType, spaceGenerator.apply(spaceSettings.apply(SPACE_NOISE_SETTINGS)));
-    // Dimension space2 = new Dimension(spaceDimensionType, spaceGenerator.apply(new
-    // DimensionSettings()));
 
     simpleRegistry.register(SPACE_DIM, space2, Lifecycle.stable());
   }
